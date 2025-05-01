@@ -68,8 +68,8 @@ const Cart = () => {
     try {
       setIsProcessing(true);
       
-      // Create order
-      const orderId = await createOrder(items, paymentMethod, address);
+      // Create order - fixed by passing only one argument as expected
+      const orderId = await createOrder(items);
       
       if (orderId) {
         // Clear cart after successful order

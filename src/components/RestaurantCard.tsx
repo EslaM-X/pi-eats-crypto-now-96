@@ -30,7 +30,7 @@ const RestaurantCard = ({
   const { t } = useLanguage();
   
   return (
-    <Link to={`/restaurants/${id}`}>
+    <Link to={`/restaurants/${id}`} className="block h-full">
       <Card className={`overflow-hidden hover:shadow-md transition-all duration-300 h-full ${
         featured ? 'border-pi/30 shadow-lg' : ''
       }`}>
