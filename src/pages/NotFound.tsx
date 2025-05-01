@@ -1,8 +1,14 @@
-import { useLocation } from "react-router-dom";
+
+import React from 'react';
+import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
+import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/LanguageContext';
+import Header from '@/components/Header';
 
 const NotFound = () => {
   const location = useLocation();
+  const { t } = useLanguage();
 
   useEffect(() => {
     console.error(
@@ -12,13 +18,21 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">404</h1>
-        <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>
-        <a href="/" className="text-blue-500 hover:text-blue-700 underline">
-          Return to Home
-        </a>
+    <div className="min-h-screen bg-background">
+      <Header />
+      
+      <div className="container mx-auto px-4 py-16 flex flex-col items-center justify-center text-center">
+        <div className="text-8xl font-bold text-pi mb-4">404</div>
+        <h1 className="text-2xl font-bold mb-6">{t('error.pageNotFound')}</h1>
+        <p className="text-muted-foreground mb-8 max-w-md">
+          {t('error.pageDoesNotExist')}
+        </p>
+        
+        <Link to="/">
+          <Button className="button-gradient">
+            {t('error.backToHome')}
+          </Button>
+        </Link>
       </div>
     </div>
   );

@@ -1,0 +1,171 @@
+
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, Globe, ShoppingCart, ChevronDown } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { usePiAuth } from '@/contexts/PiAuthContext';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { PiPriceIndicator } from './PiPriceIndicator';
+
+const Header = () => {
+  const { language, setLanguage, t } = useLanguage();
+  const { user, login, logout, isAuthenticating } = usePiAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+
+  const navItems = [
+    { path: '/', label: t('nav.home') },
+    { path: '/restaurants', label: t('nav.restaurants') },
+    { path: '/orders', label: t('nav.orders') },
+    { path: '/wallet', label: t('nav.wallet') },
+    { path: '/rewards', label: t('nav.rewards') },
+  ];
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  return (
+    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b">
+      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center">
+          <Link to="/" className="flex items-center space-x-2">
+            <span className="text-2xl font-bold bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent">
+              {t('app.title')}
+            </span>
+          </Link>
+        </div>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-6">
+          {navItems.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`text-sm font-medium transition-colors hover:text-pi ${
+                location.pathname === item.path ? 'text-pi' : 'text-muted-foreground'
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Right side items */}
+        <div className="flex items-center space-x-4">
+          {/* Price Indicator */}
+          <div className="hidden md:flex">
+            <PiPriceIndicator />
+          </div>
+
+          {/* Language Toggle */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" aria-label="Change Language">
+                <Globe className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setLanguage('en')}>
+                English {language === 'en' && '✓'}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLanguage('ar')}>
+                العربية {language === 'ar' && '✓'}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Cart Button */}
+          <Link to="/cart">
+            <Button variant="ghost" size="icon" aria-label="Cart">
+              <ShoppingCart className="h-5 w-5" />
+            </Button>
+          </Link>
+
+          {/* Auth Button */}
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center space-x-2">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-pi text-white">
+                      {user.username.substring(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link to="/wallet">{t('nav.wallet')}</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/rewards">{t('nav.rewards')}</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/orders">{t('nav.orders')}</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={logout}>
+                  {t('auth.logout')}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button
+              onClick={login}
+              disabled={isAuthenticating}
+              className="button-gradient"
+            >
+              {isAuthenticating ? t('loading') : t('auth.connectWithPi')}
+            </Button>
+          )}
+
+          {/* Mobile menu button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
+            onClick={toggleMobileMenu}
+            aria-label="Toggle Menu"
+          >
+            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </Button>
+        </div>
+      </div>
+
+      {/* Mobile Navigation Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-background/95 backdrop-blur-md">
+          <div className="container mx-auto px-4 py-3">
+            <nav className="flex flex-col space-y-4">
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`text-sm font-medium transition-colors ${
+                    location.pathname === item.path ? 'text-pi' : 'text-foreground'
+                  }`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <div className="pt-2">
+                <PiPriceIndicator />
+              </div>
+            </nav>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+};
+
+export default Header;
