@@ -5,10 +5,12 @@ import { usePiPrice } from '@/contexts/PiPriceContext';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export const PiPriceIndicator = () => {
   const { priceData, isLoading, refreshPrice } = usePiPrice();
   const { t } = useLanguage();
+  const { theme } = useTheme();
   
   if (!priceData) {
     return (
@@ -31,7 +33,7 @@ export const PiPriceIndicator = () => {
   const isPriceFromOKX = priceData.source === 'OKX';
 
   return (
-    <div className="flex items-center space-x-2 rounded-full py-1 px-3 text-sm bg-muted/40 border border-border/50">
+    <div className={`flex items-center space-x-2 rounded-full py-1 px-3 text-sm ${theme === 'dark' ? 'bg-muted/20' : 'bg-muted/40'} border border-border/50`}>
       <span className="font-medium">π</span>
       <span className="font-medium">{formatCurrency(priceData.price)}</span>
       

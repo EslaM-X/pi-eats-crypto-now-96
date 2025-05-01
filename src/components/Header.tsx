@@ -1,7 +1,7 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Globe, ShoppingCart, ChevronDown } from 'lucide-react';
+import { Menu, X, Globe, ShoppingCart, ChevronDown, Moon, Sun } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { usePiAuth } from '@/contexts/PiAuthContext';
 import { Button } from '@/components/ui/button';
@@ -13,11 +13,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { PiPriceIndicator } from './PiPriceIndicator';
+import { Switch } from '@/components/ui/switch';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const Header = () => {
   const { language, setLanguage, t } = useLanguage();
   const { user, login, logout, isAuthenticating } = usePiAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
   const location = useLocation();
 
   const navItems = [
@@ -32,13 +35,26 @@ const Header = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
   return (
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+      {/* Pi Network Watermark */}
+      <div className="absolute inset-0 opacity-5 pointer-events-none flex items-center justify-center overflow-hidden">
+        <img 
+          src="/lovable-uploads/a8326833-2525-4059-956f-569750fb1bc4.png" 
+          alt="Pi Network" 
+          className="w-48 h-auto"
+        />
+      </div>
+      
+      <div className="container mx-auto px-4 py-3 flex items-center justify-between relative z-10">
         <div className="flex items-center">
           <Link to="/" className="flex items-center space-x-2">
             <span className="text-2xl font-bold bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent">
-              {t('app.title')}
+              Eat-Me-Pi
             </span>
           </Link>
         </div>
@@ -64,6 +80,20 @@ const Header = () => {
           <div className="hidden md:flex">
             <PiPriceIndicator />
           </div>
+
+          {/* Theme Toggle */}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={toggleTheme}
+            aria-label={theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+          >
+            {theme === 'dark' ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
+          </Button>
 
           {/* Language Toggle */}
           <DropdownMenu>

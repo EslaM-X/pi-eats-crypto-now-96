@@ -31,6 +31,7 @@ const translations = {
     'home.featured': 'Featured Restaurants',
     'home.nearYou': 'Near You',
     'home.viewAll': 'View All',
+    'home.categories': 'Food Categories',
     
     // Restaurants
     'restaurant.search': 'Search restaurants...',
@@ -56,15 +57,25 @@ const translations = {
     'wallet.receive': 'Receive',
     'wallet.transactions': 'Transactions',
     'wallet.topUp': 'Top Up',
+    'wallet.piEat': 'PiEat Balance',
+    'wallet.piNetwork': 'Pi Network Wallet',
+    'wallet.connect': 'Connect Pi Browser',
     
     // Rewards
     'rewards.available': 'Available Rewards',
     'rewards.points': 'Points',
     'rewards.redeem': 'Redeem',
+    'rewards.piEat': 'PiEat Rewards',
+    'rewards.yourPoints': 'Your Points',
     
     // Pi Price
     'pi.currentPrice': 'Current Pi Price',
     'pi.lastUpdated': 'Last updated',
+    'pi.viewOnOKX': 'View on OKX Exchange',
+    
+    // Theme
+    'theme.dark': 'Dark Mode',
+    'theme.light': 'Light Mode',
     
     // Misc
     'loading': 'Loading...',
@@ -75,7 +86,7 @@ const translations = {
   },
   ar: {
     // Header
-    'app.title': 'إيت-مي-باي',
+    'app.title': 'Eat-Me-Pi',
     'app.tagline': 'اطلب الطعام بعملة باي المشفرة',
     'nav.home': 'الرئيسية',
     'nav.restaurants': 'المطاعم',
@@ -89,11 +100,12 @@ const translations = {
     'auth.connectWithPi': 'الاتصال بشبكة باي',
     
     // Home
-    'home.welcome': 'مرحبًا بك في إيت-مي-باي',
+    'home.welcome': 'مرحبًا بك في Eat-Me-Pi',
     'home.subtitle': 'اطلب طعامك المفضل باستخدام عملة باي المشفرة',
     'home.featured': 'مطاعم مميزة',
     'home.nearYou': 'بالقرب منك',
     'home.viewAll': 'عرض الكل',
+    'home.categories': 'فئات الطعام',
     
     // Restaurants
     'restaurant.search': 'بحث عن مطاعم...',
@@ -119,15 +131,25 @@ const translations = {
     'wallet.receive': 'استلام',
     'wallet.transactions': 'المعاملات',
     'wallet.topUp': 'شحن الرصيد',
+    'wallet.piEat': 'رصيد PiEat',
+    'wallet.piNetwork': 'محفظة شبكة باي',
+    'wallet.connect': 'الاتصال بمتصفح باي',
     
     // Rewards
     'rewards.available': 'المكافآت المتاحة',
     'rewards.points': 'النقاط',
     'rewards.redeem': 'استبدال',
+    'rewards.piEat': 'مكافآت PiEat',
+    'rewards.yourPoints': 'نقاطك',
     
     // Pi Price
     'pi.currentPrice': 'سعر باي الحالي',
     'pi.lastUpdated': 'آخر تحديث',
+    'pi.viewOnOKX': 'عرض على منصة OKX',
+    
+    // Theme
+    'theme.dark': 'الوضع المظلم',
+    'theme.light': 'الوضع الفاتح',
     
     // Misc
     'loading': 'جاري التحميل...',
