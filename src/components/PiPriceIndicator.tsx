@@ -1,9 +1,10 @@
 
 import React from 'react';
-import { TrendingUp, TrendingDown, RefreshCcw } from 'lucide-react';
+import { TrendingUp, TrendingDown, RefreshCcw, ExternalLink } from 'lucide-react';
 import { usePiPrice } from '@/contexts/PiPriceContext';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 export const PiPriceIndicator = () => {
   const { priceData, isLoading, refreshPrice } = usePiPrice();
@@ -20,13 +21,14 @@ export const PiPriceIndicator = () => {
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: priceData.currency,
+      currency: 'USD',
       minimumFractionDigits: 4,
       maximumFractionDigits: 4,
     }).format(value);
   };
 
   const isPositiveChange = priceData.change24h >= 0;
+  const isPriceFromOKX = priceData.source === 'OKX';
 
   return (
     <div className="flex items-center space-x-2 rounded-full py-1 px-3 text-sm bg-muted/40 border border-border/50">
@@ -46,6 +48,22 @@ export const PiPriceIndicator = () => {
         {Math.abs(priceData.change24h).toFixed(2)}%
       </span>
 
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <a 
+            href="https://www.okx.com/trade-spot/pi-usdt?channelid=43776722" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-pi hover:text-pi-dark transition-colors"
+          >
+            <ExternalLink className="h-3 w-3" />
+          </a>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{t('pi.viewOnOKX')}</p>
+        </TooltipContent>
+      </Tooltip>
+
       <Button 
         size="icon" 
         variant="ghost" 
@@ -55,6 +73,10 @@ export const PiPriceIndicator = () => {
       >
         <RefreshCcw className={`h-3 w-3 ${isLoading ? 'animate-spin' : ''}`} />
       </Button>
+      
+      {!isPriceFromOKX && (
+        <span className="text-xs text-muted-foreground">(Fallback)</span>
+      )}
     </div>
   );
 };
