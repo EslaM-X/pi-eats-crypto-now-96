@@ -6,6 +6,8 @@ import { PiPriceProvider } from './PiPriceContext';
 import { WalletProvider } from './WalletContext';
 import { RewardsProvider } from './RewardsContext';
 import { ThemeProvider } from './ThemeContext';
+import { CartProvider } from './CartContext';
+import { OrdersProvider } from './OrdersContext';
 
 interface AppProviderProps {
   children: ReactNode;
@@ -19,7 +21,11 @@ const AppProvider = ({ children }: AppProviderProps) => {
           <PiPriceProvider>
             <WalletProvider>
               <RewardsProvider>
-                {children}
+                <CartProvider>
+                  <OrdersProvider>
+                    {children}
+                  </OrdersProvider>
+                </CartProvider>
               </RewardsProvider>
             </WalletProvider>
           </PiPriceProvider>

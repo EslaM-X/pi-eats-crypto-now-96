@@ -10,6 +10,8 @@ import Index from "./pages/Index";
 import Restaurants from "./pages/Restaurants";
 import Wallet from "./pages/Wallet";
 import Rewards from "./pages/Rewards";
+import Orders from "./pages/Orders";
+import Cart from "./pages/Cart";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +28,8 @@ const App = () => (
             <Route path="/restaurants" element={<Restaurants />} />
             <Route path="/wallet" element={<Wallet />} />
             <Route path="/rewards" element={<Rewards />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/cart" element={<Cart />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

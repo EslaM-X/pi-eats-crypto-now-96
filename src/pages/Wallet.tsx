@@ -44,7 +44,7 @@ const Wallet = () => {
   const handleTopUp = () => {
     if (user) {
       addTransaction({
-        type: 'deposit',
+        type: 'receive',
         amount: 5.0,
         description: 'Top up from test wallet',
         status: 'completed',
@@ -202,15 +202,15 @@ const Wallet = () => {
                       <tr key={index} className="border-b last:border-b-0">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`capitalize ${
-                            tx.type === 'deposit' ? 'text-green-500' : 
-                            tx.type === 'withdrawal' ? 'text-orange' : ''
+                            tx.type === 'receive' ? 'text-green-500' : 
+                            tx.type === 'send' ? 'text-orange' : ''
                           }`}>
                             {tx.type}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className="font-medium">
-                            {tx.type === 'deposit' ? '+' : '-'} π {tx.amount.toFixed(2)}
+                            {tx.type === 'receive' || tx.type === 'reward' ? '+' : '-'} π {tx.amount.toFixed(2)}
                           </span>
                         </td>
                         <td className="px-6 py-4">{tx.description}</td>
