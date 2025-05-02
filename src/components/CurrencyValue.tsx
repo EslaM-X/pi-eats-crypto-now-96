@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { DollarSign } from 'lucide-react';
 
 interface CurrencyValueProps {
   amount: number;

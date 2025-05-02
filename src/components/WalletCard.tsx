@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PiPriceIndicator } from '@/components/PiPriceIndicator';
 import CurrencyValue from '@/components/CurrencyValue';
-import { ExternalLink, WalletIcon, SendHorizontal, ArrowRightLeft, PlusCircle, History } from 'lucide-react';
+import { ExternalLink, WalletIcon, SendHorizontal, ArrowRightLeft, PlusCircle, History, DollarSign } from 'lucide-react';
 
 interface WalletCardProps {
   title: string;
