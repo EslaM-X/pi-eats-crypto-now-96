@@ -75,8 +75,8 @@ const FoodProviderDetails = () => {
     addReview({
       providerId: provider.id,
       userId: user.uid,
-      userName: user.displayName || 'User',
-      userImage: user.photoURL || undefined,
+      userName: user.username || 'User', // Fixed: using username from PiUser
+      userImage: undefined, // Fixed: removed photoURL reference
       rating,
       comment
     });
@@ -88,7 +88,7 @@ const FoodProviderDetails = () => {
     sendMessage({
       providerId: provider.id,
       userId: user.uid,
-      userName: user.displayName || 'User',
+      userName: user.username || 'User', // Fixed: using username from PiUser
       providerName: provider.name,
       content,
       isFromProvider: false

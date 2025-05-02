@@ -83,7 +83,7 @@ const Wallet = () => {
           <WalletCard
             title={t('wallet.piNetwork')}
             icon={
-              <div className="h-8 w-8">
+              <div className="h-12 w-12">
                 <img 
                   src="/lovable-uploads/a8326833-2525-4059-956f-569750fb1bc4.png" 
                   alt="Pi Network" 

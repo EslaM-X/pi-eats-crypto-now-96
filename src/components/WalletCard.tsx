@@ -44,7 +44,9 @@ const WalletCard: React.FC<WalletCardProps> = ({
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>{title}</span>
-          {icon}
+          <div className="scale-125">
+            {icon}
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -52,7 +54,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
           <div>
             <div className="text-sm text-muted-foreground mb-1">Balance</div>
             <div className="text-4xl font-bold flex items-center">
-              {isPi ? <span className="mr-1">π</span> : icon}
+              {isPi ? <span className="mr-1 text-4xl">π</span> : icon}
               <span className={isPi ? '' : 'ml-2'}>{isUser ? balance.toFixed(2) : '--.--'}</span>
             </div>
             

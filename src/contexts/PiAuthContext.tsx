@@ -7,6 +7,9 @@ type PiUser = {
   accessToken: string;
   uid: string;
   isLoggedIn: boolean;
+  // Added these properties to fix type errors
+  displayName?: string;
+  photoURL?: string;
 };
 
 type PiAuthContextType = {
@@ -51,12 +54,14 @@ export const PiAuthProvider = ({ children }: { children: ReactNode }) => {
       // In a real implementation, we would use the Pi SDK here
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Mock successful login
+      // Mock successful login with improved user data
       const mockUser: PiUser = {
         username: 'pi_user_' + Math.floor(Math.random() * 10000),
         accessToken: 'mock_token_' + Math.random().toString(36).substring(2),
         uid: 'user_' + Math.random().toString(36).substring(2),
-        isLoggedIn: true
+        isLoggedIn: true,
+        displayName: 'Pi User', // Added a displayName 
+        photoURL: undefined // Added photoURL property
       };
       
       setUser(mockUser);

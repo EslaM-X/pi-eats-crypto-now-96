@@ -2,6 +2,7 @@
 import React from 'react';
 import { usePiPrice } from '@/contexts/PiPriceContext';
 import { Transaction } from '@/contexts/WalletContext';
+import { DollarSign } from 'lucide-react';
 
 interface TransactionHistoryProps {
   transactions: Transaction[];
@@ -31,9 +32,9 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ transactions })
             </thead>
             <tbody>
               {transactions.map((tx, index) => (
-                <tr key={index} className="border-b last:border-b-0">
+                <tr key={index} className="border-b last:border-b-0 hover:bg-muted/10 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`capitalize ${
+                    <span className={`capitalize font-medium ${
                       tx.type === 'receive' ? 'text-green-500' : 
                       tx.type === 'send' ? 'text-orange' : ''
                     }`}>
@@ -41,7 +42,9 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ transactions })
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="font-medium">
+                    <span className={`font-medium ${
+                      tx.type === 'receive' || tx.type === 'reward' ? 'text-green-500' : 'text-orange'
+                    }`}>
                       {tx.type === 'receive' || tx.type === 'reward' ? '+' : '-'} π {tx.amount.toFixed(2)}
                     </span>
                   </td>
@@ -55,9 +58,15 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ transactions })
                       {tx.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-xs text-muted-foreground">
-                    <div>${convertPiToUsd(tx.amount).toFixed(2)}</div>
-                    <div>£E{convertPiToEgp(tx.amount).toFixed(2)}</div>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center text-xs text-muted-foreground">
+                      <DollarSign className="h-3 w-3 mr-1" />
+                      {convertPiToUsd(tx.amount).toFixed(2)}
+                    </div>
+                    <div className="flex items-center text-xs text-muted-foreground mt-1">
+                      <span className="mr-1">£E</span>
+                      {convertPiToEgp(tx.amount).toFixed(2)}
+                    </div>
                   </td>
                 </tr>
               ))}
