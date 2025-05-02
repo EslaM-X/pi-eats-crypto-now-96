@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ChevronLeft, MapPin, Clock, Star, Info, Phone, ShoppingCart, Plus, Minus } from 'lucide-react';
@@ -211,7 +210,6 @@ const RestaurantDetails = () => {
       name: item.name,
       price: item.price,
       image: item.image,
-      quantity: 1,
       restaurantId: restaurant.id,
       restaurantName: restaurant.name,
     });
@@ -242,8 +240,12 @@ const RestaurantDetails = () => {
       
       // Update quantity
       addItem({
-        ...existingItem,
-        quantity: quantity,
+        id: existingItem.id,
+        name: existingItem.name,
+        price: existingItem.price,
+        image: existingItem.image,
+        restaurantId: existingItem.restaurantId,
+        restaurantName: existingItem.restaurantName
       });
     }
   };

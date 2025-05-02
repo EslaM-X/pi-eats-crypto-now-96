@@ -8,6 +8,7 @@ import { RewardsProvider } from './RewardsContext';
 import { ThemeProvider } from './ThemeContext';
 import { CartProvider } from './CartContext';
 import { OrdersProvider } from './OrdersContext';
+import { HomeFoodProvider } from './HomeFoodContext';
 
 interface AppProviderProps {
   children: ReactNode;
@@ -23,7 +24,9 @@ const AppProvider = ({ children }: AppProviderProps) => {
               <RewardsProvider>
                 <CartProvider>
                   <OrdersProvider>
-                    {children}
+                    <HomeFoodProvider>
+                      {children}
+                    </HomeFoodProvider>
                   </OrdersProvider>
                 </CartProvider>
               </RewardsProvider>

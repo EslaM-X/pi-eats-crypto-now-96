@@ -1,188 +1,200 @@
 
-import React from 'react';
-import { useCart } from '@/contexts/CartContext';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, ShoppingBag, ChevronLeft, PlusCircle, MinusCircle, Trash2 } from 'lucide-react';
+import { ShoppingBag, MapPin, CreditCard, Check } from 'lucide-react';
 import Header from '@/components/Header';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { toast } from 'sonner';
-import { useWallet } from '@/contexts/WalletContext';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useCart } from '@/contexts/CartContext';
 import { useOrders } from '@/contexts/OrdersContext';
+import { usePiAuth } from '@/contexts/PiAuthContext';
+import { toast } from 'sonner';
 
 const Cart = () => {
-  const { items, removeItem, updateQuantity, clearCart } = useCart();
   const navigate = useNavigate();
-  const { t } = useLanguage();
-  const { balance, sendPi } = useWallet();
-  const { addOrder } = useOrders();
-
-  // Calculate total
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const deliveryFee = items.length > 0 ? 0.5 : 0;
-  const serviceFee = items.length > 0 ? subtotal * 0.05 : 0;
-  const total = subtotal + deliveryFee + serviceFee;
-
-  const handleCheckout = () => {
+  const { items, totalPrice, clearCart } = useCart();
+  const { createOrder } = useOrders();
+  const { user } = usePiAuth();
+  const [deliveryAddress, setDeliveryAddress] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState<'pi' | 'pieat'>('pi');
+  const [isProcessing, setIsProcessing] = useState(false);
+  
+  const handleCheckout = async () => {
+    if (!user) {
+      toast.error('Please login to complete your order');
+      return;
+    }
+    
     if (items.length === 0) {
-      toast.error(t('cart.emptyCartError'));
+      toast.error('Your cart is empty');
       return;
     }
-
-    if (balance < total) {
-      toast.error(t('cart.insufficientFunds'));
+    
+    if (!deliveryAddress) {
+      toast.error('Please provide a delivery address');
       return;
     }
-
-    // Process payment
-    sendPi(total, 'PiEat Restaurant').then((success) => {
-      if (success) {
-        // Create order
-        const newOrder = {
-          id: `order-${Date.now()}`,
-          items: [...items],
-          total,
-          status: 'processing',
-          createdAt: new Date(),
-          restaurantId: items[0]?.restaurantId || 'unknown',
-          restaurantName: items[0]?.restaurantName || 'Unknown Restaurant',
-        };
-        
-        addOrder(newOrder);
-        clearCart();
-        toast.success(t('cart.orderSuccess'));
-        navigate('/orders');
-      }
-    });
+    
+    setIsProcessing(true);
+    
+    try {
+      const orderId = await createOrder(items, paymentMethod, deliveryAddress);
+      clearCart();
+      toast.success('Order placed successfully!');
+      navigate(`/orders?new=${orderId}`);
+    } catch (error) {
+      toast.error('Failed to place order. Please try again.');
+      console.error('Checkout error:', error);
+    } finally {
+      setIsProcessing(false);
+    }
   };
-
-  const handleRemoveItem = (itemId: string) => {
-    removeItem(itemId);
-    toast.info(t('cart.itemRemoved'));
-  };
-
+  
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold mb-8">{t('cart.title')}</h1>
-          <div className="flex flex-col items-center justify-center py-16">
-            <ShoppingBag className="h-16 w-16 text-muted-foreground mb-4" />
-            <h2 className="text-2xl font-medium mb-2">{t('cart.empty')}</h2>
-            <p className="text-muted-foreground mb-6">{t('cart.emptyMsg')}</p>
-            <Button onClick={() => navigate('/restaurants')} className="button-gradient">
-              {t('cart.browseRestaurants')}
-            </Button>
+        <div className="container mx-auto px-4 py-8 flex flex-col items-center">
+          <div className="text-center mb-6">
+            <ShoppingBag className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+            <h1 className="text-2xl font-bold mb-2">Your cart is empty</h1>
+            <p className="text-muted-foreground">
+              Start adding items from our restaurants to place an order
+            </p>
           </div>
+          <Button onClick={() => navigate('/restaurants')} className="button-gradient">
+            Browse Restaurants
+          </Button>
         </div>
       </div>
     );
   }
-
+  
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center mb-8">
-          <Button variant="ghost" onClick={() => navigate(-1)} className="mr-4">
-            <ChevronLeft className="h-5 w-5" />
-          </Button>
-          <h1 className="text-3xl font-bold">{t('cart.title')}</h1>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="md:col-span-2">
-            <Card className="p-4 mb-4">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">{t('cart.items')}</h2>
-                <Button variant="ghost" size="sm" onClick={() => clearCart()} className="text-sm text-destructive">
-                  <Trash2 className="h-4 w-4 mr-1" />
-                  {t('cart.clearCart')}
-                </Button>
-              </div>
-
-              <div className="space-y-4">
+        <h1 className="text-3xl font-bold mb-6">Your Cart</h1>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Cart Items */}
+          <div className="lg:col-span-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Order Items</CardTitle>
+              </CardHeader>
+              <CardContent className="divide-y">
                 {items.map((item) => (
-                  <div key={item.id} className="flex items-center space-x-4">
-                    <div className="h-16 w-16 overflow-hidden rounded-md">
-                      <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
-                    </div>
-                    <div className="flex-1">
+                  <div key={item.id} className="flex items-start py-4 first:pt-0 last:pb-0">
+                    <div 
+                      className="w-16 h-16 rounded overflow-hidden flex-shrink-0 mr-4"
+                      style={{ backgroundImage: `url(${item.image})`, backgroundSize: 'cover' }}
+                    />
+                    <div className="flex-grow">
                       <h3 className="font-medium">{item.name}</h3>
-                      <p className="text-sm text-muted-foreground">
-                        {item.restaurantName}
-                      </p>
-                      <div className="mt-1 flex items-center">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-6 w-6"
-                          onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                        >
-                          <MinusCircle className="h-4 w-4" />
-                        </Button>
-                        <span className="mx-2 min-w-8 text-center">{item.quantity}</span>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-6 w-6"
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        >
-                          <PlusCircle className="h-4 w-4" />
-                        </Button>
+                      <p className="text-sm text-muted-foreground">From {item.restaurantName}</p>
+                      <div className="flex items-center mt-1">
+                        <span>Quantity: {item.quantity}</span>
+                        <span className="mx-2">•</span>
+                        <span>π {item.price.toFixed(2)}</span>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="font-medium">π {item.price.toFixed(2)}</div>
-                      <div className="text-sm text-muted-foreground">
-                        π {(item.price * item.quantity).toFixed(2)}
-                      </div>
+                    <div className="text-right font-semibold">
+                      π {(item.price * item.quantity).toFixed(2)}
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-muted-foreground hover:text-destructive"
-                      onClick={() => handleRemoveItem(item.id)}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
                   </div>
                 ))}
-              </div>
+              </CardContent>
             </Card>
           </div>
-
-          <div>
-            <Card className="p-4">
-              <h2 className="text-xl font-semibold mb-4">{t('cart.summary')}</h2>
-              <div className="space-y-2">
+          
+          {/* Checkout Summary */}
+          <div className="lg:col-span-1">
+            <Card>
+              <CardHeader>
+                <CardTitle>Order Summary</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">{t('cart.subtotal')}</span>
-                  <span>π {subtotal.toFixed(2)}</span>
+                  <span>Subtotal</span>
+                  <span>π {totalPrice.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">{t('cart.deliveryFee')}</span>
-                  <span>π {deliveryFee.toFixed(2)}</span>
+                  <span>Delivery Fee</span>
+                  <span>π 0.50</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">{t('cart.serviceFee')}</span>
-                  <span>π {serviceFee.toFixed(2)}</span>
+                <Separator />
+                <div className="flex justify-between font-bold">
+                  <span>Total</span>
+                  <span>π {(totalPrice + 0.5).toFixed(2)}</span>
                 </div>
-                <Separator className="my-2" />
-                <div className="flex justify-between font-semibold">
-                  <span>{t('cart.total')}</span>
-                  <span>π {total.toFixed(2)}</span>
+                
+                {/* Delivery Address */}
+                <div className="mt-4">
+                  <Label htmlFor="address">Delivery Address</Label>
+                  <div className="flex items-center mt-1">
+                    <MapPin className="h-4 w-4 mr-2 text-muted-foreground flex-shrink-0" />
+                    <Input 
+                      id="address"
+                      placeholder="Enter your delivery address" 
+                      value={deliveryAddress}
+                      onChange={(e) => setDeliveryAddress(e.target.value)}
+                    />
+                  </div>
                 </div>
-              </div>
-              <Button
-                onClick={handleCheckout}
-                className="w-full mt-4 button-gradient"
-              >
-                {t('cart.checkout')}
-              </Button>
+                
+                {/* Payment Method */}
+                <div className="mt-4">
+                  <Label>Payment Method</Label>
+                  <RadioGroup 
+                    value={paymentMethod} 
+                    onValueChange={(value) => setPaymentMethod(value as 'pi' | 'pieat')}
+                    className="mt-2"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="pi" id="pi" />
+                      <Label htmlFor="pi" className="flex items-center">
+                        <div className="text-lg mr-2">π</div>
+                        <span>Pi Wallet</span>
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2 mt-2">
+                      <RadioGroupItem value="pieat" id="pieat" />
+                      <Label htmlFor="pieat" className="flex items-center">
+                        <div className="relative mr-2">
+                          <div className="text-lg">π</div>
+                          <div className="absolute -top-1 -right-2 text-xs bg-orange text-white rounded-full h-3 w-3 flex items-center justify-center">
+                            🍕
+                          </div>
+                        </div>
+                        <span>PiEat Balance</span>
+                      </Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button 
+                  className="w-full button-gradient" 
+                  onClick={handleCheckout}
+                  disabled={isProcessing || !deliveryAddress}
+                >
+                  {isProcessing ? (
+                    <span className="flex items-center">
+                      Processing...
+                    </span>
+                  ) : (
+                    <span className="flex items-center">
+                      <CreditCard className="mr-2 h-4 w-4" />
+                      Place Order
+                    </span>
+                  )}
+                </Button>
+              </CardFooter>
             </Card>
           </div>
         </div>
