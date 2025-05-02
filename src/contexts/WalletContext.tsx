@@ -3,7 +3,7 @@ import React, { createContext, useState, useContext, useEffect, ReactNode } from
 import { toast } from 'sonner';
 import { usePiAuth } from './PiAuthContext';
 
-type Transaction = {
+export type Transaction = {
   id: string;
   type: 'send' | 'receive' | 'reward';
   amount: number;
