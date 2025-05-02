@@ -17,6 +17,7 @@ type PiAuthContextType = {
   login: () => Promise<void>;
   logout: () => void;
   isAuthenticating: boolean;
+  openPiPayment: (amount: number, memo: string) => Promise<boolean>;
 };
 
 const PiAuthContext = createContext<PiAuthContextType>({
@@ -24,6 +25,7 @@ const PiAuthContext = createContext<PiAuthContextType>({
   login: async () => {},
   logout: () => {},
   isAuthenticating: false,
+  openPiPayment: async () => false,
 });
 
 export const usePiAuth = () => useContext(PiAuthContext);
@@ -46,23 +48,32 @@ export const PiAuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  const login = async (): Promise<void> => {
-    setIsAuthenticating(true);
-    
-    try {
-      // Simulate Pi Network authentication
-      // In a real implementation, we would use the Pi SDK here
+  // Mock Pi Network SDK functions
+  const mockPiSDK = {
+    authenticate: async (): Promise<PiUser> => {
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Mock successful login with improved user data
-      const mockUser: PiUser = {
+      return {
         username: 'pi_user_' + Math.floor(Math.random() * 10000),
         accessToken: 'mock_token_' + Math.random().toString(36).substring(2),
         uid: 'user_' + Math.random().toString(36).substring(2),
         isLoggedIn: true,
-        displayName: 'Pi User', // Added a displayName 
-        photoURL: undefined // Added photoURL property
+        displayName: 'Pi User',
+        photoURL: undefined
       };
+    },
+    createPayment: async (amount: number, memo: string): Promise<boolean> => {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      // 90% success rate for mock payments
+      return Math.random() > 0.1;
+    }
+  };
+
+  const login = async (): Promise<void> => {
+    setIsAuthenticating(true);
+    
+    try {
+      // In a real implementation, we would use the Pi SDK here
+      const mockUser = await mockPiSDK.authenticate();
       
       setUser(mockUser);
       localStorage.setItem('pi_user', JSON.stringify(mockUser));
@@ -80,6 +91,32 @@ export const PiAuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem('pi_user');
     toast.info('Disconnected from Pi Network');
   };
+  
+  const openPiPayment = async (amount: number, memo: string): Promise<boolean> => {
+    if (!user) {
+      toast.error('Please log in to make a payment');
+      return false;
+    }
+    
+    toast.info('Initiating Pi payment...');
+    
+    try {
+      // In a real implementation, this would open the Pi Browser
+      const success = await mockPiSDK.createPayment(amount, memo);
+      
+      if (success) {
+        toast.success(`Payment of π${amount} successful!`);
+        return true;
+      } else {
+        toast.error('Payment failed or was cancelled');
+        return false;
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      toast.error('Payment process encountered an error');
+      return false;
+    }
+  };
 
   return (
     <PiAuthContext.Provider
@@ -88,6 +125,7 @@ export const PiAuthProvider = ({ children }: { children: ReactNode }) => {
         login,
         logout,
         isAuthenticating,
+        openPiPayment,
       }}
     >
       {children}

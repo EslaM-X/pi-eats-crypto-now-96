@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, ChevronRight, Utensils, MapPin, Star, TrendingUp } from 'lucide-react';
+import { Search, ChevronRight, Utensils, MapPin, Star, TrendingUp, ChefHat } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -73,9 +73,16 @@ const Index = () => {
       
       <main className="container mx-auto px-4 py-6 space-y-10">
         {/* Hero Section */}
-        <section className="relative rounded-3xl overflow-hidden">
-          <div className="bg-gradient-to-r from-pi/90 to-orange/80 p-8 md:p-12 lg:p-16">
+        <section className="relative rounded-3xl overflow-hidden shadow-xl">
+          <div className="bg-gradient-to-r from-[#9b87f5] to-[#ffb347] p-8 md:p-12 lg:p-16">
             <div className="max-w-2xl space-y-4">
+              <div className="mb-4">
+                <img 
+                  src="/lovable-uploads/0934d5ff-e502-465e-8d11-84ba98dcb488.png"
+                  alt="Pi Network" 
+                  className="w-20 h-20 mb-2"
+                />
+              </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">
                 {t('home.welcome')}
               </h1>
@@ -100,6 +107,15 @@ const Index = () => {
                   </Button>
                 </Link>
               </div>
+              
+              <div className="pt-6">
+                <Link to="/homefood/add">
+                  <Button className="bg-white text-[#9b87f5] hover:bg-white/90 h-12 flex items-center gap-2">
+                    <ChefHat className="h-5 w-5" />
+                    Add Your Home Food
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </section>
@@ -115,7 +131,7 @@ const Index = () => {
               <Link
                 key={category.id}
                 to={`/restaurants?category=${category.id}`}
-                className="bg-card hover:bg-accent/50 transition-colors rounded-xl p-4 text-center"
+                className="bg-card hover:bg-accent/50 transition-colors rounded-xl p-4 text-center shadow-md hover:shadow-lg"
               >
                 <div className="text-3xl mb-2">{category.icon}</div>
                 <span className="text-sm font-medium">{category.name}</span>
@@ -127,8 +143,10 @@ const Index = () => {
         {/* Featured Restaurants */}
         <section>
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold">{t('home.featured')}</h2>
-            <Link to="/restaurants" className="text-pi flex items-center">
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-[#9b87f5] to-[#ffb347] bg-clip-text text-transparent">
+              {t('home.featured')}
+            </h2>
+            <Link to="/restaurants" className="text-[#9b87f5] flex items-center">
               {t('home.viewAll')} <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
@@ -142,28 +160,72 @@ const Index = () => {
           </div>
         </section>
         
+        {/* Home Food Section */}
+        <section>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-[#ffb347] to-[#9b87f5] bg-clip-text text-transparent">
+              Homemade Food
+            </h2>
+            <Link to="/homefood" className="text-[#9b87f5] flex items-center">
+              View All <ChevronRight className="h-4 w-4" />
+            </Link>
+          </div>
+          
+          <div className="relative p-6 rounded-2xl overflow-hidden shadow-lg bg-gradient-to-r from-[#9b87f5]/10 to-[#ffb347]/10 border border-[#9b87f5]/20">
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              <div className="md:w-1/3">
+                <img 
+                  src="https://images.unsplash.com/photo-1554998171-706e730d721d?w=800"
+                  alt="Home Food"
+                  className="rounded-xl shadow-md"
+                />
+              </div>
+              <div className="md:w-2/3 space-y-4">
+                <h3 className="text-2xl font-bold">Share Your Culinary Talents</h3>
+                <p className="text-muted-foreground">
+                  Are you a great home cook? Share your delicious meals with the community and earn Pi.
+                  Join our network of home chefs and small restaurants providing authentic experiences.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <Button asChild className="button-gradient">
+                    <Link to="/homefood/add">
+                      <ChefHat className="mr-2 h-4 w-4" />
+                      Add Your Food
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline">
+                    <Link to="/homefood">
+                      Explore Home Food
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
         {/* Features Section */}
         <section className="py-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="glass-card p-6 flex flex-col items-center text-center">
-              <div className="bg-pi/10 p-4 rounded-full mb-4">
-                <Utensils className="h-8 w-8 text-pi" />
+            <div className="glass-card p-6 flex flex-col items-center text-center shadow-md hover:shadow-lg transition-all">
+              <div className="bg-[#9b87f5]/10 p-4 rounded-full mb-4">
+                <Utensils className="h-8 w-8 text-[#9b87f5]" />
               </div>
               <h3 className="text-xl font-bold mb-2">Top Restaurants</h3>
               <p className="text-muted-foreground">Order from the best local restaurants with Eat-Me-Pi</p>
             </div>
             
-            <div className="glass-card p-6 flex flex-col items-center text-center">
-              <div className="bg-orange/10 p-4 rounded-full mb-4">
-                <MapPin className="h-8 w-8 text-orange" />
+            <div className="glass-card p-6 flex flex-col items-center text-center shadow-md hover:shadow-lg transition-all">
+              <div className="bg-[#ffb347]/10 p-4 rounded-full mb-4">
+                <MapPin className="h-8 w-8 text-[#ffb347]" />
               </div>
               <h3 className="text-xl font-bold mb-2">Fast Delivery</h3>
               <p className="text-muted-foreground">Quick delivery to your doorstep, track in real-time</p>
             </div>
             
-            <div className="glass-card p-6 flex flex-col items-center text-center">
-              <div className="bg-pi/10 p-4 rounded-full mb-4">
-                <TrendingUp className="h-8 w-8 text-pi" />
+            <div className="glass-card p-6 flex flex-col items-center text-center shadow-md hover:shadow-lg transition-all">
+              <div className="bg-[#9b87f5]/10 p-4 rounded-full mb-4">
+                <TrendingUp className="h-8 w-8 text-[#9b87f5]" />
               </div>
               <h3 className="text-xl font-bold mb-2">Pi Payments</h3>
               <p className="text-muted-foreground">Pay with Pi cryptocurrency for a safe and secure experience</p>
@@ -173,13 +235,13 @@ const Index = () => {
         
         {/* CTA Section */}
         {!user && (
-          <section className="bg-gradient-to-r from-pi to-pi-dark text-white rounded-2xl p-8 text-center">
+          <section className="bg-gradient-to-r from-[#9b87f5] to-[#ffb347] text-white rounded-2xl p-8 text-center shadow-lg">
             <h2 className="text-2xl font-bold mb-4">Join Eat-Me-Pi Today</h2>
             <p className="mb-6 max-w-2xl mx-auto">Connect with Pi Network to unlock rewards, track your orders, and enjoy a seamless food ordering experience.</p>
             <Button 
               onClick={login}
               size="lg" 
-              className="bg-white text-pi hover:bg-white/90"
+              className="bg-white text-[#9b87f5] hover:bg-white/90"
             >
               {t('auth.connectWithPi')}
             </Button>
@@ -188,7 +250,7 @@ const Index = () => {
         
         {/* Pi Price Banner */}
         {priceData && (
-          <section className="glass-card p-6">
+          <section className="glass-card p-6 shadow-md">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="mb-4 md:mb-0">
                 <h3 className="text-xl font-bold mb-1">{t('pi.currentPrice')}</h3>

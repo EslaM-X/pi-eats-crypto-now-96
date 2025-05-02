@@ -70,10 +70,12 @@ const Wallet = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">{t('nav.wallet')}</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-3xl font-bold mb-4 text-center md:text-left bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent">
+            {t('nav.wallet')}
+          </h1>
+          <p className="text-muted-foreground text-center md:text-left">
             {t('wallet.manage')}
           </p>
         </div>
@@ -83,9 +85,9 @@ const Wallet = () => {
           <WalletCard
             title={t('wallet.piNetwork')}
             icon={
-              <div className="h-12 w-12">
+              <div className="h-20 w-20 mb-4">
                 <img 
-                  src="/lovable-uploads/a8326833-2525-4059-956f-569750fb1bc4.png" 
+                  src="/lovable-uploads/0934d5ff-e502-465e-8d11-84ba98dcb488.png" 
                   alt="Pi Network" 
                   className="w-full h-full object-contain"
                 />
@@ -104,7 +106,7 @@ const Wallet = () => {
           {/* PiEat Wallet */}
           <WalletCard
             title={t('wallet.piEat')}
-            icon={<PiEatLogo />}
+            icon={<div className="mb-4"><PiEatLogo /></div>}
             balance={piEatBalance}
             isUser={!!user}
             estimatedValue={`π ${(piEatBalance * 0.5).toFixed(2)} (${t('wallet.estimatedValue')})`}
@@ -116,7 +118,14 @@ const Wallet = () => {
         </div>
         
         {/* Transaction History */}
-        {user && <TransactionHistory transactions={transactions} />}
+        {user && (
+          <div className="mt-12 bg-card rounded-xl p-6 shadow-md">
+            <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent">
+              {t('wallet.transactions')}
+            </h2>
+            <TransactionHistory transactions={transactions} />
+          </div>
+        )}
       </main>
     </div>
   );

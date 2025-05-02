@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Globe, ShoppingCart, ChevronDown, Moon, Sun } from 'lucide-react';
+import { Menu, X, Globe, ShoppingCart, ChevronDown, Moon, Sun, ChefHat } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { usePiAuth } from '@/contexts/PiAuthContext';
 import { Button } from '@/components/ui/button';
@@ -26,6 +26,8 @@ const Header = () => {
   const navItems = [
     { path: '/', label: t('nav.home') },
     { path: '/restaurants', label: t('nav.restaurants') },
+    { path: '/homefood', label: 'Home Food' },
+    { path: '/homefood/add', label: 'Add Your Food', highlight: true },
     { path: '/orders', label: t('nav.orders') },
     { path: '/wallet', label: t('nav.wallet') },
     { path: '/rewards', label: t('nav.rewards') },
@@ -44,7 +46,7 @@ const Header = () => {
       {/* Pi Network Watermark */}
       <div className="absolute inset-0 opacity-5 pointer-events-none flex items-center justify-center overflow-hidden">
         <img 
-          src="/lovable-uploads/a8326833-2525-4059-956f-569750fb1bc4.png" 
+          src="/lovable-uploads/0934d5ff-e502-465e-8d11-84ba98dcb488.png" 
           alt="Pi Network" 
           className="w-48 h-auto"
         />
@@ -66,9 +68,18 @@ const Header = () => {
               key={item.path}
               to={item.path}
               className={`text-sm font-medium transition-colors hover:text-pi ${
-                location.pathname === item.path ? 'text-pi' : 'text-muted-foreground'
+                location.pathname === item.path 
+                ? 'text-pi' 
+                : 'text-muted-foreground'
+              } ${
+                item.highlight 
+                ? 'bg-gradient-to-r from-pi to-orange text-white px-3 py-1 rounded-full hover:opacity-90 hover:text-white' 
+                : ''
               }`}
             >
+              {item.path === '/homefood/add' && (
+                <ChefHat className="h-4 w-4 inline-block mr-1" />
+              )}
               {item.label}
             </Link>
           ))}
@@ -181,9 +192,16 @@ const Header = () => {
                   to={item.path}
                   className={`text-sm font-medium transition-colors ${
                     location.pathname === item.path ? 'text-pi' : 'text-foreground'
+                  } ${
+                    item.highlight 
+                    ? 'bg-gradient-to-r from-pi to-orange text-white px-3 py-2 rounded-full hover:opacity-90' 
+                    : ''
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
+                  {item.path === '/homefood/add' && (
+                    <ChefHat className="h-4 w-4 inline-block mr-1" />
+                  )}
                   {item.label}
                 </Link>
               ))}
