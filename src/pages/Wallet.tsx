@@ -2,13 +2,15 @@
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useWallet } from '@/contexts/WalletContext';
+import { usePiPrice } from '@/contexts/PiPriceContext';
 import { usePiAuth } from '@/contexts/PiAuthContext';
-import { ArrowRightLeft, SendHorizontal, Wallet as WalletIcon, PlusCircle, ExternalLink, History } from 'lucide-react';
+import { ArrowRightLeft, SendHorizontal, Wallet as WalletIcon, PlusCircle, ExternalLink, History, DollarSign } from 'lucide-react';
 import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PiPriceIndicator } from '@/components/PiPriceIndicator';
 import { toast } from 'sonner';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 // Custom PiEat logo component
 const PiEatLogo = () => (
@@ -20,10 +22,18 @@ const PiEatLogo = () => (
   </div>
 );
 
+// Component to display balance in multiple currencies
+const CurrencyValue = ({ amount, symbol }: { amount: number; symbol: string }) => (
+  <div className="ml-2 text-sm text-muted-foreground">
+    {symbol} {amount.toFixed(2)}
+  </div>
+);
+
 const Wallet = () => {
   const { t } = useLanguage();
   const { balance, transactions, addTransaction } = useWallet();
   const { user, login } = usePiAuth();
+  const { convertPiToUsd, convertPiToEgp } = usePiPrice();
   
   // Mock PiEat balance
   const piEatBalance = 25.0;
@@ -90,8 +100,45 @@ const Wallet = () => {
                     <span className="mr-1">π</span>
                     {user ? balance.toFixed(2) : '--.--'}
                   </div>
+                  
+                  {/* Currency conversions */}
+                  {user && balance > 0 && (
+                    <div className="flex flex-col mt-1">
+                      <div className="flex items-center">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="flex items-center">
+                              <DollarSign className="h-3 w-3 mr-1" />
+                              <span className="text-sm text-muted-foreground">
+                                ${convertPiToUsd(balance).toFixed(2)} USD
+                              </span>
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>US Dollar value</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                      <div className="flex items-center mt-0.5">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="flex items-center">
+                              <span className="text-xs mr-1">£E</span>
+                              <span className="text-sm text-muted-foreground">
+                                {convertPiToEgp(balance).toFixed(2)} EGP
+                              </span>
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Egyptian Pound value</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                    </div>
+                  )}
+                  
                   <div className="mt-2">
-                    <PiPriceIndicator />
+                    <PiPriceIndicator showDetails={true} />
                   </div>
                 </div>
                 
@@ -153,6 +200,42 @@ const Wallet = () => {
                 <div className="mt-2 text-sm text-muted-foreground">
                   ≈ π {(piEatBalance * 0.5).toFixed(2)} ({t('wallet.estimatedValue')})
                 </div>
+                
+                {/* PiEat currency conversions */}
+                {user && (
+                  <div className="flex flex-col mt-2">
+                    <div className="flex items-center">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="flex items-center">
+                            <DollarSign className="h-3 w-3 mr-1" />
+                            <span className="text-sm text-muted-foreground">
+                              ${convertPiToUsd(piEatBalance * 0.5).toFixed(2)} USD
+                            </span>
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>US Dollar value</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                    <div className="flex items-center mt-0.5">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="flex items-center">
+                            <span className="text-xs mr-1">£E</span>
+                            <span className="text-sm text-muted-foreground">
+                              {convertPiToEgp(piEatBalance * 0.5).toFixed(2)} EGP
+                            </span>
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Egyptian Pound value</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                  </div>
+                )}
               </div>
               
               {user ? (
@@ -195,6 +278,7 @@ const Wallet = () => {
                       <th className="px-6 py-3 text-left text-sm font-medium">{t('wallet.amount')}</th>
                       <th className="px-6 py-3 text-left text-sm font-medium">{t('wallet.description')}</th>
                       <th className="px-6 py-3 text-left text-sm font-medium">{t('wallet.status')}</th>
+                      <th className="px-6 py-3 text-left text-sm font-medium">USD/EGP</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -222,6 +306,10 @@ const Wallet = () => {
                           }`}>
                             {tx.status}
                           </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-xs text-muted-foreground">
+                          <div>${convertPiToUsd(tx.amount).toFixed(2)}</div>
+                          <div>£E{convertPiToEgp(tx.amount).toFixed(2)}</div>
                         </td>
                       </tr>
                     ))}

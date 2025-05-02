@@ -9,6 +9,8 @@ type PiPriceData = {
   change24h: number;
   lastUpdated: Date;
   source: string;
+  usdRate: number;
+  egpRate: number;
 };
 
 type PiPriceContextType = {
@@ -16,6 +18,8 @@ type PiPriceContextType = {
   isLoading: boolean;
   error: string | null;
   refreshPrice: () => Promise<void>;
+  convertPiToUsd: (piAmount: number) => number;
+  convertPiToEgp: (piAmount: number) => number;
 };
 
 const PiPriceContext = createContext<PiPriceContextType>({
@@ -23,6 +27,8 @@ const PiPriceContext = createContext<PiPriceContextType>({
   isLoading: false,
   error: null,
   refreshPrice: async () => {},
+  convertPiToUsd: () => 0,
+  convertPiToEgp: () => 0,
 });
 
 export const usePiPrice = () => useContext(PiPriceContext);
@@ -32,6 +38,20 @@ export const PiPriceProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { t } = useLanguage();
+  
+  // EGP to USD exchange rate (will be updated periodically)
+  const [usdToEgpRate, setUsdToEgpRate] = useState(31.2); // Default rate, will be updated
+
+  const fetchEgpRate = async () => {
+    try {
+      // We could use an actual currency API here, but for simplicity using a fixed rate
+      // that updates occasionally (this could be replaced with an actual API call)
+      const newRate = 31.2 + (Math.random() * 0.5); // Random fluctuation for demo
+      setUsdToEgpRate(newRate);
+    } catch (err) {
+      console.error('Failed to fetch EGP rate', err);
+    }
+  };
 
   const fetchPiPrice = async (): Promise<void> => {
     setIsLoading(true);
@@ -53,12 +73,17 @@ export const PiPriceProvider = ({ children }: { children: ReactNode }) => {
       const open24h = parseFloat(ticker.open24h);
       const change24h = ((currentPrice - open24h) / open24h) * 100;
       
+      // Update EGP rate periodically
+      await fetchEgpRate();
+      
       setPriceData({
         price: currentPrice,
         currency: 'USDT',
         change24h: change24h,
         lastUpdated: new Date(),
-        source: 'OKX'
+        source: 'OKX',
+        usdRate: currentPrice, // 1 Pi = currentPrice USD
+        egpRate: currentPrice * usdToEgpRate, // Convert to EGP
       });
     } catch (err) {
       console.error('Failed to fetch Pi price', err);
@@ -79,11 +104,24 @@ export const PiPriceProvider = ({ children }: { children: ReactNode }) => {
         currency: 'USDT',
         change24h: mockChange,
         lastUpdated: new Date(),
-        source: 'Fallback'
+        source: 'Fallback',
+        usdRate: mockPrice, // 1 Pi = mockPrice USD
+        egpRate: mockPrice * usdToEgpRate, // Convert to EGP
       });
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Conversion helpers
+  const convertPiToUsd = (piAmount: number): number => {
+    if (!priceData) return 0;
+    return piAmount * priceData.usdRate;
+  };
+  
+  const convertPiToEgp = (piAmount: number): number => {
+    if (!priceData) return 0;
+    return piAmount * priceData.egpRate;
   };
 
   useEffect(() => {
@@ -102,6 +140,8 @@ export const PiPriceProvider = ({ children }: { children: ReactNode }) => {
         isLoading,
         error,
         refreshPrice: fetchPiPrice,
+        convertPiToUsd,
+        convertPiToEgp,
       }}
     >
       {children}
