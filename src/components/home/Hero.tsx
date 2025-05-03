@@ -26,7 +26,7 @@ const Hero = () => {
           </div>
           
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent">
-            {t('home.welcome')}
+            Welcome to Pieat-Me
           </h1>
           
           <p className="text-lg sm:text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-muted-foreground leading-relaxed">
