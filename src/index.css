@@ -3,6 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import Arabic font */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+
 @layer base {
   :root {
     --background: 260 100% 99%;
@@ -43,6 +46,10 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Font family variables */
+    --font-default: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-arabic: 'Noto Sans Arabic', sans-serif;
   }
 
   .dark {
@@ -89,11 +96,38 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
     overflow-x: hidden; /* Prevent horizontal scrolling */
+    font-family: var(--font-default);
   }
 
-  /* For RTL support */
+  /* Arabic font setting for RTL mode */
+  body[dir="rtl"] {
+    font-family: var(--font-arabic);
+    letter-spacing: 0; /* Remove letter spacing for Arabic text */
+  }
+  
+  /* Better text alignment for RTL mode */
   body[dir="rtl"] * {
     text-align: right;
+  }
+  
+  /* Improve Arabic text rendering */
+  body[dir="rtl"] h1,
+  body[dir="rtl"] h2,
+  body[dir="rtl"] h3,
+  body[dir="rtl"] h4,
+  body[dir="rtl"] h5,
+  body[dir="rtl"] h6 {
+    font-family: var(--font-arabic);
+    line-height: 1.6;
+  }
+
+  body[dir="rtl"] p,
+  body[dir="rtl"] span,
+  body[dir="rtl"] a,
+  body[dir="rtl"] button,
+  body[dir="rtl"] input,
+  body[dir="rtl"] label {
+    font-family: var(--font-arabic);
   }
   
   /* Fix search input text color in dark mode - BLACK as requested */
@@ -126,6 +160,10 @@
     
     p {
       font-size: 1rem !important;
+    }
+
+    body[dir="rtl"] h1 {
+      line-height: 1.4 !important;
     }
   }
 }
@@ -162,6 +200,16 @@
     transform: translateY(20px);
     opacity: 0;
   }
+  
+  /* RTL specific components */
+  body[dir="rtl"] .card,
+  body[dir="rtl"] .button {
+    direction: rtl;
+  }
+
+  body[dir="rtl"] .button-gradient {
+    @apply bg-gradient-to-l from-pi to-pi-light hover:from-pi-dark hover:to-pi;
+  }
 }
 
 /* Make app responsive - prevent horizontal scroll */
@@ -180,6 +228,12 @@ html, body, #root {
   .glass-card {
     padding: 1rem;
   }
+  
+  /* Improve RTL spacing for mobile */
+  body[dir="rtl"] .container {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
 }
 
 /* Better tablet responsiveness */
@@ -187,6 +241,12 @@ html, body, #root {
   .container {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
+  }
+  
+  /* Improve RTL spacing for tablet */
+  body[dir="rtl"] .container {
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
   }
 }
 
