@@ -1,38 +1,41 @@
 
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { toast } from 'sonner';
 import { usePiAuth } from './PiAuthContext';
 
-type MiningContextType = {
+interface MiningStats {
+  difficulty: number;
+  circulatingSupply: number;
+  totalSupply: number;
+  blockReward: number;
+  networkHashrate: number;
+}
+
+interface MiningContextType {
   ptmBalance: number;
-  miningPower: number;
-  isCurrentlyMining: boolean;
-  lastMiningTime: Date | null;
   totalMined: number;
-  startMining: () => Promise<boolean>;
+  miningPower: number;
+  lastMiningTime: Date | null;
+  miningStats: MiningStats;
+  startMining: (reward: number) => void;
   claimReward: (amount: number) => void;
-  miningStats: {
-    totalSupply: number;
-    maxSupply: number;
-    circulatingSupply: number;
-    difficulty: number;
-  };
-};
+  updateMiningPower: (newPower: number) => void;
+}
 
 const MiningContext = createContext<MiningContextType>({
   ptmBalance: 0,
-  miningPower: 1,
-  isCurrentlyMining: false,
-  lastMiningTime: null,
   totalMined: 0,
-  startMining: async () => false,
-  claimReward: () => {},
+  miningPower: 1,
+  lastMiningTime: null,
   miningStats: {
-    totalSupply: 20000000, // 20 million total supply
-    maxSupply: 20000000,
-    circulatingSupply: 5000000,
-    difficulty: 1.0,
+    difficulty: 1,
+    circulatingSupply: 0,
+    totalSupply: 1000000,
+    blockReward: 0.01,
+    networkHashrate: 1000
   },
+  startMining: () => {},
+  claimReward: () => {},
+  updateMiningPower: () => {}
 });
 
 export const useMining = () => useContext(MiningContext);
@@ -40,163 +43,132 @@ export const useMining = () => useContext(MiningContext);
 export const MiningProvider = ({ children }: { children: ReactNode }) => {
   const { user } = usePiAuth();
   const [ptmBalance, setPtmBalance] = useState(0);
-  const [miningPower, setMiningPower] = useState(1);
-  const [isCurrentlyMining, setIsCurrentlyMining] = useState(false);
-  const [lastMiningTime, setLastMiningTime] = useState<Date | null>(null);
   const [totalMined, setTotalMined] = useState(0);
-  const [miningStats, setMiningStats] = useState({
-    totalSupply: 20000000, // 20 million total supply
-    maxSupply: 20000000,
-    circulatingSupply: 5000000,
-    difficulty: 1.0,
+  const [miningPower, setMiningPower] = useState(1);
+  const [lastMiningTime, setLastMiningTime] = useState<Date | null>(null);
+  const [miningStats, setMiningStats] = useState<MiningStats>({
+    difficulty: 1.25,
+    circulatingSupply: 285467,
+    totalSupply: 1000000,
+    blockReward: 0.01,
+    networkHashrate: 12453
   });
-
-  // Load saved mining data from localStorage
+  
+  // Load mining data from localStorage when user changes
   useEffect(() => {
     if (user) {
-      const savedPtmBalance = localStorage.getItem(`ptm_balance_${user.uid}`);
-      const savedMiningPower = localStorage.getItem(`mining_power_${user.uid}`);
-      const savedTotalMined = localStorage.getItem(`total_mined_${user.uid}`);
-      const savedLastMiningTime = localStorage.getItem(`last_mining_${user.uid}`);
-      
-      if (savedPtmBalance) {
-        setPtmBalance(parseFloat(savedPtmBalance));
-      } else {
-        // Initialize with a small amount of PTM for testing
-        const initialPtm = Math.random() * 10;
-        setPtmBalance(initialPtm);
-        localStorage.setItem(`ptm_balance_${user.uid}`, initialPtm.toString());
+      // Load PTM balance
+      const savedBalance = localStorage.getItem(`ptm_balance_${user.uid}`);
+      if (savedBalance) {
+        setPtmBalance(Number(savedBalance));
       }
       
-      if (savedMiningPower) {
-        setMiningPower(parseFloat(savedMiningPower));
-      }
-      
+      // Load total mined
+      const savedTotalMined = localStorage.getItem(`ptm_total_mined_${user.uid}`);
       if (savedTotalMined) {
-        setTotalMined(parseFloat(savedTotalMined));
+        setTotalMined(Number(savedTotalMined));
       }
       
+      // Load mining power
+      const savedMiningPower = localStorage.getItem(`ptm_mining_power_${user.uid}`);
+      if (savedMiningPower) {
+        setMiningPower(Number(savedMiningPower));
+      }
+      
+      // Load last mining time
+      const savedLastMiningTime = localStorage.getItem(`ptm_last_mining_${user.uid}`);
       if (savedLastMiningTime) {
         setLastMiningTime(new Date(savedLastMiningTime));
       }
+    } else {
+      // Reset when user logs out
+      setPtmBalance(0);
+      setTotalMined(0);
+      setMiningPower(1);
+      setLastMiningTime(null);
     }
   }, [user]);
-
-  // Save mining data to localStorage
-  const saveMiningData = () => {
+  
+  // Update mining stats periodically for realism
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMiningStats(prev => {
+        // Small random change in difficulty
+        const diffChange = (Math.random() * 0.02) - 0.01;
+        // Small increase in circulating supply
+        const supplyChange = Math.floor(Math.random() * 10);
+        
+        return {
+          ...prev,
+          difficulty: Math.max(0.5, prev.difficulty + diffChange),
+          circulatingSupply: prev.circulatingSupply + supplyChange,
+          networkHashrate: prev.networkHashrate + (Math.random() * 50) - 25
+        };
+      });
+    }, 60000); // Update every minute
+    
+    return () => clearInterval(interval);
+  }, []);
+  
+  const startMining = (reward: number) => {
     if (!user) return;
     
-    localStorage.setItem(`ptm_balance_${user.uid}`, ptmBalance.toString());
-    localStorage.setItem(`mining_power_${user.uid}`, miningPower.toString());
-    localStorage.setItem(`total_mined_${user.uid}`, totalMined.toString());
-    if (lastMiningTime) {
-      localStorage.setItem(`last_mining_${user.uid}`, lastMiningTime.toISOString());
-    }
+    // Update balance and stats
+    const newBalance = ptmBalance + reward;
+    const newTotal = totalMined + reward;
+    
+    setPtmBalance(newBalance);
+    setTotalMined(newTotal);
+    setLastMiningTime(new Date());
+    
+    // Save to localStorage
+    localStorage.setItem(`ptm_balance_${user.uid}`, newBalance.toString());
+    localStorage.setItem(`ptm_total_mined_${user.uid}`, newTotal.toString());
+    localStorage.setItem(`ptm_last_mining_${user.uid}`, new Date().toISOString());
+    
+    // Update network stats
+    setMiningStats(prev => ({
+      ...prev,
+      circulatingSupply: prev.circulatingSupply + reward,
+      difficulty: prev.difficulty + 0.005 // Slight increase in difficulty
+    }));
   };
-
-  // Effect to save data whenever it changes
-  useEffect(() => {
-    saveMiningData();
-  }, [ptmBalance, miningPower, totalMined, lastMiningTime, user]);
-
-  // Start mining function - simulates mining process
-  const startMining = async (): Promise<boolean> => {
-    if (!user) {
-      toast.error('Please connect with Pi Network to start mining');
-      return false;
-    }
-    
-    if (isCurrentlyMining) {
-      toast.error('Mining already in progress');
-      return false;
-    }
-    
-    // Check if enough time has passed since last mining (e.g., 1 minute cooldown)
-    if (lastMiningTime) {
-      const now = new Date();
-      const diffMinutes = (now.getTime() - lastMiningTime.getTime()) / (1000 * 60);
-      
-      if (diffMinutes < 1) {
-        toast.error(`Mining cooldown active. Please wait ${Math.ceil(60 - diffMinutes * 60)} seconds`);
-        return false;
-      }
-    }
-    
-    setIsCurrentlyMining(true);
-    toast.info('Mining started...');
-    
-    try {
-      // Simulate mining process
-      await new Promise(resolve => setTimeout(resolve, 5000));
-      
-      // Calculate mining reward based on mining power and difficulty
-      const baseReward = 0.05; // Base PTM reward per mining session
-      const reward = baseReward * miningPower / miningStats.difficulty;
-      
-      // Update balances
-      const newPtmBalance = ptmBalance + reward;
-      const newTotalMined = totalMined + reward;
-      
-      setPtmBalance(newPtmBalance);
-      setTotalMined(newTotalMined);
-      setLastMiningTime(new Date());
-      
-      // Update mining stats
-      setMiningStats(prev => ({
-        ...prev,
-        circulatingSupply: Math.min(prev.circulatingSupply + reward, prev.totalSupply),
-        // Increase difficulty slightly as more is mined
-        difficulty: prev.difficulty * (1 + (reward / 10000000)),
-      }));
-      
-      toast.success(`Successfully mined ${reward.toFixed(4)} PTM!`);
-      return true;
-    } catch (error) {
-      console.error('Mining error', error);
-      toast.error('Mining failed. Please try again.');
-      return false;
-    } finally {
-      setIsCurrentlyMining(false);
-    }
-  };
-
-  // Function to claim mining rewards
+  
   const claimReward = (amount: number) => {
-    if (!user) {
-      toast.error('Please connect with Pi Network to claim rewards');
-      return;
-    }
-    
-    if (amount <= 0) {
-      toast.error('Invalid reward amount');
-      return;
-    }
+    if (!user) return;
     
     // Update balance
     const newBalance = ptmBalance + amount;
     setPtmBalance(newBalance);
     
-    // Update total mined
-    const newTotalMined = totalMined + amount;
-    setTotalMined(newTotalMined);
+    // Save to localStorage
+    localStorage.setItem(`ptm_balance_${user.uid}`, newBalance.toString());
     
-    // Update last mining time
-    setLastMiningTime(new Date());
-    
-    toast.success(`Claimed ${amount.toFixed(4)} PTM`);
+    // Update network stats
+    setMiningStats(prev => ({
+      ...prev,
+      circulatingSupply: prev.circulatingSupply + amount
+    }));
   };
-
+  
+  const updateMiningPower = (newPower: number) => {
+    if (!user) return;
+    
+    setMiningPower(newPower);
+    localStorage.setItem(`ptm_mining_power_${user.uid}`, newPower.toString());
+  };
+  
   return (
     <MiningContext.Provider
       value={{
         ptmBalance,
-        miningPower,
-        isCurrentlyMining,
-        lastMiningTime,
         totalMined,
+        miningPower,
+        lastMiningTime,
+        miningStats,
         startMining,
         claimReward,
-        miningStats,
+        updateMiningPower
       }}
     >
       {children}
