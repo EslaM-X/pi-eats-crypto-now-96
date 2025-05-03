@@ -19,6 +19,9 @@ const translations = {
     'nav.orders': 'My Orders',
     'nav.wallet': 'Wallet',
     'nav.rewards': 'Rewards',
+    'nav.mining': 'Mining',
+    'nav.homefood': 'Home Food',
+    'nav.addFood': 'Add Your Food',
     
     // Authentication
     'auth.login': 'Login',
@@ -26,12 +29,13 @@ const translations = {
     'auth.connectWithPi': 'Connect with Pi Network',
     
     // Home
-    'home.welcome': 'Welcome to Eat-Me-Pi',
+    'home.welcome': 'Welcome to Pieat-Me',
     'home.subtitle': 'Order your favorite food using Pi cryptocurrency',
     'home.featured': 'Featured Restaurants',
     'home.nearYou': 'Near You',
     'home.viewAll': 'View All',
     'home.categories': 'Food Categories',
+    'home.homefood': 'Browse Home Food',
     
     // Restaurants
     'restaurant.search': 'Search restaurants...',
@@ -83,16 +87,47 @@ const translations = {
     'retry': 'Retry',
     'cancel': 'Cancel',
     'confirm': 'Confirm',
+    'error.pageNotFound': 'Page Not Found',
+    'error.pageDoesNotExist': 'The page you are looking for does not exist.',
+    'error.backToHome': 'Back to Home',
+    
+    // Mining
+    'mining.title': 'PTM Mining Center',
+    'mining.subtitle': 'Mine Pieat-Me tokens (PTM) to unlock rewards, discounts, and exclusive benefits in the Pieat-Me ecosystem. Connect with Pi Network to start earning today!',
+    'mining.startMining': 'Start Mining Now',
+    'mining.miningInProgress': 'Mining in progress...',
+    'mining.connectWallet': 'Connect Wallet First',
+    'mining.yourBalance': 'Your PTM Balance',
+    'mining.totalMined': 'Total mined',
+    'mining.miningPower': 'Mining Power',
+    'mining.networkDifficulty': 'Network Difficulty',
+    'mining.cooldown': 'Mining will be available after the cooldown period',
+    'mining.dailyRewards': 'Daily Rewards',
+    'mining.claim': 'Claim Reward',
+    'mining.claimed': 'Claimed',
+    'mining.howItWorks': 'How PTM Mining Works',
+    'mining.viewAds': 'View 2 Ads',
+    'mining.viewAdsDesc': 'Watch two short advertisements to start the mining process',
+    'mining.mineTokens': 'Mine PTM Tokens',
+    'mining.mineTokensDesc': 'Start mining and earn PTM tokens based on your mining power',
+    'mining.getRewards': 'Get Rewards',
+    'mining.getRewardsDesc': 'Use PTM tokens for discounts and exclusive features in Pieat-Me',
+    'mining.advertisement': 'Advertisement',
+    'mining.continue': 'Continue',
+    'mining.adSpace': 'Advertisement Space',
   },
   ar: {
     // Header
-    'app.title': 'Eat-Me-Pi',
+    'app.title': 'بي إيت-مي',
     'app.tagline': 'اطلب الطعام بعملة باي المشفرة',
     'nav.home': 'الرئيسية',
     'nav.restaurants': 'المطاعم',
     'nav.orders': 'طلباتي',
     'nav.wallet': 'المحفظة',
     'nav.rewards': 'المكافآت',
+    'nav.mining': 'التعدين',
+    'nav.homefood': 'طعام منزلي',
+    'nav.addFood': 'إضافة طعامك',
     
     // Authentication
     'auth.login': 'تسجيل الدخول',
@@ -100,12 +135,13 @@ const translations = {
     'auth.connectWithPi': 'الاتصال بشبكة باي',
     
     // Home
-    'home.welcome': 'مرحبًا بك في Eat-Me-Pi',
+    'home.welcome': 'مرحبًا بك في بي إيت-مي',
     'home.subtitle': 'اطلب طعامك المفضل باستخدام عملة باي المشفرة',
     'home.featured': 'مطاعم مميزة',
     'home.nearYou': 'بالقرب منك',
     'home.viewAll': 'عرض الكل',
     'home.categories': 'فئات الطعام',
+    'home.homefood': 'تصفح الطعام المنزلي',
     
     // Restaurants
     'restaurant.search': 'بحث عن مطاعم...',
@@ -131,7 +167,7 @@ const translations = {
     'wallet.receive': 'استلام',
     'wallet.transactions': 'المعاملات',
     'wallet.topUp': 'شحن الرصيد',
-    'wallet.piEat': 'رصيد PiEat',
+    'wallet.piEat': 'رصيد بي إيت',
     'wallet.piNetwork': 'محفظة شبكة باي',
     'wallet.connect': 'الاتصال بمتصفح باي',
     
@@ -139,7 +175,7 @@ const translations = {
     'rewards.available': 'المكافآت المتاحة',
     'rewards.points': 'النقاط',
     'rewards.redeem': 'استبدال',
-    'rewards.piEat': 'مكافآت PiEat',
+    'rewards.piEat': 'مكافآت بي إيت',
     'rewards.yourPoints': 'نقاطك',
     
     // Pi Price
@@ -157,6 +193,34 @@ const translations = {
     'retry': 'إعادة المحاولة',
     'cancel': 'إلغاء',
     'confirm': 'تأكيد',
+    'error.pageNotFound': 'الصفحة غير موجودة',
+    'error.pageDoesNotExist': 'الصفحة التي تبحث عنها غير موجودة.',
+    'error.backToHome': 'العودة إلى الرئيسية',
+    
+    // Mining
+    'mining.title': 'مركز تعدين PTM',
+    'mining.subtitle': 'قم بتعدين رموز بي إيت-مي (PTM) لفتح المكافآت والخصومات والمزايا الحصرية في نظام بي إيت-مي. اتصل بشبكة باي للبدء في الكسب اليوم!',
+    'mining.startMining': 'ابدأ التعدين الآن',
+    'mining.miningInProgress': 'التعدين قيد التقدم...',
+    'mining.connectWallet': 'اتصل بالمحفظة أولاً',
+    'mining.yourBalance': 'رصيد PTM الخاص بك',
+    'mining.totalMined': 'إجمالي التعدين',
+    'mining.miningPower': 'قوة التعدين',
+    'mining.networkDifficulty': 'صعوبة الشبكة',
+    'mining.cooldown': 'سيكون التعدين متاحًا بعد فترة الانتظار',
+    'mining.dailyRewards': 'المكافآت اليومية',
+    'mining.claim': 'المطالبة بالمكافأة',
+    'mining.claimed': 'تم المطالبة',
+    'mining.howItWorks': 'كيف يعمل تعدين PTM',
+    'mining.viewAds': 'شاهد إعلانين',
+    'mining.viewAdsDesc': 'شاهد إعلانين قصيرين لبدء عملية التعدين',
+    'mining.mineTokens': 'تعدين رموز PTM',
+    'mining.mineTokensDesc': 'ابدأ التعدين واكسب رموز PTM بناءً على قوة التعدين الخاصة بك',
+    'mining.getRewards': 'احصل على المكافآت',
+    'mining.getRewardsDesc': 'استخدم رموز PTM للحصول على خصومات ومميزات حصرية في بي إيت-مي',
+    'mining.advertisement': 'إعلان',
+    'mining.continue': 'متابعة',
+    'mining.adSpace': 'مساحة إعلانية',
   },
 };
 

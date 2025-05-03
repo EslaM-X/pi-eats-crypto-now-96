@@ -15,7 +15,7 @@ import { PiPriceIndicator } from '../PiPriceIndicator';
 import UserMenu from './UserMenu';
 
 const HeaderActions = () => {
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const { theme, setTheme } = useTheme();
 
   const toggleTheme = () => {
@@ -23,7 +23,7 @@ const HeaderActions = () => {
   };
 
   return (
-    <div className="flex items-center space-x-4">
+    <div className={`flex items-center ${language === 'ar' ? 'space-x-reverse' : ''} space-x-4`}>
       {/* Price Indicator */}
       <div className="hidden md:flex">
         <PiPriceIndicator />
@@ -34,7 +34,7 @@ const HeaderActions = () => {
         variant="ghost" 
         size="icon" 
         onClick={toggleTheme}
-        aria-label={theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+        aria-label={theme === 'dark' ? t('theme.light') : t('theme.dark')}
       >
         {theme === 'dark' ? (
           <Sun className="h-5 w-5" />
@@ -50,7 +50,7 @@ const HeaderActions = () => {
             <Globe className="h-5 w-5" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align={language === 'ar' ? "start" : "end"}>
           <DropdownMenuItem onClick={() => setLanguage('en')}>
             English {language === 'en' && '✓'}
           </DropdownMenuItem>
@@ -62,7 +62,7 @@ const HeaderActions = () => {
 
       {/* Cart Button */}
       <Link to="/cart">
-        <Button variant="ghost" size="icon" aria-label="Cart">
+        <Button variant="ghost" size="icon" aria-label={t('cart.title')}>
           <ShoppingCart className="h-5 w-5" />
         </Button>
       </Link>

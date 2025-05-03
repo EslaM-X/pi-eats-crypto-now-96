@@ -19,12 +19,12 @@ const Header = () => {
   const navItems = [
     { path: '/', label: t('nav.home') },
     { path: '/restaurants', label: t('nav.restaurants') },
-    { path: '/homefood', label: 'Home Food' },
-    { path: '/homefood/add', label: 'Add Your Food', highlight: true },
+    { path: '/homefood', label: t('nav.homefood') },
+    { path: '/homefood/add', label: t('nav.addFood'), highlight: true },
     { path: '/orders', label: t('nav.orders') },
     { path: '/wallet', label: t('nav.wallet') },
     { path: '/rewards', label: t('nav.rewards') },
-    { path: '/mining', label: 'Mining', icon: <Pickaxe className="h-4 w-4 inline-block mr-1" /> },
+    { path: '/mining', label: t('nav.mining'), icon: <Pickaxe className="h-4 w-4 inline-block mr-1" /> },
   ];
 
   const toggleMobileMenu = () => {

@@ -26,7 +26,7 @@ const Hero = () => {
           </div>
           
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent">
-            Welcome to Pieat-Me
+            {t('home.welcome')}
           </h1>
           
           <p className="text-lg sm:text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-muted-foreground leading-relaxed">
@@ -38,16 +38,16 @@ const Hero = () => {
               <Link to="/restaurants">{t('nav.restaurants')}</Link>
             </Button>
             <Button asChild variant="outline" className="text-lg h-12 px-8 border-pi hover:bg-pi/10 rounded-full">
-              <Link to="/homefood">Browse Home Food</Link>
+              <Link to="/homefood">{t('home.homefood')}</Link>
             </Button>
           </div>
           
           <div className={`p-6 rounded-2xl ${theme === 'dark' ? 'bg-muted/40 backdrop-blur-lg' : 'glass-card'} max-w-2xl mx-auto`}>
             <p className="text-muted-foreground">
-              Order food from restaurants or homemade cooks and pay with Pi cryptocurrency.
+              {t('app.tagline')}
             </p>
             <p className="mt-2 font-medium text-foreground">
-              No payment processors. No fees. Just food and Pi.
+              {t('tagline.subtitle')}
             </p>
           </div>
         </div>

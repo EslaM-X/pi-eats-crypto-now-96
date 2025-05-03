@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ChefHat, Pickaxe } from 'lucide-react';
 import { PiPriceIndicator } from '../PiPriceIndicator';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface MobileMenuProps {
   navItems: Array<{
@@ -17,6 +18,8 @@ interface MobileMenuProps {
 }
 
 const MobileMenu = ({ navItems, isOpen, currentPath, onItemClick }: MobileMenuProps) => {
+  const { language } = useLanguage();
+  
   if (!isOpen) return null;
 
   return (
@@ -33,12 +36,12 @@ const MobileMenu = ({ navItems, isOpen, currentPath, onItemClick }: MobileMenuPr
                 item.highlight 
                 ? 'bg-gradient-to-r from-pi to-orange text-white px-3 py-2 rounded-full hover:opacity-90' 
                 : ''
-              }`}
+              } ${language === 'ar' ? 'flex flex-row-reverse' : 'flex'} items-center`}
               onClick={onItemClick}
             >
               {item.icon}
               {item.path === '/homefood/add' && (
-                <ChefHat className="h-4 w-4 inline-block mr-1" />
+                <ChefHat className={`h-4 w-4 inline-block ${language === 'ar' ? 'ml-1' : 'mr-1'}`} />
               )}
               {item.label}
             </Link>
