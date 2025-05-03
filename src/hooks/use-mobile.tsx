@@ -1,23 +1,8 @@
 
 import { useState, useEffect } from 'react';
+// Re-export from frontend for backwards compatibility
+import { useIsMobile as useIsMobileFrontend } from '../frontend/hooks/use-mobile';
 
 export const useIsMobile = (): boolean => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768); // Adjust the breakpoint as needed
-    };
-
-    // Set initial value
-    handleResize();
-
-    // Add event listener
-    window.addEventListener('resize', handleResize);
-
-    // Clean up event listener
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  return isMobile;
+  return useIsMobileFrontend();
 };

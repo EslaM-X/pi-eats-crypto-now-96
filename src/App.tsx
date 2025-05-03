@@ -20,9 +20,8 @@ import NotFound from "./pages/NotFound";
 import HomeFood from "./pages/HomeFood";
 import FoodProviderDetails from "./pages/FoodProviderDetails";
 import AddFoodListing from "./pages/AddFoodListing";
-import MobileNavigation from "./components/MobileNavigation"; // Fixed path
-import MobileNavbar from "./components/MobileNavbar"; // Fixed path
-import { useIsMobile } from "./hooks/use-mobile"; // Fixed path
+import { MobileNavigation, MobileNavbar } from "./frontend"; 
+import { useIsMobile } from "./frontend/hooks/use-mobile";
 import { toast } from "sonner";
 import { Capacitor } from '@capacitor/core';
 

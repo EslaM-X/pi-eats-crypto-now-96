@@ -11,3 +11,7 @@ export * from './utils/mobile';
 
 // Re-export hooks
 export * from './hooks/use-mobile';
+
+// Re-export components
+export { default as MobileNavbar } from './components/MobileNavbar';
+export { default as MobileNavigation } from './components/MobileNavigation';
