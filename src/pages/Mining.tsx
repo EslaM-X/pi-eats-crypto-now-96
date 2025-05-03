@@ -12,6 +12,7 @@ import { Container } from '@/components/ui/container';
 import Header from '@/components/Header';
 import { useTheme } from '@/contexts/ThemeContext';
 import { toast } from 'sonner';
+import PiEatLogo from '@/components/PiEatLogo';
 
 const Mining = () => {
   const { theme } = useTheme();
@@ -38,7 +39,7 @@ const Mining = () => {
       
       // After animation finishes, mining is complete
       setTimeout(() => {
-        startMining(0.05); // Actually update mining state and rewards with default value
+        startMining(0.05); // Actually update mining state and rewards
         setIsMining(false);
         setShowMiningAnimation(false);
       }, 5000); // Animation lasts ~5 seconds
@@ -58,7 +59,19 @@ const Mining = () => {
       <Header />
       
       <Container className="py-8">
-        <h1 className="text-3xl font-bold mb-6">Mine PTM Tokens</h1>
+        {/* Logo Header Section */}
+        <div className="flex items-center justify-center mb-8">
+          <div className="bg-gradient-to-r from-pi to-orange p-6 rounded-full shadow-lg">
+            <PiEatLogo size="xl" showEmoji={true} className="animate-pulse" />
+          </div>
+        </div>
+        
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent">
+            Mine PTM Tokens
+          </h1>
+          <p className="text-muted-foreground mt-2">Earn rewards by mining Pieat-Me tokens</p>
+        </div>
         
         <MiningHeader 
           onStartMining={handleStartMining} 
