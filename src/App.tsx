@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -6,22 +7,22 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 
-import AppProvider from "./contexts/AppProvider";
-import Index from "./pages/Index";
-import Restaurants from "./pages/Restaurants";
-import RestaurantDetails from "./pages/RestaurantDetails";
-import Wallet from "./pages/Wallet";
-import Rewards from "./pages/Rewards";
-import Mining from "./pages/Mining";
-import Orders from "./pages/Orders";
-import Cart from "./pages/Cart";
-import NotFound from "./pages/NotFound";
-import HomeFood from "./pages/HomeFood";
-import FoodProviderDetails from "./pages/FoodProviderDetails";
-import AddFoodListing from "./pages/AddFoodListing";
-import MobileNavigation from "./components/MobileNavigation";
-import MobileNavbar from "./components/MobileNavbar";
-import { useIsMobile } from "./hooks/use-mobile";
+import AppProvider from "./frontend/contexts/AppProvider";
+import Index from "./frontend/pages/Index";
+import Restaurants from "./frontend/pages/Restaurants";
+import RestaurantDetails from "./frontend/pages/RestaurantDetails";
+import Wallet from "./frontend/pages/Wallet";
+import Rewards from "./frontend/pages/Rewards";
+import Mining from "./frontend/pages/Mining";
+import Orders from "./frontend/pages/Orders";
+import Cart from "./frontend/pages/Cart";
+import NotFound from "./frontend/pages/NotFound";
+import HomeFood from "./frontend/pages/HomeFood";
+import FoodProviderDetails from "./frontend/pages/FoodProviderDetails";
+import AddFoodListing from "./frontend/pages/AddFoodListing";
+import MobileNavigation from "./frontend/components/MobileNavigation";
+import MobileNavbar from "./frontend/components/MobileNavbar";
+import { useIsMobile } from "./frontend/hooks/use-mobile";
 import { toast } from "sonner";
 import { Capacitor } from '@capacitor/core';
 
