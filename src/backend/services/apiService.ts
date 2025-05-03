@@ -1,11 +1,8 @@
-
 /**
  * Core API service for handling backend requests
  */
 
-import { createClient } from '../integrations/supabase/client';
-
-const supabase = createClient();
+import supabase from '../integrations/supabase/client';
 
 /**
  * Generic API wrapper for making database requests

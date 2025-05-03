@@ -10,4 +10,4 @@
 export { default as apiService } from './services/apiService';
 
 // Export Supabase client
-export { createClient } from './integrations/supabase/client';
+export { default as supabase } from './integrations/supabase/client';
