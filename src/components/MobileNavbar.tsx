@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import * as mobileUtils from '../utils/mobile';
+import * as mobileUtils from '@/utils/mobile';
 
 /**
  * شريط تنقل خاص بالهاتف المحمول يعرض معلومات عن منصة التشغيل

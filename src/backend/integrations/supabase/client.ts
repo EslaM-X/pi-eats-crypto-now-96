@@ -22,8 +22,7 @@ const supabase = createClient(supabaseUrl, supabaseKey, {
 
 export default supabase;
 
-export const supabaseUrl as string;
-export const supabaseKey as string;
+export { supabaseUrl, supabaseKey };
 
 export const createClientComponentClient = () => {
   return createClient(supabaseUrl, supabaseKey, {
