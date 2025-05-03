@@ -20,6 +20,9 @@ import NotFound from "./pages/NotFound";
 import HomeFood from "./pages/HomeFood";
 import FoodProviderDetails from "./pages/FoodProviderDetails";
 import AddFoodListing from "./pages/AddFoodListing";
+import MobileNavigation from "./components/MobileNavigation";
+import { useIsMobile } from "./hooks/use-mobile";
+import { toast } from "sonner";
 
 // Configure the QueryClient with Pi Network styling
 const queryClient = new QueryClient({
@@ -27,45 +30,71 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       retry: 1,
+      staleTime: 1000 * 60 * 5, // 5 minutes
     },
   },
 });
 
-// This function would be used to initialize Pi SDK when available
+// This function initializes the Pi SDK when available
 const initPiSDK = () => {
-  // In a real implementation, this would initialize the Pi SDK
-  console.log("Preparing for Pi SDK integration");
+  console.log("Initializing Pi SDK integration");
   
-  // Example of SDK initialization (commented out as it's not yet implemented)
-  /*
-  if (window.Pi) {
-    window.Pi.init({ 
-      version: "2.0",
-      sandbox: process.env.NODE_ENV !== "production"
-    });
-    
-    // Authenticate with Pi Network
-    window.Pi.authenticate(['username', 'payments'], onIncompletePaymentFound)
-      .then(auth => {
-        console.log("User authenticated with Pi Network:", auth);
-      })
-      .catch(error => {
-        console.error("Pi Network authentication error:", error);
-      });
+  // Check if we're in Pi Browser
+  const isPiMobileApp = 
+    /Pi Network/i.test(navigator.userAgent) ||
+    /PiNetwork/i.test(navigator.userAgent);
+  
+  if (isPiMobileApp) {
+    console.log("Running in Pi Browser environment");
+    toast.success("Pi Browser detected! SDK integration enabled.");
   }
-  */
-};
-
-// Handler for incomplete payments
-const onIncompletePaymentFound = (payment) => {
-  console.log("Incomplete payment found:", payment);
-  // Implement handling for incomplete payment
+  
+  // Check if Pi SDK is available globally
+  if (typeof window !== 'undefined' && 'Pi' in window) {
+    console.log("Pi SDK detected, initializing...");
+    try {
+      // Set up the Pi SDK
+      // @ts-ignore - Pi is injected by the Pi Browser
+      window.Pi.init({ 
+        version: "2.0",
+        sandbox: process.env.NODE_ENV !== "production"
+      });
+      
+      // Log successful initialization
+      console.log("Pi SDK initialized successfully");
+      toast.success("Pi Network integration initialized successfully");
+      
+      // We don't auto-authenticate here, users will click the "Connect with Pi" button
+    } catch (error) {
+      console.error("Error initializing Pi SDK:", error);
+      toast.error("Could not initialize Pi Network integration");
+    }
+  } else {
+    console.log("Pi SDK not available - running in standard browser");
+  }
 };
 
 const App = () => {
-  // Call the Pi SDK initialization function
+  const isMobile = useIsMobile();
+  
+  // Call the Pi SDK initialization function on mount
   useEffect(() => {
     initPiSDK();
+    
+    // Add event listener for network changes
+    window.addEventListener('online', () => {
+      toast.success("Internet connection restored");
+      queryClient.refetchQueries();
+    });
+    
+    window.addEventListener('offline', () => {
+      toast.error("Internet connection lost");
+    });
+    
+    return () => {
+      window.removeEventListener('online', () => {});
+      window.removeEventListener('offline', () => {});
+    };
   }, []);
 
   return (
@@ -75,7 +104,7 @@ const App = () => {
           <Toaster />
           <Sonner position="top-right" theme="system" />
           <AppProvider>
-            <div className="min-h-screen bg-gradient-to-br from-background to-background/95 text-foreground">
+            <div className="min-h-screen bg-gradient-to-br from-background to-background/95 text-foreground pb-16 md:pb-0">
               <BrowserRouter>
                 <Routes>
                   <Route path="/" element={<Index />} />
@@ -91,6 +120,9 @@ const App = () => {
                   <Route path="/homefood/add" element={<AddFoodListing />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
+                
+                {/* Show mobile navigation on mobile devices */}
+                {isMobile && <MobileNavigation />}
               </BrowserRouter>
             </div>
           </AppProvider>
