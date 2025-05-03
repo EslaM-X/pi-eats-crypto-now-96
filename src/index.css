@@ -81,6 +81,10 @@
     @apply border-border;
   }
 
+  html {
+    @apply scroll-smooth;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -108,11 +112,27 @@
   .dark input[type="number"] {
     background-color: rgba(255, 255, 255, 0.9);
   }
+
+  /* Improve font sizing on mobile */
+  @media (max-width: 640px) {
+    h1 {
+      font-size: 1.75rem !important;
+      line-height: 1.2 !important;
+    }
+    
+    h2 {
+      font-size: 1.5rem !important;
+    }
+    
+    p {
+      font-size: 1rem !important;
+    }
+  }
 }
 
 @layer components {
   .glass-card {
-    @apply bg-white/30 backdrop-blur-lg border border-white/30 shadow-lg rounded-2xl dark:bg-black/30 dark:border-white/10 hover:shadow-xl transition-all duration-200;
+    @apply bg-white/30 backdrop-blur-lg border border-white/30 shadow-lg rounded-2xl dark:bg-black/30 dark:border-white/10 hover:shadow-xl transition-all duration-300;
   }
   
   .button-gradient {
@@ -130,6 +150,18 @@
   .interactive-button {
     @apply hover:scale-105 active:scale-95 transition-all duration-200;
   }
+
+  /* New animation utilities */
+  .fade-in {
+    @apply animate-[fadeIn_0.5s_ease-out_forwards];
+    opacity: 0;
+  }
+
+  .slide-up {
+    @apply animate-[slideUp_0.5s_ease-out_forwards];
+    transform: translateY(20px);
+    opacity: 0;
+  }
 }
 
 /* Make app responsive - prevent horizontal scroll */
@@ -143,10 +175,6 @@ html, body, #root {
   .container {
     padding-left: 1rem;
     padding-right: 1rem;
-  }
-  
-  h1 {
-    font-size: 1.75rem;
   }
   
   .glass-card {
@@ -163,6 +191,26 @@ html, body, #root {
 }
 
 /* Animation utilities */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 @keyframes pulse-gentle {
   0%, 100% {
     opacity: 1;
@@ -174,4 +222,20 @@ html, body, #root {
 
 .pulse-gentle {
   animation: pulse-gentle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Better mobile layout */
+@media (max-width: 640px) {
+  .grid {
+    grid-gap: 1rem;
+  }
+  
+  .card {
+    margin-bottom: 1rem;
+  }
+  
+  section {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
 }

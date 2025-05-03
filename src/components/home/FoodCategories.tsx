@@ -35,29 +35,31 @@ const FoodCategories = () => {
   const { t } = useLanguage();
   
   return (
-    <section className="py-10">
-      <div className="container mx-auto px-4">
-        <h2 className="text-2xl font-bold mb-6">{t('home.categories')}</h2>
-        
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-          {categories.map((category) => (
-            <Card 
-              key={category.name}
-              className="overflow-hidden hover:shadow-md transition-all cursor-pointer"
-            >
-              <div className="h-24 overflow-hidden">
-                <img 
-                  src={category.image} 
-                  alt={category.name} 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <CardContent className="p-3 text-center">
-                <h3 className="font-medium">{category.name}</h3>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+    <section className="py-16">
+      <h2 className="text-2xl md:text-3xl font-bold mb-8">
+        <span className="bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent">
+          {t('home.categories')}
+        </span>
+      </h2>
+      
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 md:gap-6">
+        {categories.map((category) => (
+          <Card 
+            key={category.name}
+            className="overflow-hidden hover:shadow-lg transition-all cursor-pointer group border-muted hover:border-pi/30"
+          >
+            <div className="h-28 md:h-32 overflow-hidden">
+              <img 
+                src={category.image} 
+                alt={category.name} 
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+              />
+            </div>
+            <CardContent className="p-3 text-center">
+              <h3 className="font-medium text-lg">{category.name}</h3>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     </section>
   );

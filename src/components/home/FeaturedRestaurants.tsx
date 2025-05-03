@@ -44,23 +44,25 @@ const FeaturedRestaurants = () => {
   const { t } = useLanguage();
   
   return (
-    <section className="py-10">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold">{t('home.featured')}</h2>
-          <Button variant="ghost" size="sm" asChild>
-            <Link to="/restaurants" className="flex items-center">
-              {t('home.viewAll')}
-              <ArrowRight className="ml-1 h-4 w-4" />
-            </Link>
-          </Button>
-        </div>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {featuredRestaurants.map((restaurant) => (
-            <RestaurantCard key={restaurant.id} {...restaurant} />
-          ))}
-        </div>
+    <section className="py-14">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
+        <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-0">
+          <span className="bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent">
+            {t('home.featured')}
+          </span>
+        </h2>
+        <Button variant="ghost" size="sm" asChild className="self-start md:self-auto">
+          <Link to="/restaurants" className="flex items-center group">
+            {t('home.viewAll')}
+            <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </Button>
+      </div>
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        {featuredRestaurants.map((restaurant) => (
+          <RestaurantCard key={restaurant.id} {...restaurant} />
+        ))}
       </div>
     </section>
   );

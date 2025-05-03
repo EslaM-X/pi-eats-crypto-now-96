@@ -6,30 +6,39 @@ import FeaturedRestaurants from '@/components/home/FeaturedRestaurants';
 import HomeFoodSection from '@/components/home/HomeFoodSection';
 import FoodCategories from '@/components/home/FoodCategories';
 import HowItWorks from '@/components/home/HowItWorks';
+import { Container } from '@/components/ui/container';
 import { usePiAuth } from '@/contexts/PiAuthContext';
 
 const Index = () => {
   const { user } = usePiAuth();
   
   return (
-    <div>
+    <div className="min-h-screen flex flex-col">
       <Header />
-      <main>
+      <main className="flex-grow">
         <Hero />
-        <FeaturedRestaurants />
+        <Container>
+          <FeaturedRestaurants />
+        </Container>
         <HomeFoodSection />
-        <HowItWorks />
-        <FoodCategories />
+        <Container>
+          <HowItWorks />
+        </Container>
+        <Container>
+          <FoodCategories />
+        </Container>
       </main>
-      <footer className="py-8 text-center text-sm text-muted-foreground">
-        <div className="container mx-auto px-4">
-          <p>
-            &copy; {new Date().getFullYear()} Pieat-Me. All rights reserved. Powered by the Pi Network.
-          </p>
-          <p className="mt-2">
-            Pi is not affiliated with this application. This is a demo application.
-          </p>
-        </div>
+      <footer className="bg-muted/20 py-10 mt-10">
+        <Container>
+          <div className="text-center">
+            <p className="text-muted-foreground font-medium">
+              &copy; {new Date().getFullYear()} Pieat-Me. All rights reserved. Powered by the Pi Network.
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Pi is not affiliated with this application. This is a demo application.
+            </p>
+          </div>
+        </Container>
       </footer>
     </div>
   );
