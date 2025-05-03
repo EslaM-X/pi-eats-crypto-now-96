@@ -105,6 +105,9 @@ export const enTranslations = {
   'mining.advertisement': 'Advertisement',
   'mining.continue': 'Continue',
   'mining.adSpace': 'Advertisement Space',
+  
+  // Tagline
+  'tagline.subtitle': 'With all love, 100% Egyptian hands',
 };
 
 // Arabic translations
@@ -213,6 +216,9 @@ export const arTranslations = {
   'mining.advertisement': 'إعلان',
   'mining.continue': 'متابعة',
   'mining.adSpace': 'مساحة إعلانية',
+  
+  // Tagline
+  'tagline.subtitle': 'بكل حب بإيدي مصرية 100%',
 };
 
 // Combine translations
