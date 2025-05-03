@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useMining } from '@/contexts/MiningContext';
 import { usePiAuth } from '@/contexts/PiAuthContext';
-import { Mining as MiningIcon, TrendingUp, Clock, Award, ChevronDown, ChevronUp, Info } from 'lucide-react';
+import { Pickaxe, TrendingUp, Clock, Award, ChevronDown, ChevronUp, Info } from 'lucide-react';
 import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -151,7 +150,7 @@ const Mining = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <MiningIcon className="mr-2 h-6 w-6 text-orange" />
+                      <Pickaxe className="mr-2 h-6 w-6 text-orange" />
                       PTM Mining Portal
                     </div>
                     <PiEatLogo size="lg" />
@@ -320,7 +319,7 @@ const Mining = () => {
                   
                   <div className="flex items-start">
                     <div className="bg-pi/20 p-2 rounded-full mr-3">
-                      <MiningIcon className="h-4 w-4 text-pi" />
+                      <Pickaxe className="h-4 w-4 text-pi" />
                     </div>
                     <div>
                       <p className="font-medium">Mine PTM</p>

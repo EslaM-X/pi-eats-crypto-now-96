@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ChevronRight, Utensils, MapPin, Star, TrendingUp, ChefHat } from 'lucide-react';
@@ -84,7 +83,7 @@ const Index = () => {
                 />
               </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">
-                {t('home.welcome')}
+                Welcome to Pieat-Me
               </h1>
               <p className="text-lg text-white/90">
                 {t('home.subtitle')}
