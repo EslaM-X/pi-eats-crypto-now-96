@@ -1,0 +1,50 @@
+
+/* Animation utilities */
+
+@layer components {
+  /* Animation utility classes */
+  .fade-in {
+    @apply animate-[fadeIn_0.5s_ease-out_forwards];
+    opacity: 0;
+  }
+
+  .slide-up {
+    @apply animate-[slideUp_0.5s_ease-out_forwards];
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  .pulse-gentle {
+    animation: pulse-gentle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+/* Animation keyframes */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-gentle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}

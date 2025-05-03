@@ -1,0 +1,71 @@
+
+/* RTL (Right-to-Left) specific styles for Arabic language */
+
+@layer base {
+  /* Arabic font setting for RTL mode */
+  body[dir="rtl"] {
+    font-family: var(--font-arabic);
+    letter-spacing: 0; /* Remove letter spacing for Arabic text */
+  }
+  
+  /* Better text alignment for RTL mode */
+  body[dir="rtl"] * {
+    text-align: right;
+  }
+  
+  /* Improve Arabic text rendering */
+  body[dir="rtl"] h1,
+  body[dir="rtl"] h2,
+  body[dir="rtl"] h3,
+  body[dir="rtl"] h4,
+  body[dir="rtl"] h5,
+  body[dir="rtl"] h6 {
+    font-family: var(--font-arabic);
+    line-height: 1.6;
+  }
+
+  body[dir="rtl"] p,
+  body[dir="rtl"] span,
+  body[dir="rtl"] a,
+  body[dir="rtl"] button,
+  body[dir="rtl"] input,
+  body[dir="rtl"] label {
+    font-family: var(--font-arabic);
+  }
+
+  /* RTL specific line-height adjustments for mobile */
+  @media (max-width: 640px) {
+    body[dir="rtl"] h1 {
+      line-height: 1.4 !important;
+    }
+  }
+}
+
+@layer components {
+  /* RTL specific components */
+  body[dir="rtl"] .card,
+  body[dir="rtl"] .button {
+    direction: rtl;
+  }
+
+  body[dir="rtl"] .button-gradient {
+    @apply bg-gradient-to-l from-pi to-pi-light hover:from-pi-dark hover:to-pi;
+  }
+}
+
+/* RTL responsive adjustments */
+/* Improve RTL spacing for mobile */
+@media (max-width: 640px) {
+  body[dir="rtl"] .container {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+}
+
+/* Improve RTL spacing for tablet */
+@media (min-width: 641px) and (max-width: 1023px) {
+  body[dir="rtl"] .container {
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+  }
+}

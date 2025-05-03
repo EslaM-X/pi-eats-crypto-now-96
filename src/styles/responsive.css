@@ -1,0 +1,53 @@
+
+/* Responsive styles for different screen sizes */
+
+/* Improve font sizing on mobile */
+@layer base {
+  @media (max-width: 640px) {
+    h1 {
+      font-size: 1.75rem !important;
+      line-height: 1.2 !important;
+    }
+    
+    h2 {
+      font-size: 1.5rem !important;
+    }
+    
+    p {
+      font-size: 1rem !important;
+    }
+  }
+}
+
+/* Additional media queries for better mobile responsiveness */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .glass-card {
+    padding: 1rem;
+  }
+  
+  .grid {
+    grid-gap: 1rem;
+  }
+  
+  .card {
+    margin-bottom: 1rem;
+  }
+  
+  section {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+
+/* Better tablet responsiveness */
+@media (min-width: 641px) and (max-width: 1023px) {
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
