@@ -1,6 +1,6 @@
 
 import React, { ReactNode } from 'react';
-import { LanguageProvider } from './LanguageContext';
+import { LanguageProvider } from './language';
 import { PiAuthProvider } from './PiAuthContext';
 import { PiPriceProvider } from './PiPriceContext';
 import { WalletProvider } from './WalletContext';
