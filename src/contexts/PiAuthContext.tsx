@@ -18,6 +18,7 @@ type PiAuthContextType = {
   logout: () => void;
   isAuthenticating: boolean;
   openPiPayment: (amount: number, memo: string) => Promise<boolean>;
+  isPiSDKAvailable: boolean;
 };
 
 const PiAuthContext = createContext<PiAuthContextType>({
@@ -26,6 +27,7 @@ const PiAuthContext = createContext<PiAuthContextType>({
   logout: () => {},
   isAuthenticating: false,
   openPiPayment: async () => false,
+  isPiSDKAvailable: false,
 });
 
 export const usePiAuth = () => useContext(PiAuthContext);
@@ -34,6 +36,7 @@ export const usePiAuth = () => useContext(PiAuthContext);
 export const PiAuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<PiUser | null>(null);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [isPiSDKAvailable, setIsPiSDKAvailable] = useState(false);
 
   useEffect(() => {
     // Check for saved user in localStorage on component mount
@@ -46,7 +49,21 @@ export const PiAuthProvider = ({ children }: { children: ReactNode }) => {
         localStorage.removeItem('pi_user');
       }
     }
+
+    // Check if Pi SDK is available (in real implementation)
+    // This is a placeholder for actual SDK detection
+    checkPiSDKAvailability();
   }, []);
+
+  // Function to check if Pi SDK is available
+  const checkPiSDKAvailability = () => {
+    // In a real implementation, we would check if window.Pi exists
+    // For now, just mock it as unavailable
+    setIsPiSDKAvailable(false);
+
+    // Example of real implementation:
+    // setIsPiSDKAvailable(typeof window.Pi !== 'undefined');
+  };
 
   // Mock Pi Network SDK functions
   const mockPiSDK = {
@@ -73,6 +90,18 @@ export const PiAuthProvider = ({ children }: { children: ReactNode }) => {
     
     try {
       // In a real implementation, we would use the Pi SDK here
+      // if (isPiSDKAvailable && window.Pi) {
+      //   const authResult = await window.Pi.authenticate(['username', 'payments'], onIncompletePaymentFound);
+      //   setUser(authResult);
+      //   localStorage.setItem('pi_user', JSON.stringify(authResult));
+      // } else {
+      //   // Fallback to mock for development
+      //   const mockUser = await mockPiSDK.authenticate();
+      //   setUser(mockUser);
+      //   localStorage.setItem('pi_user', JSON.stringify(mockUser));
+      // }
+      
+      // For now, use mock authentication
       const mockUser = await mockPiSDK.authenticate();
       
       setUser(mockUser);
@@ -101,7 +130,20 @@ export const PiAuthProvider = ({ children }: { children: ReactNode }) => {
     toast.info('Initiating Pi payment...');
     
     try {
-      // In a real implementation, this would open the Pi Browser
+      // In a real implementation, this would use the Pi SDK
+      // if (isPiSDKAvailable && window.Pi) {
+      //   const payment = await window.Pi.createPayment({
+      //     amount: amount.toString(),
+      //     memo,
+      //     metadata: { orderId: Date.now().toString() }
+      //   });
+      //   return payment.status === 'COMPLETED';
+      // } else {
+      //   // Fallback to mock for development
+      //   return await mockPiSDK.createPayment(amount, memo);
+      // }
+      
+      // For now, use mock payment
       const success = await mockPiSDK.createPayment(amount, memo);
       
       if (success) {
@@ -118,6 +160,14 @@ export const PiAuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Function that would be called when an incomplete payment is found
+  const onIncompletePaymentFound = (payment: any) => {
+    console.log('Incomplete payment found:', payment);
+    toast.warning('Incomplete payment detected. Please complete your payment.');
+    // In a real app, you'd handle the incomplete payment here
+    // e.g., redirect to a payment completion page
+  };
+
   return (
     <PiAuthContext.Provider
       value={{
@@ -126,6 +176,7 @@ export const PiAuthProvider = ({ children }: { children: ReactNode }) => {
         logout,
         isAuthenticating,
         openPiPayment,
+        isPiSDKAvailable,
       }}
     >
       {children}

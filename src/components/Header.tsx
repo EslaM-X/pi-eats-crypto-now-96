@@ -13,8 +13,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { PiPriceIndicator } from './PiPriceIndicator';
-import { Switch } from '@/components/ui/switch';
 import { useTheme } from '@/contexts/ThemeContext';
+import PiEatLogo from './PiEatLogo';
 
 const Header = () => {
   const { language, setLanguage, t } = useLanguage();
@@ -43,26 +43,18 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b">
-      {/* Pi Network Watermark */}
-      <div className="absolute inset-0 opacity-5 pointer-events-none flex items-center justify-center overflow-hidden">
-        <img 
-          src="/lovable-uploads/0934d5ff-e502-465e-8d11-84ba98dcb488.png" 
-          alt="Pi Network" 
-          className="w-48 h-auto"
-        />
-      </div>
-      
       <div className="container mx-auto px-4 py-3 flex items-center justify-between relative z-10">
         <div className="flex items-center">
           <Link to="/" className="flex items-center space-x-2">
+            <PiEatLogo />
             <span className="text-2xl font-bold bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent">
-              Eat-Me-Pi
+              Pieat-Me
             </span>
           </Link>
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-6">
+        <nav className="hidden md:flex items-center space-x-6 overflow-visible">
           {navItems.map((item) => (
             <Link
               key={item.path}

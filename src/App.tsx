@@ -1,4 +1,5 @@
 
+import React, { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -28,32 +29,55 @@ const queryClient = new QueryClient({
   },
 });
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner position="top-right" theme="system" />
-      <AppProvider>
-        <div className="min-h-screen bg-gradient-to-br from-background to-background/95 text-foreground">
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/restaurants" element={<Restaurants />} />
-              <Route path="/restaurants/:id" element={<RestaurantDetails />} />
-              <Route path="/wallet" element={<Wallet />} />
-              <Route path="/rewards" element={<Rewards />} />
-              <Route path="/orders" element={<Orders />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/homefood" element={<HomeFood />} />
-              <Route path="/homefood/:id" element={<FoodProviderDetails />} />
-              <Route path="/homefood/add" element={<AddFoodListing />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </div>
-      </AppProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+// This function would be used to initialize Pi SDK when available
+const initPiSDK = () => {
+  // In a real implementation, this would initialize the Pi SDK
+  console.log("Preparing for Pi SDK integration");
+  
+  // Example of SDK initialization (commented out as it's not yet implemented)
+  /*
+  if (window.Pi) {
+    window.Pi.init({ 
+      version: "2.0",
+      sandbox: process.env.NODE_ENV !== "production"
+    });
+  }
+  */
+};
+
+const App = () => {
+  // Call the Pi SDK initialization function
+  useEffect(() => {
+    initPiSDK();
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner position="top-right" theme="system" />
+        <AppProvider>
+          <div className="min-h-screen bg-gradient-to-br from-background to-background/95 text-foreground">
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/restaurants" element={<Restaurants />} />
+                <Route path="/restaurants/:id" element={<RestaurantDetails />} />
+                <Route path="/wallet" element={<Wallet />} />
+                <Route path="/rewards" element={<Rewards />} />
+                <Route path="/orders" element={<Orders />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/homefood" element={<HomeFood />} />
+                <Route path="/homefood/:id" element={<FoodProviderDetails />} />
+                <Route path="/homefood/add" element={<AddFoodListing />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </div>
+        </AppProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;

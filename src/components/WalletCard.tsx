@@ -54,8 +54,8 @@ const WalletCard: React.FC<WalletCardProps> = ({
           <div>
             <div className="text-sm text-muted-foreground mb-1">Balance</div>
             <div className="text-4xl font-bold flex items-center">
-              {isPi ? <span className="mr-1 text-4xl">π</span> : icon}
-              <span className={isPi ? '' : 'ml-2'}>{isUser ? balance.toFixed(2) : '--.--'}</span>
+              {isPi ? <span className="mr-1 text-4xl">π</span> : null}
+              <span>{isUser ? balance.toFixed(2) : '--.--'}</span>
             </div>
             
             {estimatedValue && (

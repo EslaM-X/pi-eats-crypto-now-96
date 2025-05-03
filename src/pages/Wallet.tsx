@@ -85,12 +85,8 @@ const Wallet = () => {
           <WalletCard
             title={t('wallet.piNetwork')}
             icon={
-              <div className="h-20 w-20 mb-4">
-                <img 
-                  src="/lovable-uploads/0934d5ff-e502-465e-8d11-84ba98dcb488.png" 
-                  alt="Pi Network" 
-                  className="w-full h-full object-contain"
-                />
+              <div className="text-6xl font-bold">
+                π
               </div>
             }
             balance={balance}
@@ -105,8 +101,8 @@ const Wallet = () => {
           
           {/* PiEat Wallet */}
           <WalletCard
-            title={t('wallet.piEat')}
-            icon={<div className="mb-4"><PiEatLogo /></div>}
+            title="Pieat-Me Balance"
+            icon={<div className="mb-4 scale-150"><PiEatLogo /></div>}
             balance={piEatBalance}
             isUser={!!user}
             estimatedValue={`π ${(piEatBalance * 0.5).toFixed(2)} (${t('wallet.estimatedValue')})`}

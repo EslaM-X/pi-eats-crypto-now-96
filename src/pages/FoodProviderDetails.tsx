@@ -11,6 +11,7 @@ import { usePiAuth } from '@/contexts/PiAuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import MessageItem from '@/components/MessageItem';
+import MessageForm from '@/components/MessageForm'; // Added this import to fix the build error
 import { toast } from 'sonner';
 
 // Import our refactored components
