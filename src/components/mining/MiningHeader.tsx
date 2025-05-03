@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Pickaxe, TrendingUp } from 'lucide-react';
 import { useMining } from '@/contexts/MiningContext';
 import { Progress } from '@/components/ui/progress';
-import PiNetworkLogo from '../PiNetworkLogo';
+import PiEatLogo from '../PiEatLogo';
 
 const MiningHeader = ({ onStartMining, isMining }: { onStartMining: () => void, isMining: boolean }) => {
   const { ptmBalance, totalMined, miningStats } = useMining();
