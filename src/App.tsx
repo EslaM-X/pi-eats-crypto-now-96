@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -21,8 +20,10 @@ import HomeFood from "./pages/HomeFood";
 import FoodProviderDetails from "./pages/FoodProviderDetails";
 import AddFoodListing from "./pages/AddFoodListing";
 import MobileNavigation from "./components/MobileNavigation";
+import MobileNavbar from "./components/MobileNavbar";
 import { useIsMobile } from "./hooks/use-mobile";
 import { toast } from "sonner";
+import { Capacitor } from '@capacitor/core';
 
 // Configure the QueryClient with Pi Network styling
 const queryClient = new QueryClient({
@@ -91,6 +92,12 @@ const App = () => {
       toast.error("Internet connection lost");
     });
     
+    // Check if we're running as a native app
+    if (Capacitor.isNativePlatform()) {
+      toast.success(`Running as a native ${Capacitor.getPlatform()} app!`);
+      console.log('Native platform detected:', Capacitor.getPlatform());
+    }
+    
     return () => {
       window.removeEventListener('online', () => {});
       window.removeEventListener('offline', () => {});
@@ -106,6 +113,7 @@ const App = () => {
           <AppProvider>
             <div className="min-h-screen bg-gradient-to-br from-background to-background/95 text-foreground pb-16 md:pb-0">
               <BrowserRouter>
+                <MobileNavbar />
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/restaurants" element={<Restaurants />} />
