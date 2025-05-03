@@ -92,13 +92,13 @@
     text-align: right;
   }
   
-  /* Fix search input text color in dark mode */
+  /* Fix search input text color in dark mode - changing to BLACK as requested */
   .dark input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(0, 0, 0, 0.7);
   }
   
   .dark input {
-    color: white;
+    color: black;
   }
 }
 
@@ -120,4 +120,28 @@
 html, body, #root {
   max-width: 100vw;
   overflow-x: hidden;
+}
+
+/* Additional media queries for better mobile responsiveness */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  h1 {
+    font-size: 1.75rem;
+  }
+  
+  .glass-card {
+    padding: 1rem;
+  }
+}
+
+/* Better tablet responsiveness */
+@media (min-width: 641px) and (max-width: 1023px) {
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
 }

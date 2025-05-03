@@ -40,21 +40,21 @@ const WalletCard: React.FC<WalletCardProps> = ({
   customActions
 }) => {
   return (
-    <Card className="glass-card">
-      <CardHeader>
+    <Card className="glass-card overflow-hidden">
+      <CardHeader className="p-4 md:p-6">
         <CardTitle className="flex items-center justify-between">
-          <span>{title}</span>
-          <div className="scale-125">
+          <span className="text-lg md:text-xl">{title}</span>
+          <div className="scale-100 md:scale-125">
             {icon}
           </div>
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-6">
+      <CardContent className="p-4 md:p-6 pt-0 md:pt-0">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-4 md:mb-6">
           <div>
             <div className="text-sm text-muted-foreground mb-1">Balance</div>
-            <div className="text-4xl font-bold flex items-center">
-              {isPi ? <span className="mr-1 text-4xl">π</span> : null}
+            <div className="text-3xl md:text-4xl font-bold flex items-center">
+              {isPi ? <span className="mr-1 text-3xl md:text-4xl">π</span> : null}
               <span>{isUser ? balance.toFixed(2) : '--.--'}</span>
             </div>
             
@@ -94,7 +94,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
           {!isUser && onConnect && (
             <Button 
               onClick={onConnect}
-              className="mt-4 lg:mt-0 button-gradient"
+              className="mt-4 lg:mt-0 button-gradient w-full lg:w-auto"
             >
               Connect with Pi
             </Button>
@@ -102,25 +102,25 @@ const WalletCard: React.FC<WalletCardProps> = ({
         </div>
         
         {isUser && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
             {customActions ? customActions : (
               <>
-                <Button variant="outline" className="flex items-center">
-                  <WalletIcon className="mr-2 h-4 w-4" />
-                  Connect
+                <Button variant="outline" className="flex items-center justify-center text-xs md:text-sm py-1 h-auto">
+                  <WalletIcon className="mr-1 h-3 w-3 md:h-4 md:w-4" />
+                  <span className="hidden sm:inline mr-1">Connect</span>
                 </Button>
-                <Button variant="outline" className="flex items-center">
-                  <SendHorizontal className="mr-2 h-4 w-4" />
-                  Send
+                <Button variant="outline" className="flex items-center justify-center text-xs md:text-sm py-1 h-auto">
+                  <SendHorizontal className="mr-1 h-3 w-3 md:h-4 md:w-4" />
+                  <span className="hidden sm:inline mr-1">Send</span>
                 </Button>
-                <Button variant="outline" className="flex items-center">
-                  <ArrowRightLeft className="mr-2 h-4 w-4" />
-                  Transactions
+                <Button variant="outline" className="flex items-center justify-center text-xs md:text-sm py-1 h-auto">
+                  <ArrowRightLeft className="mr-1 h-3 w-3 md:h-4 md:w-4" />
+                  <span className="hidden sm:inline mr-1">Transactions</span>
                 </Button>
                 {onTopUp && (
-                  <Button variant="default" className="button-gradient" onClick={onTopUp}>
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Top Up
+                  <Button variant="default" className="button-gradient flex items-center justify-center text-xs md:text-sm py-1 h-auto" onClick={onTopUp}>
+                    <PlusCircle className="mr-1 h-3 w-3 md:h-4 md:w-4" />
+                    <span className="hidden sm:inline mr-1">Top Up</span>
                   </Button>
                 )}
               </>
@@ -129,7 +129,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
         )}
         
         {onExternal && (
-          <div className="mt-6">
+          <div className="mt-4 md:mt-6">
             <Button variant="ghost" size="sm" className="text-xs flex items-center" onClick={onExternal}>
               <ExternalLink className="mr-1 h-3 w-3" />
               Visit PiNet.com
