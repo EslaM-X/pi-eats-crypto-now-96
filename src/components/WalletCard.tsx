@@ -8,12 +8,14 @@ import { ExternalLink, WalletIcon, SendHorizontal, ArrowRightLeft, PlusCircle, H
 
 interface WalletCardProps {
   title: string;
+  abbreviation?: string;
   icon: React.ReactNode;
   balance: number;
   symbol?: string;
   conversionRate?: number;
   isUser: boolean;
   isPi?: boolean;
+  isPtm?: boolean;
   usdValue?: number;
   egpValue?: number;
   onConnect?: () => void;
@@ -25,12 +27,14 @@ interface WalletCardProps {
 
 const WalletCard: React.FC<WalletCardProps> = ({
   title,
+  abbreviation,
   icon,
   balance,
   symbol = 'π',
   conversionRate,
   isUser,
   isPi = false,
+  isPtm = false,
   usdValue,
   egpValue,
   onConnect,
@@ -43,7 +47,10 @@ const WalletCard: React.FC<WalletCardProps> = ({
     <Card className="glass-card overflow-hidden hover:shadow-lg transition-shadow duration-300">
       <CardHeader className="p-4 md:p-6">
         <CardTitle className="flex items-center justify-between">
-          <span className="text-lg md:text-xl">{title}</span>
+          <span className="text-lg md:text-xl">
+            {title} 
+            {abbreviation && <span className="ml-1 text-sm text-muted-foreground">({abbreviation})</span>}
+          </span>
           <div className="scale-100 md:scale-125">
             {icon}
           </div>
@@ -55,6 +62,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
             <div className="text-sm text-muted-foreground mb-1">Balance</div>
             <div className="text-3xl md:text-4xl font-bold flex items-center">
               {isPi ? <span className="mr-1 text-3xl md:text-4xl">π</span> : null}
+              {isPtm ? <span className="mr-1 text-3xl md:text-4xl">ꟼ</span> : null}
               <span>{isUser ? balance.toFixed(2) : '--.--'}</span>
             </div>
             

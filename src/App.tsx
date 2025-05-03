@@ -12,6 +12,7 @@ import Restaurants from "./pages/Restaurants";
 import RestaurantDetails from "./pages/RestaurantDetails";
 import Wallet from "./pages/Wallet";
 import Rewards from "./pages/Rewards";
+import Mining from "./pages/Mining";
 import Orders from "./pages/Orders";
 import Cart from "./pages/Cart";
 import NotFound from "./pages/NotFound";
@@ -41,8 +42,23 @@ const initPiSDK = () => {
       version: "2.0",
       sandbox: process.env.NODE_ENV !== "production"
     });
+    
+    // Authenticate with Pi Network
+    window.Pi.authenticate(['username', 'payments'], onIncompletePaymentFound)
+      .then(auth => {
+        console.log("User authenticated with Pi Network:", auth);
+      })
+      .catch(error => {
+        console.error("Pi Network authentication error:", error);
+      });
   }
   */
+};
+
+// Handler for incomplete payments
+const onIncompletePaymentFound = (payment) => {
+  console.log("Incomplete payment found:", payment);
+  // Implement handling for incomplete payment
 };
 
 const App = () => {
@@ -65,6 +81,7 @@ const App = () => {
                 <Route path="/restaurants/:id" element={<RestaurantDetails />} />
                 <Route path="/wallet" element={<Wallet />} />
                 <Route path="/rewards" element={<Rewards />} />
+                <Route path="/mining" element={<Mining />} />
                 <Route path="/orders" element={<Orders />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/homefood" element={<HomeFood />} />

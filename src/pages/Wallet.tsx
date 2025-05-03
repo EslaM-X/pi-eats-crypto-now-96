@@ -155,6 +155,7 @@ const Wallet = () => {
           {/* Pi Network Wallet */}
           <WalletCard
             title={t('wallet.piNetwork')}
+            abbreviation="Pi"
             icon={<div className="text-6xl font-bold">π</div>}
             balance={balance}
             isUser={!!user}
@@ -167,12 +168,14 @@ const Wallet = () => {
             customActions={user ? piNetworkActions : undefined}
           />
           
-          {/* PiEat Wallet - Updated with the new design */}
+          {/* PiEat Wallet */}
           <WalletCard
             title="Pieat-Me Balance"
+            abbreviation="PTM"
             icon={<PiEatLogo size="lg" />}
             balance={piEatBalance}
             isUser={!!user}
+            isPtm={true}
             estimatedValue={`π ${(piEatBalance * 0.5).toFixed(2)} (${t('wallet.estimatedValue')})`}
             usdValue={user ? convertPiToUsd(piEatBalance * 0.5) : undefined}
             egpValue={user ? convertPiToEgp(piEatBalance * 0.5) : undefined}

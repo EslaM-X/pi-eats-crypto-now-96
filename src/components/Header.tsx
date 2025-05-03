@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Globe, ShoppingCart, ChevronDown, Moon, Sun, ChefHat } from 'lucide-react';
+import { Menu, X, Globe, ShoppingCart, ChevronDown, Moon, Sun, ChefHat, Mining } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { usePiAuth } from '@/contexts/PiAuthContext';
 import { Button } from '@/components/ui/button';
@@ -31,6 +31,7 @@ const Header = () => {
     { path: '/orders', label: t('nav.orders') },
     { path: '/wallet', label: t('nav.wallet') },
     { path: '/rewards', label: t('nav.rewards') },
+    { path: '/mining', label: 'Mining', icon: <Mining className="h-4 w-4 inline-block mr-1" /> },
   ];
 
   const toggleMobileMenu = () => {
@@ -69,6 +70,7 @@ const Header = () => {
                 : ''
               }`}
             >
+              {item.icon}
               {item.path === '/homefood/add' && (
                 <ChefHat className="h-4 w-4 inline-block mr-1" />
               )}
@@ -143,6 +145,9 @@ const Header = () => {
                   <Link to="/rewards">{t('nav.rewards')}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
+                  <Link to="/mining">Mining</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link to="/orders">{t('nav.orders')}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={logout}>
@@ -191,6 +196,7 @@ const Header = () => {
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
+                  {item.icon}
                   {item.path === '/homefood/add' && (
                     <ChefHat className="h-4 w-4 inline-block mr-1" />
                   )}

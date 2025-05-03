@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -97,7 +98,15 @@
   }
   
   .dark input {
-    color: black;
+    color: black !important;
+  }
+
+  /* Set search fields background to white in dark mode for better readability */
+  .dark input[type="text"],
+  .dark input[type="search"],
+  .dark input[type="email"],
+  .dark input[type="number"] {
+    background-color: rgba(255, 255, 255, 0.9);
   }
 }
 
