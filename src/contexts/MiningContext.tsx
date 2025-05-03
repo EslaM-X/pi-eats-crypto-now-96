@@ -16,9 +16,12 @@ interface MiningContextType {
   miningPower: number;
   lastMiningTime: Date | null;
   miningStats: MiningStats;
-  startMining: (reward: number) => void;
+  startMining: (reward?: number) => void;
   claimReward: (amount: number) => void;
   updateMiningPower: (newPower: number) => void;
+  canMine: boolean;
+  timeUntilNextMining: number;
+  isOnCooldown: boolean;
 }
 
 const MiningContext = createContext<MiningContextType>({
@@ -35,7 +38,10 @@ const MiningContext = createContext<MiningContextType>({
   },
   startMining: () => {},
   claimReward: () => {},
-  updateMiningPower: () => {}
+  updateMiningPower: () => {},
+  canMine: true,
+  timeUntilNextMining: 0,
+  isOnCooldown: false
 });
 
 export const useMining = () => useContext(MiningContext);
@@ -46,6 +52,8 @@ export const MiningProvider = ({ children }: { children: ReactNode }) => {
   const [totalMined, setTotalMined] = useState(0);
   const [miningPower, setMiningPower] = useState(1);
   const [lastMiningTime, setLastMiningTime] = useState<Date | null>(null);
+  const [timeUntilNextMining, setTimeUntilNextMining] = useState(0);
+  const [isOnCooldown, setIsOnCooldown] = useState(false);
   const [miningStats, setMiningStats] = useState<MiningStats>({
     difficulty: 1.25,
     circulatingSupply: 285467,
@@ -53,6 +61,30 @@ export const MiningProvider = ({ children }: { children: ReactNode }) => {
     blockReward: 0.01,
     networkHashrate: 12453
   });
+  
+  // Calculate if mining is available (60 second cooldown)
+  const canMine = !isOnCooldown && (!lastMiningTime || (new Date().getTime() - lastMiningTime.getTime()) > 60000);
+  
+  // Update cooldown timer
+  useEffect(() => {
+    if (!lastMiningTime) return;
+    
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const lastTime = lastMiningTime.getTime();
+      const difference = now - lastTime;
+      
+      if (difference < 60000) {
+        setTimeUntilNextMining(60000 - difference);
+        setIsOnCooldown(true);
+      } else {
+        setTimeUntilNextMining(0);
+        setIsOnCooldown(false);
+      }
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, [lastMiningTime]);
   
   // Load mining data from localStorage when user changes
   useEffect(() => {
@@ -110,7 +142,7 @@ export const MiningProvider = ({ children }: { children: ReactNode }) => {
     return () => clearInterval(interval);
   }, []);
   
-  const startMining = (reward: number) => {
+  const startMining = (reward = 0.05) => {
     if (!user) return;
     
     // Update balance and stats
@@ -168,7 +200,10 @@ export const MiningProvider = ({ children }: { children: ReactNode }) => {
         miningStats,
         startMining,
         claimReward,
-        updateMiningPower
+        updateMiningPower,
+        canMine,
+        timeUntilNextMining,
+        isOnCooldown
       }}
     >
       {children}

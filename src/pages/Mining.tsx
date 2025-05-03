@@ -38,8 +38,9 @@ const Mining = () => {
       
       // After animation finishes, mining is complete
       setTimeout(() => {
-        startMining(); // Actually update mining state and rewards
+        startMining(0.05); // Actually update mining state and rewards with default value
         setIsMining(false);
+        setShowMiningAnimation(false);
       }, 5000); // Animation lasts ~5 seconds
     }, 3000);
   };
