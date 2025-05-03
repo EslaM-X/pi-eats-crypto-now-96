@@ -2,7 +2,7 @@
 import React from 'react';
 import { usePiPrice } from '@/contexts/PiPriceContext';
 import { Transaction } from '@/contexts/WalletContext';
-import { DollarSign } from 'lucide-react';
+import { DollarSign, ChevronRight } from 'lucide-react';
 
 interface TransactionHistoryProps {
   transactions: Transaction[];
@@ -12,7 +12,11 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ transactions })
   const { convertPiToUsd, convertPiToEgp } = usePiPrice();
   
   if (transactions.length === 0) {
-    return null;
+    return (
+      <div className="text-center p-8 text-muted-foreground">
+        No transactions found
+      </div>
+    );
   }
 
   return (
@@ -31,7 +35,11 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ transactions })
           </thead>
           <tbody>
             {transactions.map((tx, index) => (
-              <tr key={index} className="border-b last:border-b-0 hover:bg-muted/10 transition-colors">
+              <tr 
+                key={index} 
+                className="border-b last:border-b-0 hover:bg-muted/50 cursor-pointer transition-colors"
+                onClick={() => console.log(`Transaction details for ${tx.id}`)}
+              >
                 <td className="px-3 md:px-6 py-2 md:py-4 whitespace-nowrap">
                   <span className={`capitalize font-medium ${
                     tx.type === 'receive' ? 'text-green-500' : 
@@ -76,7 +84,11 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ transactions })
       {/* Mobile view - cards */}
       <div className="md:hidden space-y-3">
         {transactions.map((tx, index) => (
-          <div key={index} className="bg-muted/10 rounded-lg p-3 border border-border">
+          <div 
+            key={index} 
+            className="bg-muted/10 rounded-lg p-3 border border-border hover:border-primary/50 active:bg-muted/30 transition-colors cursor-pointer relative"
+            onClick={() => console.log(`Transaction details for ${tx.id}`)}
+          >
             <div className="flex justify-between items-start mb-2">
               <span className={`capitalize font-medium ${
                 tx.type === 'receive' ? 'text-green-500' : 
@@ -110,6 +122,7 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ transactions })
                 </div>
               </div>
             </div>
+            <ChevronRight className="absolute right-2 top-1/2 -translate-y-1/2 opacity-50 h-4 w-4" />
           </div>
         ))}
       </div>

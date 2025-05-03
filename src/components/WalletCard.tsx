@@ -40,7 +40,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
   customActions
 }) => {
   return (
-    <Card className="glass-card overflow-hidden">
+    <Card className="glass-card overflow-hidden hover:shadow-lg transition-shadow duration-300">
       <CardHeader className="p-4 md:p-6">
         <CardTitle className="flex items-center justify-between">
           <span className="text-lg md:text-xl">{title}</span>
@@ -94,7 +94,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
           {!isUser && onConnect && (
             <Button 
               onClick={onConnect}
-              className="mt-4 lg:mt-0 button-gradient w-full lg:w-auto"
+              className="mt-4 lg:mt-0 button-gradient w-full lg:w-auto animate-pulse hover:animate-none"
             >
               Connect with Pi
             </Button>
@@ -102,9 +102,9 @@ const WalletCard: React.FC<WalletCardProps> = ({
         </div>
         
         {isUser && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
+          <div className="transition-all duration-300 hover:scale-105 transform">
             {customActions ? customActions : (
-              <>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
                 <Button variant="outline" className="flex items-center justify-center text-xs md:text-sm py-1 h-auto">
                   <WalletIcon className="mr-1 h-3 w-3 md:h-4 md:w-4" />
                   <span className="hidden sm:inline mr-1">Connect</span>
@@ -123,16 +123,21 @@ const WalletCard: React.FC<WalletCardProps> = ({
                     <span className="hidden sm:inline mr-1">Top Up</span>
                   </Button>
                 )}
-              </>
+              </div>
             )}
           </div>
         )}
         
         {onExternal && (
           <div className="mt-4 md:mt-6">
-            <Button variant="ghost" size="sm" className="text-xs flex items-center" onClick={onExternal}>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="text-xs flex items-center hover:bg-primary/20 transition-colors duration-200" 
+              onClick={onExternal}
+            >
               <ExternalLink className="mr-1 h-3 w-3" />
-              Visit PiNet.com
+              {isPi ? 'Visit Pi Browser' : 'Visit Pieat-Me'}
             </Button>
           </div>
         )}

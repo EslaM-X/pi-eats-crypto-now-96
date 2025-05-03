@@ -4,19 +4,18 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useWallet } from '@/contexts/WalletContext';
 import { usePiPrice } from '@/contexts/PiPriceContext';
 import { usePiAuth } from '@/contexts/PiAuthContext';
-import { SendHorizontal, History, PlusCircle } from 'lucide-react';
+import { SendHorizontal, History, PlusCircle, ExternalLink } from 'lucide-react';
 import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import WalletCard from '@/components/WalletCard';
 import TransactionHistory from '@/components/TransactionHistory';
 import PiEatLogo from '@/components/PiEatLogo';
-import PiNetworkLogo from '@/components/PiNetworkLogo';
 
 const Wallet = () => {
   const { t } = useLanguage();
   const { balance, transactions, addTransaction } = useWallet();
-  const { user, login } = usePiAuth();
+  const { user, login, openPiPayment } = usePiAuth();
   const { convertPiToUsd, convertPiToEgp } = usePiPrice();
   
   // Mock PiEat balance
@@ -28,10 +27,10 @@ const Wallet = () => {
     toast.info('Opening Pi Browser...');
   };
   
-  // Function to visit PiNet
-  const visitPiNet = () => {
-    window.open('https://www.pinet.com', '_blank');
-    toast.info('Visiting PiNet...');
+  // Function to visit PiEat website
+  const visitPiEatSite = () => {
+    window.open('https://pieat.me', '_blank');
+    toast.info('Visiting Pieat-Me...');
   };
   
   // Function to simulate top up
@@ -49,20 +48,91 @@ const Wallet = () => {
     }
   };
 
+  // Function to simulate sending Pi
+  const handleSendPi = () => {
+    if (user) {
+      toast.info('Send Pi feature coming soon!');
+    } else {
+      login();
+    }
+  };
+
+  // Function to view transaction history
+  const viewTransactionHistory = () => {
+    const element = document.getElementById('transaction-history');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  // Function to handle Pi payment
+  const handlePiPayment = async () => {
+    if (user) {
+      const success = await openPiPayment(1.0, 'Testing Pi payment');
+      if (success) {
+        toast.success('Payment successful!');
+      }
+    } else {
+      login();
+    }
+  };
+
   // Custom actions for PiEat wallet
   const piEatActions = (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-      <Button variant="outline" className="flex items-center justify-center text-xs md:text-sm">
+    <div className="grid grid-cols-3 gap-2">
+      <Button 
+        variant="outline" 
+        className="flex items-center justify-center text-xs md:text-sm"
+        onClick={handleSendPi}
+      >
         <SendHorizontal className="mr-1 h-3 w-3 md:h-4 md:w-4" />
         {t('wallet.send')}
       </Button>
-      <Button variant="outline" className="flex items-center justify-center text-xs md:text-sm">
+      <Button 
+        variant="outline" 
+        className="flex items-center justify-center text-xs md:text-sm"
+        onClick={viewTransactionHistory}
+      >
         <History className="mr-1 h-3 w-3 md:h-4 md:w-4" />
         {t('wallet.history')}
       </Button>
-      <Button variant="default" className="button-gradient text-xs md:text-sm">
+      <Button 
+        variant="default" 
+        className="button-gradient text-xs md:text-sm"
+        onClick={handlePiPayment}
+      >
         <PlusCircle className="mr-1 h-3 w-3 md:h-4 md:w-4" />
         {t('wallet.earn')}
+      </Button>
+    </div>
+  );
+
+  // Custom actions for Pi Network wallet
+  const piNetworkActions = (
+    <div className="grid grid-cols-3 gap-2">
+      <Button 
+        variant="outline" 
+        className="flex items-center justify-center text-xs md:text-sm"
+        onClick={handleSendPi}
+      >
+        <SendHorizontal className="mr-1 h-3 w-3 md:h-4 md:w-4" />
+        {t('wallet.send')}
+      </Button>
+      <Button 
+        variant="outline" 
+        className="flex items-center justify-center text-xs md:text-sm"
+        onClick={viewTransactionHistory}
+      >
+        <History className="mr-1 h-3 w-3 md:h-4 md:w-4" />
+        {t('wallet.history')}
+      </Button>
+      <Button 
+        variant="default" 
+        className="button-gradient text-xs md:text-sm"
+        onClick={handleTopUp}
+      >
+        <PlusCircle className="mr-1 h-3 w-3 md:h-4 md:w-4" />
+        {t('wallet.topUp')}
       </Button>
     </div>
   );
@@ -85,11 +155,7 @@ const Wallet = () => {
           {/* Pi Network Wallet */}
           <WalletCard
             title={t('wallet.piNetwork')}
-            icon={
-              <div className="text-6xl font-bold">
-                π
-              </div>
-            }
+            icon={<div className="text-6xl font-bold">π</div>}
             balance={balance}
             isUser={!!user}
             isPi={true}
@@ -97,28 +163,28 @@ const Wallet = () => {
             egpValue={user ? convertPiToEgp(balance) : undefined}
             onConnect={login}
             onTopUp={handleTopUp}
-            onExternal={visitPiNet}
+            onExternal={openPiBrowser}
+            customActions={user ? piNetworkActions : undefined}
           />
           
           {/* PiEat Wallet - Updated with the new design */}
           <WalletCard
             title="Pieat-Me Balance"
-            icon={<div className="flex items-center justify-center">
-              <PiNetworkLogo size="lg" />
-            </div>}
+            icon={<PiEatLogo size="lg" />}
             balance={piEatBalance}
             isUser={!!user}
             estimatedValue={`π ${(piEatBalance * 0.5).toFixed(2)} (${t('wallet.estimatedValue')})`}
             usdValue={user ? convertPiToUsd(piEatBalance * 0.5) : undefined}
             egpValue={user ? convertPiToEgp(piEatBalance * 0.5) : undefined}
             onConnect={login}
+            onExternal={visitPiEatSite}
             customActions={user ? piEatActions : undefined}
           />
         </div>
         
         {/* Transaction History */}
         {user && (
-          <div className="mt-8 md:mt-12 bg-card rounded-xl p-4 md:p-6 shadow-md">
+          <div id="transaction-history" className="mt-8 md:mt-12 bg-card rounded-xl p-4 md:p-6 shadow-md">
             <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent">
               {t('wallet.transactions')}
             </h2>
