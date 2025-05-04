@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useMining } from '@/contexts/MiningContext';
 import { CircleDollarSign, History, Network, Timer, TrendingUp, Zap } from 'lucide-react';
+import PiEatLogo from '../PiEatLogo';
 
 const MiningStats = () => {
   const { miningPower, lastMiningTime, miningStats } = useMining();
@@ -58,8 +59,9 @@ const MiningStats = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">
-            <span className="text-xl">ꟼ</span> {(0.05 / miningStats.difficulty).toFixed(4)}
+          <div className="text-2xl font-bold flex items-center">
+            <PiEatLogo piOnly={true} showEmoji={true} size="sm" className="mr-1" />
+            {(0.05 / miningStats.difficulty).toFixed(4)}
           </div>
         </CardContent>
       </Card>

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { PiPriceIndicator } from '@/components/PiPriceIndicator';
 import CurrencyValue from '@/components/CurrencyValue';
 import { ExternalLink, WalletIcon, SendHorizontal, ArrowRightLeft, PlusCircle, History, DollarSign } from 'lucide-react';
+import PiEatLogo from '@/components/PiEatLogo';
 
 interface WalletCardProps {
   title: string;
@@ -61,8 +62,8 @@ const WalletCard: React.FC<WalletCardProps> = ({
           <div>
             <div className="text-sm text-muted-foreground mb-1">Balance</div>
             <div className="text-3xl md:text-4xl font-bold flex items-center">
-              {isPi ? <span className="mr-1 text-3xl md:text-4xl">π</span> : null}
-              {isPtm ? <span className="mr-1 text-3xl md:text-4xl">ꟼ</span> : null}
+              {isPi && <PiEatLogo piOnly={true} showEmoji={true} size="md" className="mr-1" />}
+              {isPtm && <PiEatLogo piOnly={true} showEmoji={true} size="md" className="mr-1" />}
               <span>{isUser ? balance.toFixed(2) : '--.--'}</span>
             </div>
             
@@ -145,7 +146,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
               onClick={onExternal}
             >
               <ExternalLink className="mr-1 h-3 w-3" />
-              {isPi ? 'Visit Pi Browser' : 'Visit Pieat-Me'}
+              {isPi ? 'Visit π Browser' : 'Visit πEat-Me'}
             </Button>
           </div>
         )}

@@ -21,7 +21,8 @@ const MiningHeader = ({ onStartMining, isMining }: { onStartMining: () => void, 
         </CardHeader>
         <CardContent>
           <div className="text-3xl font-bold flex items-center">
-            <span className="text-3xl mr-2">ꟼ</span> {ptmBalance.toFixed(4)}
+            <PiEatLogo piOnly={true} showEmoji={true} size="md" className="mr-1" />
+            {ptmBalance.toFixed(4)}
           </div>
           <div className="text-xs text-muted-foreground mt-1">
             Total mined: {totalMined.toFixed(4)} PTM

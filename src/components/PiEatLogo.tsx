@@ -28,24 +28,22 @@ const PiEatLogo: React.FC<PiEatLogoProps> = ({
   if (textOnly) {
     return (
       <span className={`font-bold ${sizeClasses[size]} ${className}`}>
-        {piOnly ? 'π' : 'PiEat'}
+        {piOnly ? 'π' : 'πEat'}
       </span>
     );
   }
   
   return (
     <div className={`font-bold ${sizeClasses[size]} bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent flex items-center ${className}`}>
-      <span>π</span>
-      {showEat && (
-        <span className="relative">
-          <span>Eat</span>
-          {showEmoji && (
-            <span className="absolute -top-1 -right-2 text-xs bg-orange text-white rounded-full h-3 w-3 flex items-center justify-center">
-              🍕
-            </span>
-          )}
-        </span>
-      )}
+      <span className="relative">
+        π
+        {showEmoji && (
+          <span className="absolute -top-1 -right-2 text-xs bg-orange text-white rounded-full h-3 w-3 flex items-center justify-center">
+            🍕
+          </span>
+        )}
+      </span>
+      {showEat && <span className="ml-0.5">Eat</span>}
     </div>
   );
 };

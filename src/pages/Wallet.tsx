@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useWallet } from '@/contexts/WalletContext';
@@ -155,7 +156,7 @@ const Wallet = () => {
           <WalletCard
             title={t('wallet.piNetwork')}
             abbreviation="π"
-            icon={<div className="text-6xl font-bold">π</div>}
+            icon={<PiEatLogo piOnly={true} showEmoji={true} size="xl" />}
             balance={balance}
             isUser={!!user}
             isPi={true}
