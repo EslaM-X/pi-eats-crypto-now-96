@@ -18,25 +18,27 @@ import { Container } from '@/components/ui/container';
 import Header from '@/components/Header';
 
 const Wallet = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { theme } = useTheme();
   const { user } = usePiAuth();
   const { convertPiToUsd, convertPiToEgp } = usePiPrice();
   const { balance, transactions, fetchBalance } = useWallet();
 
+  const dir = language === 'ar' ? 'rtl' : 'ltr';
+
   return (
     <>
       <Helmet>
-        <title>Portfolio Management | PiEat-Me</title>
+        <title>{language === 'ar' ? 'إدارة المحفظة | بِي إيت' : 'Portfolio Management | PiEat-Me'}</title>
       </Helmet>
 
       <Header />
       
-      <Container className="pt-6 pb-24">
+      <Container className="pt-6 pb-24" dir={dir}>
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold">
             <span className="bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent">
-              Portfolio Management
+              {t('wallet.title')}
             </span>
           </h1>
           <PiPriceIndicator showDetails={true} />
@@ -46,7 +48,7 @@ const Wallet = () => {
           {/* Main wallet column */}
           <div className="lg:col-span-2 space-y-6">
             <WalletCard
-              title="piNetwork Balance (π)"
+              title={t('wallet.piNetwork')}
               icon={<WalletIcon className="h-6 w-6 text-pi" />}
               balance={balance.pi}
               symbol="π"
@@ -60,7 +62,7 @@ const Wallet = () => {
             />
 
             <WalletCard
-              title="piEat Balance (PTM)"
+              title={t('wallet.piEat')}
               icon={<Tally5 className="h-6 w-6 text-orange" />}
               balance={balance.ptm}
               symbol="PTM"
@@ -71,11 +73,11 @@ const Wallet = () => {
               customActions={
                 <div className="grid grid-cols-2 gap-2">
                   <Button variant="outline" className="flex items-center justify-center text-xs md:text-sm py-1 h-auto interactive-button">
-                    <RefreshCw className="mr-1 h-3 w-3 md:h-4 md:w-4" />
+                    <RefreshCw className={`${language === 'ar' ? 'ml-1' : 'mr-1'} h-3 w-3 md:h-4 md:w-4`} />
                     {t('wallet.swap')}
                   </Button>
                   <Button variant="default" className="button-gradient flex items-center justify-center text-xs md:text-sm py-1 h-auto interactive-button">
-                    <BadgeInfo className="mr-1 h-3 w-3 md:h-4 md:w-4" />
+                    <BadgeInfo className={`${language === 'ar' ? 'ml-1' : 'mr-1'} h-3 w-3 md:h-4 md:w-4`} />
                     <span className="wallet-manage-text">
                       {t('wallet.manage')}
                     </span>
@@ -89,7 +91,7 @@ const Wallet = () => {
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg">{t('wallet.transactions')}</CardTitle>
                   <Button variant="ghost" size="sm" onClick={fetchBalance} className="text-xs interactive-button">
-                    <RefreshCw className="h-3 w-3 mr-1" />
+                    <RefreshCw className={`h-3 w-3 ${language === 'ar' ? 'ml-1' : 'mr-1'}`} />
                     {t('wallet.refresh')}
                   </Button>
                 </div>
@@ -139,15 +141,15 @@ const Wallet = () => {
               </CardHeader>
               <CardContent className="space-y-3">
                 <Button className="w-full justify-start interactive-button" variant="outline">
-                  <WalletIcon className="mr-2 h-4 w-4" />
+                  <WalletIcon className={`${language === 'ar' ? 'ml-2' : 'mr-2'} h-4 w-4`} />
                   {t('wallet.topUp')}
                 </Button>
                 <Button className="w-full justify-start interactive-button" variant="outline">
-                  <RefreshCw className="mr-2 h-4 w-4" />
+                  <RefreshCw className={`${language === 'ar' ? 'ml-2' : 'mr-2'} h-4 w-4`} />
                   {t('wallet.swap')}
                 </Button>
                 <Button className="w-full justify-start button-gradient interactive-button">
-                  <Pickaxe className="mr-2 h-4 w-4" />
+                  <Pickaxe className={`${language === 'ar' ? 'ml-2' : 'mr-2'} h-4 w-4`} />
                   {t('wallet.mine')}
                 </Button>
               </CardContent>
@@ -156,7 +158,7 @@ const Wallet = () => {
             <Card className="bg-gradient-to-br from-orange/10 to-pi/10 dark:from-orange/20 dark:to-pi/20">
               <CardHeader>
                 <CardTitle className="flex items-center text-lg">
-                  <Info className="h-5 w-5 mr-2" />
+                  <Info className={`h-5 w-5 ${language === 'ar' ? 'ml-2' : 'mr-2'}`} />
                   {t('wallet.aboutPTM')}
                 </CardTitle>
               </CardHeader>

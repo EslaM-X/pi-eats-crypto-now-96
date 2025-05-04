@@ -5,7 +5,6 @@
   /* Text alignment */
   text-align: right;
   font-feature-settings: "dlig", "kern", "rlig";
-  font-feature-settings: "dlig", "kern", "rlig";
   text-rendering: optimizeLegibility;
 }
 
@@ -22,6 +21,7 @@
   flex-direction: row-reverse !important;
 }
 
+/* Margin adjustments for RTL */
 [dir="rtl"] .mr-1 {
   margin-right: 0;
   margin-left: 0.25rem;
@@ -83,4 +83,33 @@
 /* Mobile navigation RTL adjustments */
 [dir="rtl"] .mobile-nav {
   flex-direction: row-reverse;
+}
+
+/* Wallet & Rewards specific RTL adjustments */
+[dir="rtl"] .wallet-manage-text {
+  margin-left: 0;
+  margin-right: 0.25rem;
+}
+
+[dir="rtl"] .wallet-card-icon {
+  margin-right: 0;
+  margin-left: 0.5rem;
+}
+
+[dir="rtl"] .reward-card {
+  text-align: right;
+}
+
+[dir="rtl"] .rewards-tier-item {
+  padding-right: 1rem;
+  padding-left: 0;
+}
+
+[dir="rtl"] .transaction-item {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .transaction-icon {
+  margin-right: 0;
+  margin-left: 0.75rem;
 }

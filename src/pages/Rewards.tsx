@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useRewards } from '@/contexts/RewardsContext';
@@ -14,7 +15,7 @@ import PiEatLogo from '@/components/PiEatLogo';
 // const PiEatLogo = () => (...); // Remove this custom component
 
 const Rewards = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { points, availableRewards, redeemReward } = useRewards();
   const { user, login } = usePiAuth();
 
@@ -35,13 +36,15 @@ const Rewards = () => {
     }
   };
 
+  const dir = language === 'ar' ? 'rtl' : 'ltr';
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" dir={dir}>
       <Header />
       
       <main className="container mx-auto px-4 py-6">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">{t('nav.rewards')}</h1>
+          <h1 className="text-3xl font-bold mb-2">{t('rewards.title')}</h1>
           <p className="text-muted-foreground">
             {t('rewards.description')}
           </p>
