@@ -45,20 +45,17 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12 w-full max-w-md mx-auto">
-            <Button asChild className="button-gradient text-lg h-12 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
+            <Button asChild className={`button-gradient text-lg h-12 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ${language === 'ar' ? 'text-sm' : ''}`}>
               <Link to="/restaurants">{t('nav.restaurants')}</Link>
             </Button>
-            <Button asChild variant="outline" className="text-lg h-12 px-8 border-pi hover:bg-pi/10 rounded-full">
+            <Button asChild variant="outline" className={`text-lg h-12 px-8 border-pi hover:bg-pi/10 rounded-full ${language === 'ar' ? 'text-sm' : ''}`}>
               <Link to="/homefood">{t('home.homefood')}</Link>
             </Button>
           </div>
           
           <div className={`p-6 rounded-2xl ${theme === 'dark' ? 'bg-muted/40 backdrop-blur-lg' : 'glass-card'} max-w-2xl mx-auto`}>
-            <p className="text-muted-foreground">
+            <p className={`text-muted-foreground ${language === 'ar' ? 'text-sm leading-6' : ''}`}>
               {t('app.tagline')}
-            </p>
-            <p className="mt-2 font-medium text-foreground">
-              {t('tagline.subtitle')}
             </p>
           </div>
         </div>
