@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -82,6 +81,15 @@
     background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
     background-size: 20px 20px;
+  }
+  
+  /* تعزيز ظهور رمز π */
+  .text-shadow-md {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  .pi-symbol {
+    @apply font-extrabold text-4xl bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent drop-shadow-lg;
   }
 }
 

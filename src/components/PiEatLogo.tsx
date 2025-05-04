@@ -40,12 +40,13 @@ const PiEatLogo: React.FC<PiEatLogoProps> = ({
     xl: 'text-lg',
   };
   
+  // تحسين وضوح رمز π وجعله أكثر بروزاً
   return (
     <div className={`font-bold ${sizeClasses[size]} bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent flex items-center ${className}`}>
       <span className="relative">
-        π
+        <span className="text-shadow-md font-extrabold drop-shadow-md">π</span>
         {showEmoji && (
-          <span className={`absolute -top-1 -right-2 ${emojiSize[size]} bg-orange text-white rounded-full h-5 w-5 flex items-center justify-center transform rotate-12 shadow-md border border-white`}>
+          <span className={`absolute -top-1 -right-2 ${emojiSize[size]} bg-orange text-white rounded-full h-5 w-5 flex items-center justify-center transform rotate-12 shadow-md border-2 border-white`}>
             🍕
           </span>
         )}

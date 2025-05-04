@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -62,7 +61,11 @@ const WalletCard: React.FC<WalletCardProps> = ({
           <div>
             <div className="text-sm text-muted-foreground mb-1">Balance</div>
             <div className="text-3xl md:text-4xl font-bold flex items-center">
-              {isPi && <PiEatLogo piOnly={true} showEmoji={true} size="md" className="mr-1" />}
+              {isPi && (
+                <span className="mr-1 font-extrabold text-4xl md:text-5xl bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent drop-shadow-lg">
+                  <PiEatLogo piOnly={true} showEmoji={true} size="md" />
+                </span>
+              )}
               {isPtm && <PiEatLogo piOnly={true} showEmoji={true} size="md" className="mr-1" />}
               <span>{isUser ? balance.toFixed(2) : '--.--'}</span>
             </div>

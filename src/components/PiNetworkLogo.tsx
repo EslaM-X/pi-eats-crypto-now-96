@@ -11,8 +11,18 @@ const PiNetworkLogo: React.FC<PiNetworkLogoProps> = ({
   size = 'md',
   className = ''
 }) => {
-  // Using the PiEatLogo component with piOnly prop to only show the π symbol
-  return <PiEatLogo size={size} className={className} showEat={false} />;
+  // تحسين وضوح رمز π في هذا المكون أيضًا
+  return (
+    <div className={`pi-symbol ${className}`}>
+      <PiEatLogo 
+        size={size} 
+        className={className} 
+        showEat={false} 
+        piOnly={true} 
+        showEmoji={true}
+      />
+    </div>
+  );
 };
 
 export default PiNetworkLogo;
