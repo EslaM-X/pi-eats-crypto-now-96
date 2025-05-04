@@ -20,6 +20,7 @@ import NotFound from "./pages/NotFound";
 import HomeFood from "./pages/HomeFood";
 import FoodProviderDetails from "./pages/FoodProviderDetails";
 import AddFoodListing from "./pages/AddFoodListing";
+import PiPaymentDemo from "./pages/PiPaymentDemo";
 import { MobileNavigation, MobileNavbar } from "./frontend"; 
 import { useIsMobile } from "./frontend/hooks/use-mobile";
 
@@ -59,6 +60,7 @@ const App = () => {
                   <Route path="/homefood" element={<HomeFood />} />
                   <Route path="/homefood/:id" element={<FoodProviderDetails />} />
                   <Route path="/homefood/add" element={<AddFoodListing />} />
+                  <Route path="/pi-payment" element={<PiPaymentDemo />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
                 

@@ -2,6 +2,7 @@
 {
   "short_name": "Eat-Me-Pi",
   "name": "Eat-Me-Pi | Order Food with Pi",
+  "description": "تطبيق لطلب الطعام باستخدام عملة Pi الرقمية",
   "icons": [
     {
       "src": "favicon.ico",
@@ -13,5 +14,7 @@
   "display": "standalone",
   "theme_color": "#ffffff",
   "background_color": "#ffffff",
-  "orientation": "portrait"
+  "orientation": "portrait",
+  "scope": "/",
+  "categories": ["food", "delivery", "cryptocurrency"]
 }

@@ -19,6 +19,13 @@ const config: CapacitorConfig = {
       splashFullScreen: true,
       splashImmersive: true
     }
+  },
+  // Add custom URL scheme for deep linking
+  ios: {
+    scheme: 'eatmepi'
+  },
+  android: {
+    backgroundColor: "#ffffff"
   }
 };
 
