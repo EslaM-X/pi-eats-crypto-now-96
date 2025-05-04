@@ -8,6 +8,7 @@ interface PiEatLogoProps {
   textOnly?: boolean;
   piOnly?: boolean;
   showEat?: boolean;
+  style?: 'default' | 'bold' | 'gradient' | 'mining';
 }
 
 const PiEatLogo: React.FC<PiEatLogoProps> = ({ 
@@ -16,7 +17,8 @@ const PiEatLogo: React.FC<PiEatLogoProps> = ({
   showEmoji = true,
   textOnly = false,
   piOnly = false,
-  showEat = true
+  showEat = true,
+  style = 'default'
 }) => {
   const sizeClasses = {
     sm: 'text-2xl',
@@ -40,18 +42,47 @@ const PiEatLogo: React.FC<PiEatLogoProps> = ({
     xl: 'text-lg',
   };
   
-  // تحسين وضوح رمز π وجعله أكثر بروزاً - بدون ظل وبألوان واضحة
+  // Different style variations
+  const styleVariants = {
+    default: {
+      container: "",
+      pi: "font-extrabold text-[#8B5CF6] pi-color",
+      eat: "ml-0.5 bg-gradient-to-r from-[#9b87f5] to-orange bg-clip-text text-transparent",
+      emoji: `absolute -top-1 -right-2 ${emojiSize[size]} bg-orange text-white rounded-full h-5 w-5 flex items-center justify-center transform rotate-12 border-2 border-white`
+    },
+    bold: {
+      container: "",
+      pi: "font-black text-[#6E59A5] pi-color",
+      eat: "ml-0.5 font-bold text-orange",
+      emoji: `absolute -top-1 -right-2 ${emojiSize[size]} bg-orange text-white rounded-full h-5 w-5 flex items-center justify-center transform rotate-12 border-2 border-white`
+    },
+    gradient: {
+      container: "",
+      pi: "font-extrabold text-transparent bg-gradient-to-r from-[#8B5CF6] to-[#6E59A5] bg-clip-text",
+      eat: "ml-0.5 bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent font-bold",
+      emoji: `absolute -top-1 -right-2 ${emojiSize[size]} bg-gradient-to-r from-orange to-orange-600 text-white rounded-full h-5 w-5 flex items-center justify-center transform rotate-12 border-2 border-white`
+    },
+    mining: {
+      container: "bg-white/95 dark:bg-gray-800/95 py-1 px-2 rounded-lg shadow-md border border-gray-200 dark:border-gray-700",
+      pi: "font-black text-[#8B5CF6] pi-color drop-shadow-md",
+      eat: "ml-0.5 font-extrabold text-orange drop-shadow-md",
+      emoji: `absolute -top-1 -right-2 ${emojiSize[size]} bg-orange text-white rounded-full h-5 w-5 flex items-center justify-center transform rotate-12 border-2 border-white shadow-md`
+    }
+  };
+
+  const currentStyle = styleVariants[style];
+  
   return (
-    <div className={`font-bold ${sizeClasses[size]} flex items-center ${className}`}>
+    <div className={`font-bold ${sizeClasses[size]} flex items-center ${className} ${currentStyle.container}`}>
       <span className="relative">
-        <span className="font-extrabold text-[#8B5CF6] pi-color">π</span>
+        <span className={currentStyle.pi}>π</span>
         {showEmoji && (
-          <span className={`absolute -top-1 -right-2 ${emojiSize[size]} bg-orange text-white rounded-full h-5 w-5 flex items-center justify-center transform rotate-12 border-2 border-white`}>
+          <span className={currentStyle.emoji}>
             🍕
           </span>
         )}
       </span>
-      {showEat && <span className="ml-0.5 bg-gradient-to-r from-[#9b87f5] to-orange bg-clip-text text-transparent">Eat</span>}
+      {showEat && <span className={currentStyle.eat}>Eat</span>}
     </div>
   );
 };
