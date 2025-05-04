@@ -21,4 +21,9 @@
   .interactive-button {
     @apply hover:scale-105 active:scale-95 transition-all duration-200;
   }
+  
+  /* Connect with Pi special styling */
+  .connect-pi-button {
+    @apply relative overflow-hidden bg-gradient-to-r from-pi via-orange to-pi bg-[length:200%_100%] animate-gradient font-bold tracking-wider py-2 px-4 rounded-lg text-white shadow-lg hover:shadow-xl transition-all duration-300;
+  }
 }

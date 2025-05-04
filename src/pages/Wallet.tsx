@@ -15,6 +15,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import TransactionHistory from '@/components/TransactionHistory';
 import CurrencyValue from '@/components/CurrencyValue';
 import { Container } from '@/components/ui/container';
+import Header from '@/components/Header';
 
 const Wallet = () => {
   const { t } = useLanguage();
@@ -29,6 +30,8 @@ const Wallet = () => {
         <title>{t('wallet.title')} | PiEat-Me</title>
       </Helmet>
 
+      <Header />
+      
       <Container className="pt-6 pb-24">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold">
@@ -68,11 +71,11 @@ const Wallet = () => {
               estimatedValue={`≈ $${convertPiToUsd(balance.ptm * 0.01).toFixed(2)} (${t('wallet.estimatedValue')})`}
               customActions={
                 <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" className="flex items-center justify-center text-xs md:text-sm py-1 h-auto">
+                  <Button variant="outline" className="flex items-center justify-center text-xs md:text-sm py-1 h-auto interactive-button">
                     <RefreshCw className="mr-1 h-3 w-3 md:h-4 md:w-4" />
                     {t('wallet.swap')}
                   </Button>
-                  <Button variant="default" className="button-gradient flex items-center justify-center text-xs md:text-sm py-1 h-auto">
+                  <Button variant="default" className="button-gradient flex items-center justify-center text-xs md:text-sm py-1 h-auto interactive-button">
                     <BadgeInfo className="mr-1 h-3 w-3 md:h-4 md:w-4" />
                     <span className="wallet-manage-text">
                       {t('wallet.manage')}
@@ -86,7 +89,7 @@ const Wallet = () => {
               <CardHeader className="pb-0">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg">{t('wallet.transactions')}</CardTitle>
-                  <Button variant="ghost" size="sm" onClick={fetchBalance} className="text-xs">
+                  <Button variant="ghost" size="sm" onClick={fetchBalance} className="text-xs interactive-button">
                     <RefreshCw className="h-3 w-3 mr-1" />
                     {t('wallet.refresh')}
                   </Button>
@@ -136,15 +139,15 @@ const Wallet = () => {
                 <CardTitle className="text-lg">{t('wallet.quickOptions')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button className="w-full justify-start" variant="outline">
+                <Button className="w-full justify-start interactive-button" variant="outline">
                   <WalletIcon className="mr-2 h-4 w-4" />
                   {t('wallet.topUp')}
                 </Button>
-                <Button className="w-full justify-start" variant="outline">
+                <Button className="w-full justify-start interactive-button" variant="outline">
                   <RefreshCw className="mr-2 h-4 w-4" />
                   {t('wallet.swap')}
                 </Button>
-                <Button className="w-full justify-start button-gradient">
+                <Button className="w-full justify-start button-gradient interactive-button">
                   <Pickaxe className="mr-2 h-4 w-4" />
                   {t('wallet.mine')}
                 </Button>
@@ -162,7 +165,7 @@ const Wallet = () => {
                 <p className="text-sm text-muted-foreground">
                   {t('wallet.ptmDescription')}
                 </p>
-                <Button variant="link" className="text-pi p-0 h-auto mt-2">
+                <Button variant="link" className="text-pi p-0 h-auto mt-2 interactive-button">
                   {t('wallet.learnMore')}
                 </Button>
               </CardContent>

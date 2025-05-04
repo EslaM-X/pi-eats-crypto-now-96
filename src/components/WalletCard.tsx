@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -107,9 +108,10 @@ const WalletCard: React.FC<WalletCardProps> = ({
           {!isUser && onConnect && (
             <Button 
               onClick={onConnect}
-              className="mt-4 lg:mt-0 button-gradient w-full lg:w-auto animate-pulse hover:animate-none"
+              className="mt-4 lg:mt-0 button-gradient w-full lg:w-auto animate-pulse hover:animate-none interactive-button relative overflow-hidden group"
             >
-              Connect with π
+              <span className="relative z-10 font-bold tracking-wider">Connect with π</span>
+              <span className="absolute inset-0 bg-gradient-to-r from-orange/80 via-pi to-orange/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-[length:200%_200%] animate-gradient"></span>
             </Button>
           )}
         </div>
@@ -118,20 +120,20 @@ const WalletCard: React.FC<WalletCardProps> = ({
           <div className="transition-all duration-300 hover:scale-105 transform">
             {customActions ? customActions : (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
-                <Button variant="outline" className="flex items-center justify-center text-xs md:text-sm py-1 h-auto">
+                <Button variant="outline" className="flex items-center justify-center text-xs md:text-sm py-1 h-auto interactive-button">
                   <WalletIcon className="mr-1 h-3 w-3 md:h-4 md:w-4" />
                   <span className="hidden sm:inline mr-1">Connect</span>
                 </Button>
-                <Button variant="outline" className="flex items-center justify-center text-xs md:text-sm py-1 h-auto">
+                <Button variant="outline" className="flex items-center justify-center text-xs md:text-sm py-1 h-auto interactive-button">
                   <SendHorizontal className="mr-1 h-3 w-3 md:h-4 md:w-4" />
                   <span className="hidden sm:inline mr-1">Send</span>
                 </Button>
-                <Button variant="outline" className="flex items-center justify-center text-xs md:text-sm py-1 h-auto">
+                <Button variant="outline" className="flex items-center justify-center text-xs md:text-sm py-1 h-auto interactive-button">
                   <ArrowRightLeft className="mr-1 h-3 w-3 md:h-4 md:w-4" />
                   <span className="hidden sm:inline mr-1">Transactions</span>
                 </Button>
                 {onTopUp && (
-                  <Button variant="default" className="button-gradient flex items-center justify-center text-xs md:text-sm py-1 h-auto" onClick={onTopUp}>
+                  <Button variant="default" className="button-gradient flex items-center justify-center text-xs md:text-sm py-1 h-auto interactive-button" onClick={onTopUp}>
                     <PlusCircle className="mr-1 h-3 w-3 md:h-4 md:w-4" />
                     <span className="hidden sm:inline mr-1">Top Up</span>
                   </Button>
@@ -146,7 +148,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
             <Button 
               variant="ghost" 
               size="sm" 
-              className="text-xs flex items-center hover:bg-primary/20 transition-colors duration-200" 
+              className="text-xs flex items-center hover:bg-primary/20 transition-colors duration-200 interactive-button" 
               onClick={onExternal}
             >
               <ExternalLink className="mr-1 h-3 w-3" />

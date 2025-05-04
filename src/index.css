@@ -98,6 +98,18 @@
   }
 }
 
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 /* Glass card effect */
 .glass-card {
   @apply border border-white/10 bg-white/5 backdrop-blur-sm;
@@ -141,4 +153,32 @@
   display: inline-block;
   padding: 2px;
   border-radius: 4px;
+}
+
+/* Interactive button styles */
+.interactive-button {
+  @apply transform transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-md;
+}
+
+/* Connect with π button special styling */
+.animate-gradient {
+  animation: gradient 3s ease infinite;
+  background-size: 200% 200%;
+}
+
+/* Particle animation */
+@keyframes particle-float {
+  0% {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.particle {
+  @apply absolute h-1 w-1 rounded-full bg-pi;
+  animation: particle-float 2s ease-in-out infinite;
 }
