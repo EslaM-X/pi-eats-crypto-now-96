@@ -45,8 +45,15 @@ const PiPayment: React.FC<PiPaymentProps> = ({
         throw new Error('فشل في إنشاء الدفعة');
       }
 
+      // Get the payment ID (handle both API versions)
+      const paymentId = paymentData.paymentId || paymentData.identifier;
+      
+      if (!paymentId) {
+        throw new Error('لا يوجد معرف دفع صالح');
+      }
+
       // Complete the payment
-      const completedPayment = await completePayment(paymentData.identifier);
+      const completedPayment = await completePayment(paymentId);
 
       if (completedPayment && completedPayment.status === 'COMPLETED') {
         setPaymentStatus('success');

@@ -4,7 +4,6 @@ import { ThemeProvider } from './ThemeContext';
 import { LanguageProvider } from './LanguageContext';
 import { PiPriceProvider } from './PiPriceContext';
 import { CartProvider } from './CartContext';
-import { RestaurantsProvider } from './RestaurantsContext';
 import { HomeFoodProvider } from './HomeFoodContext';
 import { WalletProvider } from './WalletContext';
 import { PiAuthProvider } from './PiAuthContext';
@@ -16,19 +15,17 @@ interface AppProviderProps {
 
 const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   return (
-    <ThemeProvider defaultTheme="light">
+    <ThemeProvider>
       <LanguageProvider>
         <PiAuthProvider>
           <PiPriceProvider>
             <WalletProvider>
               <CartProvider>
-                <RestaurantsProvider>
-                  <HomeFoodProvider>
-                    <MiningProvider>
-                      {children}
-                    </MiningProvider>
-                  </HomeFoodProvider>
-                </RestaurantsProvider>
+                <HomeFoodProvider>
+                  <MiningProvider>
+                    {children}
+                  </MiningProvider>
+                </HomeFoodProvider>
               </CartProvider>
             </WalletProvider>
           </PiPriceProvider>
