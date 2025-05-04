@@ -23,6 +23,7 @@ import AddFoodListing from "./pages/AddFoodListing";
 import PiPaymentDemo from "./pages/PiPaymentDemo";
 import { MobileNavigation, MobileNavbar } from "./frontend"; 
 import { useIsMobile } from "./frontend/hooks/use-mobile";
+import { useLanguage } from "./contexts/LanguageContext";
 
 // Configure the QueryClient with Pi Network styling
 const queryClient = new QueryClient({
@@ -35,9 +36,38 @@ const queryClient = new QueryClient({
   },
 });
 
-const App = () => {
+const AppContent = () => {
+  const { dir } = useLanguage();
   const isMobile = useIsMobile();
+  
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background to-background/95 text-foreground pb-16 md:pb-0" dir={dir}>
+      <BrowserRouter>
+        <MobileNavbar />
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/restaurants" element={<Restaurants />} />
+          <Route path="/restaurants/:id" element={<RestaurantDetails />} />
+          <Route path="/wallet" element={<Wallet />} />
+          <Route path="/rewards" element={<Rewards />} />
+          <Route path="/mining" element={<Mining />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/homefood" element={<HomeFood />} />
+          <Route path="/homefood/:id" element={<FoodProviderDetails />} />
+          <Route path="/homefood/add" element={<AddFoodListing />} />
+          <Route path="/pi-payment" element={<PiPaymentDemo />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        
+        {/* Show mobile navigation on mobile devices */}
+        {isMobile && <MobileNavigation />}
+      </BrowserRouter>
+    </div>
+  );
+};
 
+const App = () => {
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
@@ -45,29 +75,7 @@ const App = () => {
           <Toaster />
           <Sonner position="top-right" theme="system" />
           <AppProvider>
-            <div className="min-h-screen bg-gradient-to-br from-background to-background/95 text-foreground pb-16 md:pb-0">
-              <BrowserRouter>
-                <MobileNavbar />
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/restaurants" element={<Restaurants />} />
-                  <Route path="/restaurants/:id" element={<RestaurantDetails />} />
-                  <Route path="/wallet" element={<Wallet />} />
-                  <Route path="/rewards" element={<Rewards />} />
-                  <Route path="/mining" element={<Mining />} />
-                  <Route path="/orders" element={<Orders />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/homefood" element={<HomeFood />} />
-                  <Route path="/homefood/:id" element={<FoodProviderDetails />} />
-                  <Route path="/homefood/add" element={<AddFoodListing />} />
-                  <Route path="/pi-payment" element={<PiPaymentDemo />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-                
-                {/* Show mobile navigation on mobile devices */}
-                {isMobile && <MobileNavigation />}
-              </BrowserRouter>
-            </div>
+            <AppContent />
           </AppProvider>
         </TooltipProvider>
       </QueryClientProvider>

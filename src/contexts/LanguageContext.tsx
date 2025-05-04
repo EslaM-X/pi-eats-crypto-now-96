@@ -1,104 +1,77 @@
 
-import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from 'react';
-import { enTranslations } from '../translations/en';
-import { arTranslations } from '../translations/ar';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import translations from '../translations';
 
 type Language = 'en' | 'ar';
 
 interface LanguageContextType {
   language: Language;
-  setLanguage: (lang: Language) => void;
+  setLanguage: (language: Language) => void;
   t: (key: string) => string;
-  rtl: boolean;
+  dir: 'ltr' | 'rtl';
 }
 
-const LanguageContext = createContext<LanguageContextType | null>(null);
-
-export const useLanguage = () => {
-  const context = useContext(LanguageContext);
-  if (!context) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
-  }
-  return context;
-};
+const LanguageContext = createContext<LanguageContextType>({
+  language: 'en',
+  setLanguage: () => {},
+  t: () => '',
+  dir: 'ltr',
+});
 
 interface LanguageProviderProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  // Get from localStorage or default to 'en'
-  const storedLang = localStorage.getItem('language') as Language || 'en';
-  const [language, setLanguageState] = useState<Language>(storedLang);
-  const rtl = language === 'ar';
+  // Get saved language or default to 'en'
+  const savedLanguage = localStorage.getItem('language') as Language;
+  const [language, setLanguageState] = useState<Language>(savedLanguage || 'en');
+  const dir = language === 'ar' ? 'rtl' : 'ltr';
 
-  // Update document direction when language changes
-  useEffect(() => {
-    document.documentElement.dir = rtl ? 'rtl' : 'ltr';
-    document.documentElement.lang = language;
-    
-    // Add a class to the body for specific RTL styling if needed
-    if (rtl) {
-      document.body.classList.add('rtl');
-    } else {
-      document.body.classList.remove('rtl');
-    }
-    
-    // Add Arabic font variable for better rendering of diacritical marks
-    if (rtl) {
-      document.documentElement.style.setProperty(
-        '--font-arabic', 
-        '"Noto Kufi Arabic", "Noto Sans Arabic", "Droid Arabic Kufi", Tahoma, sans-serif'
-      );
-      
-      // Add additional styles for better Arabic rendering
-      document.documentElement.style.setProperty('text-rendering', 'optimizeLegibility');
-      document.documentElement.style.setProperty('-webkit-font-smoothing', 'antialiased');
-      document.documentElement.style.setProperty('-moz-osx-font-smoothing', 'grayscale');
-    } else {
-      document.documentElement.style.removeProperty('text-rendering');
-      document.documentElement.style.removeProperty('-webkit-font-smoothing');
-      document.documentElement.style.removeProperty('-moz-osx-font-smoothing');
-    }
-  }, [rtl, language]);
-
-  // Translation function
-  const t = useCallback((key: string) => {
-    const translations = language === 'en' ? enTranslations : arTranslations;
+  // Function to translate text
+  const t = (key: string): string => {
     const keys = key.split('.');
-    
+    let value: any = translations[language];
+
     // Navigate through nested objects
-    let result = translations as any;
     for (const k of keys) {
-      if (result && result[k] !== undefined) {
-        result = result[k];
+      if (value && value[k]) {
+        value = value[k];
       } else {
         console.warn(`Translation key not found: ${key}`);
         return key;
       }
     }
+
+    return value;
+  };
+
+  // Set language and update localStorage
+  const setLanguage = (newLanguage: Language) => {
+    setLanguageState(newLanguage);
+    localStorage.setItem('language', newLanguage);
+  };
+
+  // Update document attributes when language changes
+  useEffect(() => {
+    document.documentElement.setAttribute('dir', dir);
+    document.documentElement.setAttribute('lang', language);
     
-    return result as string;
-  }, [language]);
-
-  // Set language and store in localStorage
-  const setLanguage = useCallback((lang: Language) => {
-    localStorage.setItem('language', lang);
-    setLanguageState(lang);
-  }, []);
-
-  const value = useMemo(() => ({
-    language,
-    setLanguage,
-    t,
-    rtl
-  }), [language, setLanguage, t, rtl]);
+    // Add language-specific class to body for styling
+    if (language === 'ar') {
+      document.body.classList.add('ar');
+    } else {
+      document.body.classList.remove('ar');
+    }
+  }, [language, dir]);
 
   return (
-    <LanguageContext.Provider value={value}>
+    <LanguageContext.Provider value={{ language, setLanguage, t, dir }}>
       {children}
     </LanguageContext.Provider>
   );
 };
+
+export const useLanguage = (): LanguageContextType => useContext(LanguageContext);
 
 export default LanguageProvider;
