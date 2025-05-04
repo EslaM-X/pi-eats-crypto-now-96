@@ -17,40 +17,73 @@ export interface Transaction {
   metadata?: Record<string, any>;
 }
 
+// Define the wallet balance structure
+interface WalletBalance {
+  pi: number;
+  ptm: number;
+}
+
 interface WalletContextType {
-  balance: number;
+  balance: WalletBalance;
   transactions: Transaction[];
   addTransaction: (transaction: Omit<Transaction, 'id' | 'timestamp'>) => void;
   updateTransactionStatus: (id: string, status: TransactionStatus) => void;
+  fetchBalance: () => void;
 }
 
 const WalletContext = createContext<WalletContextType>({
-  balance: 0,
+  balance: { pi: 0, ptm: 0 },
   transactions: [],
   addTransaction: () => {},
   updateTransactionStatus: () => {},
+  fetchBalance: () => {}
 });
 
 export const useWallet = () => useContext(WalletContext);
 
 export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = usePiAuth();
-  const [balance, setBalance] = useState<number>(0);
+  const [balance, setBalance] = useState<WalletBalance>({ pi: 0, ptm: 0 });
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-  // Load wallet data from localStorage when user changes
-  useEffect(() => {
+  // Function to fetch balance data
+  const fetchBalance = () => {
     if (user) {
-      const savedBalance = localStorage.getItem(`pi_balance_${user.uid}`);
-      if (savedBalance) {
+      const savedPiBalance = localStorage.getItem(`pi_balance_${user.uid}`);
+      const savedPtmBalance = localStorage.getItem(`ptm_balance_${user.uid}`);
+      
+      if (savedPiBalance) {
         try {
-          setBalance(parseFloat(savedBalance));
+          setBalance(prevBalance => ({
+            ...prevBalance,
+            pi: parseFloat(savedPiBalance)
+          }));
         } catch (error) {
-          console.error('Failed to parse saved balance', error);
+          console.error('Failed to parse saved Pi balance', error);
         }
       } else {
-        // Initialize with default balance for demo purposes
-        setBalance(10.0);
+        // Initialize with default Pi balance for demo purposes
+        setBalance(prevBalance => ({
+          ...prevBalance,
+          pi: 10.0
+        }));
+      }
+      
+      if (savedPtmBalance) {
+        try {
+          setBalance(prevBalance => ({
+            ...prevBalance,
+            ptm: parseFloat(savedPtmBalance)
+          }));
+        } catch (error) {
+          console.error('Failed to parse saved PTM balance', error);
+        }
+      } else {
+        // Initialize with default PTM balance for demo purposes
+        setBalance(prevBalance => ({
+          ...prevBalance,
+          ptm: 50.0
+        }));
       }
 
       const savedTransactions = localStorage.getItem(`pi_transactions_${user.uid}`);
@@ -68,17 +101,19 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           console.error('Failed to parse saved transactions', error);
         }
       }
-    } else {
-      // Clear wallet data when user logs out
-      setBalance(0);
-      setTransactions([]);
     }
+  };
+
+  // Load wallet data from localStorage when user changes
+  useEffect(() => {
+    fetchBalance();
   }, [user]);
 
   // Save wallet data to localStorage whenever it changes
   useEffect(() => {
     if (user) {
-      localStorage.setItem(`pi_balance_${user.uid}`, balance.toString());
+      localStorage.setItem(`pi_balance_${user.uid}`, balance.pi.toString());
+      localStorage.setItem(`ptm_balance_${user.uid}`, balance.ptm.toString());
 
       if (transactions.length > 0) {
         localStorage.setItem(
@@ -102,9 +137,15 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     // Update balance based on transaction type
     if (transaction.status === 'completed') {
       if (transaction.type === 'receive' || transaction.type === 'mining' || transaction.type === 'reward') {
-        setBalance((current) => current + transaction.amount);
+        setBalance((current) => ({
+          ...current,
+          pi: current.pi + transaction.amount
+        }));
       } else if (transaction.type === 'send' || transaction.type === 'payment') {
-        setBalance((current) => current - transaction.amount);
+        setBalance((current) => ({
+          ...current,
+          pi: current.pi - transaction.amount
+        }));
       }
     }
   };
@@ -119,9 +160,15 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           // Update balance if status changed to completed
           if (tx.status !== 'completed' && status === 'completed') {
             if (tx.type === 'receive' || tx.type === 'mining' || tx.type === 'reward') {
-              setBalance((current) => current + tx.amount);
+              setBalance((current) => ({
+                ...current,
+                pi: current.pi + tx.amount
+              }));
             } else if (tx.type === 'send' || tx.type === 'payment') {
-              setBalance((current) => current - tx.amount);
+              setBalance((current) => ({
+                ...current,
+                pi: current.pi - tx.amount
+              }));
             }
           }
           
@@ -139,6 +186,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         transactions,
         addTransaction,
         updateTransactionStatus,
+        fetchBalance
       }}
     >
       {children}

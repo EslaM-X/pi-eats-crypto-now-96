@@ -74,7 +74,7 @@ const Wallet = () => {
                   </Button>
                   <Button variant="default" className="button-gradient flex items-center justify-center text-xs md:text-sm py-1 h-auto">
                     <BadgeInfo className="mr-1 h-3 w-3 md:h-4 md:w-4" />
-                    <span className="font-extrabold text-lg bg-gradient-to-r from-emerald-500 to-teal-300 bg-clip-text text-transparent">
+                    <span className="wallet-manage-text">
                       {t('wallet.manage')}
                     </span>
                   </Button>
