@@ -146,7 +146,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
               onClick={onExternal}
             >
               <ExternalLink className="mr-1 h-3 w-3" />
-              {isPi ? 'Visit π Browser' : 'Visit πEat-Me'}
+              {isPi ? 'Visit π Browser' : 'Visit PiEat-Me'}
             </Button>
           </div>
         )}

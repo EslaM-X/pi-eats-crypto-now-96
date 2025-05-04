@@ -22,7 +22,7 @@ const Hero = () => {
       <Container className="relative z-10">
         <div className="flex flex-col items-center text-center">
           <div className="mb-8 transform hover:scale-105 transition-transform duration-300">
-            <PiEatLogo size={isMobile ? "lg" : "xl"} />
+            <PiEatLogo size={isMobile ? "lg" : "xl"} showEmoji={true} />
           </div>
           
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent">

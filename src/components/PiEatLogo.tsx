@@ -32,13 +32,20 @@ const PiEatLogo: React.FC<PiEatLogoProps> = ({
       </span>
     );
   }
+
+  const emojiSize = {
+    sm: 'text-xs',
+    md: 'text-sm',
+    lg: 'text-base',
+    xl: 'text-lg',
+  };
   
   return (
     <div className={`font-bold ${sizeClasses[size]} bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent flex items-center ${className}`}>
       <span className="relative">
         π
         {showEmoji && (
-          <span className="absolute -top-1 -right-2 text-xs bg-orange text-white rounded-full h-3 w-3 flex items-center justify-center">
+          <span className={`absolute -top-1 -right-2 ${emojiSize[size]} bg-orange text-white rounded-full h-5 w-5 flex items-center justify-center transform rotate-12 shadow-md border border-white`}>
             🍕
           </span>
         )}
