@@ -1,67 +1,43 @@
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-
-type Theme = 'light' | 'dark';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface ThemeContextType {
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
+  theme: 'light' | 'dark';
+  setTheme: (theme: 'light' | 'dark') => void;
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+const ThemeContext = createContext<ThemeContextType | null>(null);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setThemeState] = useState<Theme>('light');
+  const [theme, setThemeState] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
-    // Check for stored theme preference
-    const storedTheme = localStorage.getItem('theme') as Theme;
-    if (storedTheme && (storedTheme === 'light' || storedTheme === 'dark')) {
-      setThemeState(storedTheme);
-    } else {
-      // Check for system preference
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        setThemeState('dark');
-      }
-    }
-
-    // Listen for system theme changes
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = (e: MediaQueryListEvent) => {
-      if (!localStorage.getItem('theme')) {
-        setThemeState(e.matches ? 'dark' : 'light');
-      }
-    };
+    // Check for user's saved theme preference
+    const savedTheme = localStorage.getItem('theme');
     
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleChange);
+    if (savedTheme === 'dark' || savedTheme === 'light') {
+      setThemeState(savedTheme);
     } else {
-      // For older browsers
-      mediaQuery.addListener(handleChange);
+      // Check for system preference if no saved theme
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setThemeState(prefersDark ? 'dark' : 'light');
     }
-    
-    return () => {
-      if (mediaQuery.removeEventListener) {
-        mediaQuery.removeEventListener('change', handleChange);
-      } else {
-        // For older browsers
-        mediaQuery.removeListener(handleChange);
-      }
-    };
   }, []);
 
-  // Update document class and store preference when theme changes
+  // Update document class when theme changes
   useEffect(() => {
+    const root = window.document.documentElement;
+    
     if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
+      root.classList.add('dark');
     } else {
-      document.documentElement.classList.remove('dark');
+      root.classList.remove('dark');
     }
-    localStorage.setItem('theme', theme);
   }, [theme]);
 
-  const setTheme = (newTheme: Theme) => {
+  const setTheme = (newTheme: 'light' | 'dark') => {
     setThemeState(newTheme);
+    localStorage.setItem('theme', newTheme);
   };
 
   return (
@@ -73,8 +49,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
 export const useTheme = () => {
   const context = useContext(ThemeContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
 };
+
+export default ThemeContext;

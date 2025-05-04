@@ -1,110 +1,140 @@
 
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { authenticateWithPi } from '@/config/piNetwork';
 import { toast } from 'sonner';
-import { initPiSDK, authenticateUser } from '../config/piNetwork';
 
-interface PiUser {
-  username: string;
+// Define the Pi user type
+type PiUser = {
   uid: string;
+  username: string;
   accessToken?: string;
-}
+  walletAddress?: string;
+  [key: string]: any;
+};
 
+// Define the auth context type
 interface PiAuthContextType {
   user: PiUser | null;
   isAuthenticating: boolean;
   login: () => Promise<PiUser | null>;
   logout: () => void;
-  checkAuthentication: () => Promise<boolean>;
+  isPiNetworkAvailable: boolean;
 }
 
-const PiAuthContext = createContext<PiAuthContextType | undefined>(undefined);
+// Create the context
+const PiAuthContext = createContext<PiAuthContextType | null>(null);
 
-export const PiAuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+// Create the provider component
+export const PiAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<PiUser | null>(null);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [isPiNetworkAvailable, setIsPiNetworkAvailable] = useState(false);
 
+  // Check if Pi Network is available
   useEffect(() => {
-    // Initialize Pi SDK when the component mounts
-    initPiSDK();
-    
-    // Try to restore session from localStorage
-    const storedUser = localStorage.getItem('pi_user');
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error('Failed to parse stored user:', error);
+    const checkPiAvailability = () => {
+      const isPiAvailable = typeof window !== 'undefined' && typeof (window as any).Pi !== 'undefined';
+      setIsPiNetworkAvailable(isPiAvailable);
+      return isPiAvailable;
+    };
+
+    // Check on initial load
+    checkPiAvailability();
+
+    // Set up event listener to check when Pi becomes available
+    const handlePiAvailability = () => {
+      if (checkPiAvailability() && !user) {
+        // Try to restore session
+        tryRestoreSession();
       }
-    }
+    };
+
+    window.addEventListener('pi-sdk-loaded', handlePiAvailability);
+    
+    return () => {
+      window.removeEventListener('pi-sdk-loaded', handlePiAvailability);
+    };
   }, []);
 
-  const login = async (): Promise<PiUser | null> => {
-    setIsAuthenticating(true);
-    
+  // Try to restore an existing session
+  const tryRestoreSession = async () => {
     try {
-      const authResult = await authenticateUser();
-      
-      if (authResult) {
-        const piUser = {
-          username: authResult.user.username,
-          uid: authResult.user.uid,
-          accessToken: authResult.accessToken
-        };
-        
-        setUser(piUser);
-        localStorage.setItem('pi_user', JSON.stringify(piUser));
-        toast.success(`مرحباً ${piUser.username}!`);
-        return piUser;
-      } else {
-        toast.error('فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.');
-        return null;
+      const storedUser = localStorage.getItem('pi_user');
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        console.log('Session restored for user:', parsedUser.username);
       }
     } catch (error) {
-      console.error('Login error:', error);
-      toast.error('حدث خطأ أثناء تسجيل الدخول');
+      console.error('Error restoring session:', error);
+    }
+  };
+
+  // Login function
+  const login = async (): Promise<PiUser | null> => {
+    if (!isPiNetworkAvailable) {
+      toast.error('Pi Network is not available. Please use the Pi Browser.');
+      return null;
+    }
+
+    setIsAuthenticating(true);
+
+    try {
+      const authResult = await authenticateWithPi();
+      
+      if (authResult && authResult.user) {
+        const piUser: PiUser = {
+          uid: authResult.user.uid,
+          username: authResult.user.username,
+          accessToken: authResult.accessToken,
+          walletAddress: authResult.user.walletAddress
+        };
+
+        // Save to localStorage for session restoration
+        localStorage.setItem('pi_user', JSON.stringify(piUser));
+        
+        setUser(piUser);
+        toast.success(`Welcome, ${piUser.username}!`);
+        return piUser;
+      } else {
+        toast.error('Authentication failed');
+        return null;
+      }
+    } catch (error: any) {
+      toast.error(`Authentication error: ${error.message}`);
       return null;
     } finally {
       setIsAuthenticating(false);
     }
   };
 
+  // Logout function
   const logout = () => {
     setUser(null);
     localStorage.removeItem('pi_user');
-    toast.info('تم تسجيل الخروج بنجاح');
+    toast.success('Logged out successfully');
   };
 
-  const checkAuthentication = async (): Promise<boolean> => {
-    if (user) {
-      try {
-        // Validate the session with Pi Network
-        const authResult = await authenticateUser();
-        return !!authResult;
-      } catch {
-        return false;
-      }
-    }
-    return false;
-  };
-
-  const value = {
+  // Provide the context value
+  const contextValue: PiAuthContextType = {
     user,
     isAuthenticating,
     login,
     logout,
-    checkAuthentication
+    isPiNetworkAvailable
   };
 
   return (
-    <PiAuthContext.Provider value={value}>
+    <PiAuthContext.Provider value={contextValue}>
       {children}
     </PiAuthContext.Provider>
   );
 };
 
+// Create a custom hook for using the auth context
 export const usePiAuth = (): PiAuthContextType => {
   const context = useContext(PiAuthContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('usePiAuth must be used within a PiAuthProvider');
   }
   return context;

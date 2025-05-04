@@ -1,391 +1,353 @@
 
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { toast } from 'sonner';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { FoodProvider, Review, Message } from '@/types/food';
 import { usePiAuth } from './PiAuthContext';
-import { FoodProvider, MenuItem, Review, Message } from '@/types/food';
+import { v4 as uuidv4 } from 'uuid';
 
-// Sample data for homemade food and small restaurants
-const initialProviders: FoodProvider[] = [
+// Define context type
+interface HomeFoodContextType {
+  providers: FoodProvider[];
+  favorites: string[];
+  toggleFavorite: (id: string) => void;
+  addFoodProvider: (provider: Omit<FoodProvider, 'id'>) => string;
+  addReview: (providerId: string, rating: number, comment: string) => void;
+  sendMessage: (providerId: string, content: string) => void;
+  getProviderMessages: (providerId: string) => Message[];
+}
+
+// Create the context
+const HomeFoodContext = createContext<HomeFoodContextType | null>(null);
+
+// Sample data for providers
+const sampleProviders: FoodProvider[] = [
   {
     id: '1',
-    name: "Aisha's Home Kitchen",
-    type: 'homemade',
-    description: 'Authentic Egyptian home cooking with recipes passed down through generations.',
-    cuisine: ['Egyptian', 'Middle Eastern'],
-    location: 'Cairo',
+    name: 'Cairo Kitchen',
+    description: 'Authentic home-cooked Egyptian dishes made with love',
+    image: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=800',
+    coverImage: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1200',
     rating: 4.7,
     reviewCount: 24,
-    image: 'https://images.unsplash.com/photo-1500673922987-e212871fec22?w=800',
-    coverImage: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=800',
+    type: 'homemade',
+    cuisine: ['Egyptian', 'Middle Eastern'],
+    location: 'Downtown Cairo',
     contactInfo: {
-      phone: '+20 123 456 789',
-      email: 'aisha@example.com',
-      address: 'Nasr City, Cairo',
+      phone: '+20123456789',
+      email: 'cairokitchen@example.com',
+      address: '123 Tahrir St, Cairo',
       socialMedia: {
-        whatsapp: '+201234567890'
+        facebook: 'cairokitchen',
+        instagram: 'cairo_kitchen'
       }
     },
     menu: [
       {
         id: '101',
         name: 'Koshari',
-        description: 'Traditional Egyptian dish with rice, macaroni, lentils, chickpeas and spicy tomato sauce',
-        price: 5.99,
-        image: 'https://images.unsplash.com/photo-1626056087728-05c3d180911a?w=800',
+        description: 'Traditional Egyptian dish with rice, pasta, lentils and spicy tomato sauce',
+        price: 25,
+        image: 'https://images.unsplash.com/photo-1642282908149-61fec1f9c9c9?w=600',
         category: 'Main Dishes',
         popular: true
       },
       {
         id: '102',
         name: 'Stuffed Vine Leaves',
-        description: 'Grape leaves stuffed with rice, herbs and minced meat',
-        price: 7.99,
-        image: 'https://images.unsplash.com/photo-1579697096985-41fe1430e5df?w=800',
+        description: 'Vine leaves filled with rice and herbs',
+        price: 30,
+        image: 'https://images.unsplash.com/photo-1577779107935-c3315fa1b8fc?w=600',
         category: 'Appetizers'
       },
       {
         id: '103',
-        name: 'Mahshi',
-        description: 'Stuffed vegetables with spiced rice and herbs',
-        price: 8.99,
-        image: 'https://images.unsplash.com/photo-1544148103-0773bf10d330?w=800',
-        category: 'Main Dishes',
-        popular: true
+        name: 'Egyptian Molokhia',
+        description: 'A green soup made from the mallow plant served with rice',
+        price: 28,
+        image: 'https://images.unsplash.com/photo-1505253631864-c9ea14ff6191?w=600',
+        category: 'Soups'
       }
-    ],
-    isAvailable: true,
-    isActive: true
+    ]
   },
   {
     id: '2',
-    name: "Cairo Corner Café",
-    type: 'restaurant',
-    description: 'A cozy small restaurant serving authentic Egyptian breakfast and street food.',
-    cuisine: ['Egyptian', 'Café', 'Breakfast'],
-    location: 'Giza',
+    name: 'Alexandria Seafood',
+    description: 'Fresh seafood dishes inspired by Mediterranean coastal cuisine',
+    image: 'https://images.unsplash.com/photo-1571401835393-8c5f35328320?w=800',
+    coverImage: 'https://images.unsplash.com/photo-1579271723124-a758b3cf2119?w=1200',
     rating: 4.5,
-    reviewCount: 42,
-    image: 'https://images.unsplash.com/photo-1511688878353-3a2f5be94cd7?w=800',
-    coverImage: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800',
+    reviewCount: 16,
+    type: 'homemade',
+    cuisine: ['Seafood', 'Mediterranean'],
+    location: 'Gleem, Alexandria',
     contactInfo: {
-      phone: '+20 109 876 5432',
-      email: 'contact@cairocorner.eg',
-      address: 'Downtown, Giza',
+      phone: '+20123123123',
+      email: 'alexseafood@example.com',
+      address: '45 Corniche Rd, Alexandria',
       socialMedia: {
-        facebook: 'cairocornercafe',
-        instagram: 'cairocorner'
+        instagram: 'alex_seafood',
+        whatsapp: '20123123123'
       }
     },
     menu: [
       {
         id: '201',
-        name: 'Ful Medames',
-        description: 'Traditional Egyptian breakfast of cooked fava beans with olive oil, cumin and herbs',
-        price: 3.99,
-        image: 'https://images.unsplash.com/photo-1588123190131-1c3fac394f4b?w=800',
-        category: 'Breakfast',
+        name: 'Grilled Fish',
+        description: 'Fresh catch of the day grilled to perfection with herbs',
+        price: 65,
+        image: 'https://images.unsplash.com/photo-1544148103-0773bf10d330?w=600',
+        category: 'Main Dishes',
         popular: true
       },
       {
         id: '202',
-        name: 'Falafel Sandwich',
-        description: 'Freshly made falafel with tahini sauce and vegetables in baladi bread',
-        price: 2.99,
-        image: 'https://images.unsplash.com/photo-1593001872095-7d5b3868fb1d?w=800',
-        category: 'Sandwiches'
-      },
-      {
-        id: '203',
-        name: 'Egyptian Tea',
-        description: 'Strong black tea with fresh mint leaves',
-        price: 1.50,
-        image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=800',
-        category: 'Drinks'
+        name: 'Seafood Soup',
+        description: 'Mixed seafood soup with tomato base and aromatic herbs',
+        price: 40,
+        image: 'https://images.unsplash.com/photo-1603073163308-9627e5a9143e?w=600',
+        category: 'Soups'
       }
-    ],
-    isAvailable: true,
-    isActive: true
+    ]
   },
   {
     id: '3',
-    name: "Mama Noura's Kitchen",
+    name: 'Aswan Nubian Delights',
+    description: 'Traditional Nubian cuisine and southern Egyptian specialties',
+    image: 'https://images.unsplash.com/photo-1514326640560-7d063ef2aed5?w=800',
+    coverImage: 'https://images.unsplash.com/photo-1496412705862-e0088f16f791?w=1200',
+    rating: 4.9,
+    reviewCount: 12,
     type: 'homemade',
-    description: 'Homemade Egyptian comfort food made with love and fresh ingredients.',
-    cuisine: ['Egyptian', 'Family Style'],
-    location: 'Alexandria',
-    rating: 4.8,
-    reviewCount: 18,
-    image: 'https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=800',
+    cuisine: ['Nubian', 'Southern Egyptian'],
+    location: 'Zamalek, Cairo',
     contactInfo: {
-      phone: '+20 111 222 3333',
-      email: 'mama.noura@example.com',
-      address: 'Montazah, Alexandria',
+      phone: '+20123789456',
+      email: 'nubiandelights@example.com',
+      address: '78 El Nil St, Zamalek',
       socialMedia: {
-        whatsapp: '+201112223333'
+        facebook: 'nubiandelights',
+        instagram: 'nubian_delights'
       }
     },
     menu: [
       {
         id: '301',
-        name: 'Molokhia with Chicken',
-        description: 'Egyptian jute leaf stew served with chicken and rice',
-        price: 9.99,
-        image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800',
+        name: 'Nubian Lamb Stew',
+        description: 'Slow-cooked lamb with exotic Nubian spices',
+        price: 75,
+        image: 'https://images.unsplash.com/photo-1612118244255-5c7a5abea0db?w=600',
         category: 'Main Dishes',
         popular: true
       },
       {
         id: '302',
-        name: 'Seafood Tagine',
-        description: 'Fresh Alexandria seafood with vegetables and spices in a clay pot',
-        price: 12.99,
-        image: 'https://images.unsplash.com/photo-1611489142329-5da8e7f9d067?w=800',
-        category: 'Main Dishes',
-        popular: true
+        name: 'Egyptian Okra',
+        description: 'Okra cooked with tomatoes and traditional spices',
+        price: 35,
+        image: 'https://images.unsplash.com/photo-1626200419199-391ae4be7a34?w=600',
+        category: 'Sides'
       }
-    ],
-    isAvailable: true,
-    isActive: true
+    ]
   }
 ];
 
-const initialReviews: Review[] = [
-  {
-    id: '1',
-    providerId: '1',
-    userId: 'user1',
-    userName: 'Mohamed A.',
-    rating: 5,
-    comment: 'The best koshari I\'ve ever had! Tastes just like my grandmother used to make.',
-    createdAt: new Date('2024-03-15')
-  },
-  {
-    id: '2',
-    providerId: '1',
-    userId: 'user2',
-    userName: 'Sara H.',
-    rating: 4,
-    comment: 'Very authentic home cooking. The stuffed vine leaves were amazing!',
-    createdAt: new Date('2024-03-10')
-  },
-  {
-    id: '3',
-    providerId: '2',
-    userId: 'user3',
-    userName: 'Ahmed M.',
-    rating: 4,
-    comment: 'The ful medames was delicious and very affordable. Great little spot!',
-    createdAt: new Date('2024-02-28')
-  }
-];
-
-type HomeFoodContextType = {
-  providers: FoodProvider[];
-  reviews: Review[];
-  messages: Message[];
-  myProviders: FoodProvider[];
-  addProvider: (provider: Omit<FoodProvider, 'id' | 'createdAt' | 'userId'>) => Promise<string>;
-  getProvider: (id: string) => FoodProvider | undefined;
-  addReview: (review: Omit<Review, 'id' | 'createdAt'>) => void;
-  getReviews: (providerId: string) => Review[];
-  sendMessage: (message: Omit<Message, 'id' | 'createdAt'>) => void;
-  getMessages: (providerId: string, userId: string) => Message[];
-  toggleFavorite: (providerId: string) => void;
-  favorites: string[];
+// Sample reviews data
+const sampleReviews: { [key: string]: Review[] } = {
+  '1': [
+    {
+      id: 'r1',
+      providerId: '1',
+      userId: 'user1',
+      userName: 'Mohamed',
+      rating: 5,
+      comment: 'Amazing food! The Koshari was perfect.',
+      createdAt: '2023-04-12T14:23:00.000Z'
+    },
+    {
+      id: 'r2',
+      providerId: '1',
+      userId: 'user2',
+      userName: 'Sarah',
+      rating: 4,
+      comment: 'Great flavor, but delivery was a bit late.',
+      createdAt: '2023-04-10T09:15:00.000Z'
+    }
+  ],
+  '2': [
+    {
+      id: 'r3',
+      providerId: '2',
+      userId: 'user3',
+      userName: 'Ahmed',
+      rating: 5,
+      comment: 'Fresh and delicious seafood, highly recommend!',
+      createdAt: '2023-04-08T18:45:00.000Z'
+    }
+  ],
+  '3': [
+    {
+      id: 'r4',
+      providerId: '3',
+      userId: 'user1',
+      userName: 'Mohamed',
+      rating: 5,
+      comment: 'Authentic Nubian flavors, made me nostalgic!',
+      createdAt: '2023-04-05T12:30:00.000Z'
+    }
+  ]
 };
 
-const HomeFoodContext = createContext<HomeFoodContextType>({
-  providers: [],
-  reviews: [],
-  messages: [],
-  myProviders: [],
-  addProvider: async () => '',
-  getProvider: () => undefined,
-  addReview: () => {},
-  getReviews: () => [],
-  sendMessage: () => {},
-  getMessages: () => [],
-  toggleFavorite: () => {},
-  favorites: []
-});
-
-export const useHomeFood = () => useContext(HomeFoodContext);
-
-export const HomeFoodProvider = ({ children }: { children: ReactNode }) => {
+// Create the provider component
+export const HomeFoodProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = usePiAuth();
-  const [providers, setProviders] = useState<FoodProvider[]>(initialProviders);
-  const [reviews, setReviews] = useState<Review[]>(initialReviews);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [providers, setProviders] = useState<FoodProvider[]>(sampleProviders);
+  const [reviews, setReviews] = useState<{ [key: string]: Review[] }>(sampleReviews);
   const [favorites, setFavorites] = useState<string[]>([]);
-  
-  // Load data from localStorage when user changes
+  const [messages, setMessages] = useState<{ [key: string]: Message[] }>({});
+
+  // Load favorites from localStorage when user changes
   useEffect(() => {
     if (user) {
-      const savedFavorites = localStorage.getItem(`homefood_favorites_${user.uid}`);
-      if (savedFavorites) {
-        try {
+      try {
+        const savedFavorites = localStorage.getItem(`favorites_${user.uid}`);
+        if (savedFavorites) {
           setFavorites(JSON.parse(savedFavorites));
-        } catch (error) {
-          console.error('Failed to parse saved favorites', error);
         }
-      }
-      
-      const savedMessages = localStorage.getItem(`homefood_messages_${user.uid}`);
-      if (savedMessages) {
-        try {
-          const parsedMessages = JSON.parse(savedMessages);
-          setMessages(parsedMessages.map((msg: any) => ({
-            ...msg,
-            createdAt: new Date(msg.createdAt)
-          })));
-        } catch (error) {
-          console.error('Failed to parse saved messages', error);
-        }
+      } catch (error) {
+        console.error('Error loading favorites:', error);
       }
     } else {
-      // Clear user-specific data when logged out
       setFavorites([]);
-      setMessages([]);
     }
   }, [user]);
-  
-  // Save data to localStorage whenever it changes
+
+  // Save favorites to localStorage when changed
   useEffect(() => {
-    if (user) {
-      localStorage.setItem(`homefood_favorites_${user.uid}`, JSON.stringify(favorites));
-      if (messages.length > 0) {
-        localStorage.setItem(`homefood_messages_${user.uid}`, JSON.stringify(messages));
-      }
+    if (user && favorites.length > 0) {
+      localStorage.setItem(`favorites_${user.uid}`, JSON.stringify(favorites));
     }
-  }, [favorites, messages, user]);
-  
-  // Filter providers created by the current user
-  const myProviders = providers.filter(provider => provider.userId === user?.uid);
-  
-  const addProvider = async (providerData: Omit<FoodProvider, 'id' | 'createdAt' | 'userId'>): Promise<string> => {
-    if (!user) {
-      toast.error('Please login to add your food listing');
-      return '';
-    }
+  }, [favorites, user]);
+
+  // Toggle a provider as favorite
+  const toggleFavorite = (id: string) => {
+    if (!user) return;
     
-    // Simulate processing delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const newProvider: FoodProvider = {
-      ...providerData,
-      id: Date.now().toString(),
-      userId: user.uid,
-      createdAt: new Date(),
-      isAvailable: true
-    };
-    
-    setProviders(current => [...current, newProvider]);
-    
-    toast.success('Your food listing has been added successfully!');
-    return newProvider.id;
-  };
-  
-  const getProvider = (id: string) => {
-    return providers.find(provider => provider.id === id);
-  };
-  
-  const addReview = (reviewData: Omit<Review, 'id' | 'createdAt'>) => {
-    if (!user) {
-      toast.error('Please login to leave a review');
-      return;
-    }
-    
-    const newReview: Review = {
-      ...reviewData,
-      id: Date.now().toString(),
-      createdAt: new Date()
-    };
-    
-    setReviews(current => [...current, newReview]);
-    
-    // Update provider rating
-    const providerReviews = [...reviews, newReview].filter(r => r.providerId === reviewData.providerId);
-    const avgRating = providerReviews.reduce((sum, r) => sum + r.rating, 0) / providerReviews.length;
-    
-    setProviders(current => 
-      current.map(provider => 
-        provider.id === reviewData.providerId 
-          ? { 
-              ...provider, 
-              rating: parseFloat(avgRating.toFixed(1)), 
-              reviewCount: providerReviews.length 
-            } 
-          : provider
-      )
-    );
-    
-    toast.success('Thank you for your review!');
-  };
-  
-  const getReviews = (providerId: string) => {
-    return reviews.filter(review => review.providerId === providerId);
-  };
-  
-  const sendMessage = (messageData: Omit<Message, 'id' | 'createdAt'>) => {
-    if (!user) {
-      toast.error('Please login to send messages');
-      return;
-    }
-    
-    const newMessage: Message = {
-      ...messageData,
-      id: Date.now().toString(),
-      createdAt: new Date()
-    };
-    
-    setMessages(current => [...current, newMessage]);
-    
-    toast.success('Message sent!');
-  };
-  
-  const getMessages = (providerId: string, userId: string) => {
-    return messages.filter(
-      msg => msg.providerId === providerId && 
-      (msg.userId === userId || (msg.isFromProvider && msg.providerId === providerId))
-    ).sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
-  };
-  
-  const toggleFavorite = (providerId: string) => {
-    if (!user) {
-      toast.error('Please login to save favorites');
-      return;
-    }
-    
-    setFavorites(current => {
-      const isFavorite = current.includes(providerId);
-      if (isFavorite) {
-        toast.info('Removed from favorites');
-        return current.filter(id => id !== providerId);
+    setFavorites(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(fav => fav !== id);
       } else {
-        toast.success('Added to favorites');
-        return [...current, providerId];
+        return [...prev, id];
       }
     });
   };
-  
+
+  // Add a new food provider
+  const addFoodProvider = (provider: Omit<FoodProvider, 'id'>) => {
+    const id = uuidv4();
+    const newProvider: FoodProvider = {
+      ...provider,
+      id,
+      rating: 0,
+      reviewCount: 0,
+      menu: provider.menu || []
+    };
+    
+    setProviders(prev => [newProvider, ...prev]);
+    return id;
+  };
+
+  // Add a review to a provider
+  const addReview = (providerId: string, rating: number, comment: string) => {
+    if (!user) return;
+    
+    const newReview: Review = {
+      id: uuidv4(),
+      providerId,
+      userId: user.uid,
+      userName: user.username,
+      userImage: null,
+      rating,
+      comment,
+      createdAt: new Date().toISOString()
+    };
+    
+    // Update reviews
+    setReviews(prev => {
+      const providerReviews = prev[providerId] || [];
+      return {
+        ...prev,
+        [providerId]: [newReview, ...providerReviews]
+      };
+    });
+    
+    // Update provider rating
+    setProviders(prev => {
+      return prev.map(provider => {
+        if (provider.id === providerId) {
+          const providerReviews = [...(reviews[providerId] || []), newReview];
+          const totalRating = providerReviews.reduce((sum, review) => sum + review.rating, 0);
+          const newRating = totalRating / providerReviews.length;
+          
+          return {
+            ...provider,
+            rating: Number(newRating.toFixed(1)),
+            reviewCount: providerReviews.length
+          };
+        }
+        return provider;
+      });
+    });
+  };
+
+  // Send a message to a provider
+  const sendMessage = (providerId: string, content: string) => {
+    if (!user) return;
+    
+    const newMessage: Message = {
+      id: uuidv4(),
+      providerId,
+      userId: user.uid,
+      userName: user.username,
+      content,
+      createdAt: new Date().toISOString(),
+      isFromProvider: false
+    };
+    
+    setMessages(prev => {
+      const providerMessages = prev[providerId] || [];
+      return {
+        ...prev,
+        [providerId]: [...providerMessages, newMessage]
+      };
+    });
+  };
+
+  // Get messages for a specific provider
+  const getProviderMessages = (providerId: string) => {
+    return messages[providerId] || [];
+  };
+
   return (
-    <HomeFoodContext.Provider
-      value={{
-        providers,
-        reviews,
-        messages,
-        myProviders,
-        addProvider,
-        getProvider,
-        addReview,
-        getReviews,
-        sendMessage,
-        getMessages,
-        toggleFavorite,
-        favorites
-      }}
-    >
+    <HomeFoodContext.Provider value={{
+      providers,
+      favorites,
+      toggleFavorite,
+      addFoodProvider,
+      addReview,
+      sendMessage,
+      getProviderMessages
+    }}>
       {children}
     </HomeFoodContext.Provider>
   );
 };
+
+// Create a custom hook for using the home food context
+export const useHomeFood = () => {
+  const context = useContext(HomeFoodContext);
+  if (!context) {
+    throw new Error('useHomeFood must be used within a HomeFoodProvider');
+  }
+  return context;
+};
+
+export default HomeFoodContext;

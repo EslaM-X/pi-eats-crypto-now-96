@@ -1,195 +1,263 @@
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import { usePiAuth } from './PiAuthContext';
+import { v4 as uuidv4 } from 'uuid';
 
-export type TransactionType = 'send' | 'receive' | 'payment' | 'mining' | 'reward';
-export type TransactionStatus = 'pending' | 'completed' | 'failed';
-
+// Define transaction type
 export interface Transaction {
   id: string;
-  type: TransactionType;
+  type: 'send' | 'receive' | 'reward' | 'mining';
   amount: number;
   description: string;
-  timestamp: Date;
-  status: TransactionStatus;
+  date: Date;
+  status: 'pending' | 'completed' | 'failed';
   recipient?: string;
   sender?: string;
-  metadata?: Record<string, any>;
 }
 
-// Define the wallet balance structure
-interface WalletBalance {
-  pi: number;
-  ptm: number;
-}
-
+// Define wallet context type
 interface WalletContextType {
-  balance: WalletBalance;
+  piBalance: number;
+  ptmBalance: number;
   transactions: Transaction[];
-  addTransaction: (transaction: Omit<Transaction, 'id' | 'timestamp'>) => void;
-  updateTransactionStatus: (id: string, status: TransactionStatus) => void;
-  fetchBalance: () => void;
+  sendPi: (amount: number, recipient: string, description: string) => Promise<boolean>;
+  receivePi: (amount: number, sender: string, description: string) => Promise<boolean>;
+  addMiningReward: (amount: number) => Promise<boolean>;
+  addBonus: (amount: number, reason: string) => Promise<boolean>;
 }
 
-const WalletContext = createContext<WalletContextType>({
-  balance: { pi: 0, ptm: 0 },
-  transactions: [],
-  addTransaction: () => {},
-  updateTransactionStatus: () => {},
-  fetchBalance: () => {}
-});
+// Create the context
+const WalletContext = createContext<WalletContextType | null>(null);
 
-export const useWallet = () => useContext(WalletContext);
-
+// Create the provider component
 export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = usePiAuth();
-  const [balance, setBalance] = useState<WalletBalance>({ pi: 0, ptm: 0 });
+  const [piBalance, setPiBalance] = useState(0);
+  const [ptmBalance, setPtmBalance] = useState(0);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-
-  // Function to fetch balance data
-  const fetchBalance = () => {
-    if (user) {
-      const savedPiBalance = localStorage.getItem(`pi_balance_${user.uid}`);
-      const savedPtmBalance = localStorage.getItem(`ptm_balance_${user.uid}`);
-      
-      if (savedPiBalance) {
-        try {
-          setBalance(prevBalance => ({
-            ...prevBalance,
-            pi: parseFloat(savedPiBalance)
-          }));
-        } catch (error) {
-          console.error('Failed to parse saved Pi balance', error);
-        }
-      } else {
-        // Initialize with default Pi balance for demo purposes
-        setBalance(prevBalance => ({
-          ...prevBalance,
-          pi: 10.0
-        }));
-      }
-      
-      if (savedPtmBalance) {
-        try {
-          setBalance(prevBalance => ({
-            ...prevBalance,
-            ptm: parseFloat(savedPtmBalance)
-          }));
-        } catch (error) {
-          console.error('Failed to parse saved PTM balance', error);
-        }
-      } else {
-        // Initialize with default PTM balance for demo purposes
-        setBalance(prevBalance => ({
-          ...prevBalance,
-          ptm: 50.0
-        }));
-      }
-
-      const savedTransactions = localStorage.getItem(`pi_transactions_${user.uid}`);
-      if (savedTransactions) {
-        try {
-          const parsedTransactions = JSON.parse(savedTransactions);
-          // Convert timestamp strings back to Date objects
-          setTransactions(
-            parsedTransactions.map((tx: any) => ({
-              ...tx,
-              timestamp: new Date(tx.timestamp),
-            }))
-          );
-        } catch (error) {
-          console.error('Failed to parse saved transactions', error);
-        }
-      }
-    }
-  };
 
   // Load wallet data from localStorage when user changes
   useEffect(() => {
-    fetchBalance();
+    if (user) {
+      try {
+        // Load Pi balance
+        const savedPiBalance = localStorage.getItem(`pi_balance_${user.uid}`);
+        if (savedPiBalance) {
+          setPiBalance(Number(savedPiBalance));
+        } else {
+          // Default starting balance for new users
+          setPiBalance(100);
+          localStorage.setItem(`pi_balance_${user.uid}`, '100');
+        }
+
+        // Load PTM (PiEat-Me token) balance
+        const savedPtmBalance = localStorage.getItem(`ptm_balance_${user.uid}`);
+        if (savedPtmBalance) {
+          setPtmBalance(Number(savedPtmBalance));
+        } else {
+          // Default starting PTM balance
+          setPtmBalance(10);
+          localStorage.setItem(`ptm_balance_${user.uid}`, '10');
+        }
+
+        // Load transactions
+        const savedTransactions = localStorage.getItem(`transactions_${user.uid}`);
+        if (savedTransactions) {
+          // Parse the transactions and convert date strings to Date objects
+          const parsedTransactions = JSON.parse(savedTransactions).map((tx: any) => ({
+            ...tx,
+            date: new Date(tx.date)
+          }));
+          
+          setTransactions(parsedTransactions);
+        } else {
+          // Create default transactions history
+          const defaultTransactions: Transaction[] = [
+            {
+              id: uuidv4(),
+              type: 'receive',
+              amount: 100,
+              description: 'Welcome bonus',
+              date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
+              status: 'completed'
+            },
+            {
+              id: uuidv4(),
+              type: 'reward',
+              amount: 10,
+              description: 'Sign-up reward in PTM tokens',
+              date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
+              status: 'completed'
+            }
+          ];
+          
+          setTransactions(defaultTransactions);
+          localStorage.setItem(`transactions_${user.uid}`, JSON.stringify(defaultTransactions));
+        }
+      } catch (error) {
+        console.error('Error loading wallet data:', error);
+      }
+    } else {
+      // Reset state when user logs out
+      setPiBalance(0);
+      setPtmBalance(0);
+      setTransactions([]);
+    }
   }, [user]);
 
-  // Save wallet data to localStorage whenever it changes
+  // Save wallet data to localStorage when changed
   useEffect(() => {
     if (user) {
-      localStorage.setItem(`pi_balance_${user.uid}`, balance.pi.toString());
-      localStorage.setItem(`ptm_balance_${user.uid}`, balance.ptm.toString());
-
-      if (transactions.length > 0) {
-        localStorage.setItem(
-          `pi_transactions_${user.uid}`,
-          JSON.stringify(transactions)
-        );
+      try {
+        localStorage.setItem(`pi_balance_${user.uid}`, piBalance.toString());
+        localStorage.setItem(`ptm_balance_${user.uid}`, ptmBalance.toString());
+        
+        // Convert Date objects to strings for JSON serialization
+        const serializableTransactions = transactions.map(tx => ({
+          ...tx,
+          date: tx.date.toISOString()
+        }));
+        
+        localStorage.setItem(`transactions_${user.uid}`, JSON.stringify(serializableTransactions));
+      } catch (error) {
+        console.error('Error saving wallet data:', error);
       }
     }
-  }, [balance, transactions, user]);
+  }, [piBalance, ptmBalance, transactions, user]);
 
-  // Add a new transaction
-  const addTransaction = (transaction: Omit<Transaction, 'id' | 'timestamp'>) => {
-    const newTransaction: Transaction = {
-      ...transaction,
-      id: Date.now().toString(),
-      timestamp: new Date(),
+  // Send Pi to another user
+  const sendPi = async (amount: number, recipient: string, description: string): Promise<boolean> => {
+    if (!user) return false;
+    
+    if (amount <= 0) {
+      console.error('Amount must be greater than 0');
+      return false;
+    }
+    
+    if (amount > piBalance) {
+      console.error('Insufficient balance');
+      return false;
+    }
+    
+    // Create the transaction
+    const transaction: Transaction = {
+      id: uuidv4(),
+      type: 'send',
+      amount,
+      description,
+      recipient,
+      date: new Date(),
+      status: 'completed'
     };
-
-    setTransactions((current) => [newTransaction, ...current]);
-
-    // Update balance based on transaction type
-    if (transaction.status === 'completed') {
-      if (transaction.type === 'receive' || transaction.type === 'mining' || transaction.type === 'reward') {
-        setBalance((current) => ({
-          ...current,
-          pi: current.pi + transaction.amount
-        }));
-      } else if (transaction.type === 'send' || transaction.type === 'payment') {
-        setBalance((current) => ({
-          ...current,
-          pi: current.pi - transaction.amount
-        }));
-      }
-    }
+    
+    // Update balance and add transaction
+    setPiBalance(prev => prev - amount);
+    setTransactions(prev => [transaction, ...prev]);
+    
+    return true;
   };
 
-  // Update status of an existing transaction
-  const updateTransactionStatus = (id: string, status: TransactionStatus) => {
-    setTransactions((current) =>
-      current.map((tx) => {
-        if (tx.id === id) {
-          const updatedTx = { ...tx, status };
-          
-          // Update balance if status changed to completed
-          if (tx.status !== 'completed' && status === 'completed') {
-            if (tx.type === 'receive' || tx.type === 'mining' || tx.type === 'reward') {
-              setBalance((current) => ({
-                ...current,
-                pi: current.pi + tx.amount
-              }));
-            } else if (tx.type === 'send' || tx.type === 'payment') {
-              setBalance((current) => ({
-                ...current,
-                pi: current.pi - tx.amount
-              }));
-            }
-          }
-          
-          return updatedTx;
-        }
-        return tx;
-      })
-    );
+  // Receive Pi from another user
+  const receivePi = async (amount: number, sender: string, description: string): Promise<boolean> => {
+    if (!user) return false;
+    
+    if (amount <= 0) {
+      console.error('Amount must be greater than 0');
+      return false;
+    }
+    
+    // Create the transaction
+    const transaction: Transaction = {
+      id: uuidv4(),
+      type: 'receive',
+      amount,
+      description,
+      sender,
+      date: new Date(),
+      status: 'completed'
+    };
+    
+    // Update balance and add transaction
+    setPiBalance(prev => prev + amount);
+    setTransactions(prev => [transaction, ...prev]);
+    
+    return true;
+  };
+
+  // Add mining reward
+  const addMiningReward = async (amount: number): Promise<boolean> => {
+    if (!user) return false;
+    
+    if (amount <= 0) {
+      console.error('Amount must be greater than 0');
+      return false;
+    }
+    
+    // Create the transaction
+    const transaction: Transaction = {
+      id: uuidv4(),
+      type: 'mining',
+      amount,
+      description: 'Mining reward',
+      date: new Date(),
+      status: 'completed'
+    };
+    
+    // Update balance and add transaction
+    setPiBalance(prev => prev + amount);
+    setTransactions(prev => [transaction, ...prev]);
+    
+    return true;
+  };
+
+  // Add bonus (rewards in PTM tokens)
+  const addBonus = async (amount: number, reason: string): Promise<boolean> => {
+    if (!user) return false;
+    
+    if (amount <= 0) {
+      console.error('Amount must be greater than 0');
+      return false;
+    }
+    
+    // Create the transaction
+    const transaction: Transaction = {
+      id: uuidv4(),
+      type: 'reward',
+      amount,
+      description: reason,
+      date: new Date(),
+      status: 'completed'
+    };
+    
+    // Update PTM balance and add transaction
+    setPtmBalance(prev => prev + amount);
+    setTransactions(prev => [transaction, ...prev]);
+    
+    return true;
   };
 
   return (
-    <WalletContext.Provider
-      value={{
-        balance,
-        transactions,
-        addTransaction,
-        updateTransactionStatus,
-        fetchBalance
-      }}
-    >
+    <WalletContext.Provider value={{
+      piBalance,
+      ptmBalance,
+      transactions,
+      sendPi,
+      receivePi,
+      addMiningReward,
+      addBonus
+    }}>
       {children}
     </WalletContext.Provider>
   );
 };
+
+// Create a custom hook for using the wallet context
+export const useWallet = () => {
+  const context = useContext(WalletContext);
+  if (!context) {
+    throw new Error('useWallet must be used within a WalletProvider');
+  }
+  return context;
+};
+
+export default WalletContext;

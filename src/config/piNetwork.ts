@@ -1,102 +1,97 @@
 
-import { Pi } from '@pinetwork-js/sdk';
+/**
+ * Pi Network SDK Configuration and Helper Functions
+ * This file provides integration with Pi Network's SDK
+ */
 
-// Initialize Pi SDK
-export const initPiSDK = () => {
-  Pi.init({
-    version: '2.0',
-    sandbox: process.env.NODE_ENV !== 'production' // Use sandbox mode for development
-  });
+// Define the SDK interfaces and types
+interface PaymentData {
+  identifier?: string;
+  paymentId?: string;
+  _id?: string;
+  status?: string;
+  amount: number;
+  memo: string;
+  [key: string]: any;
+}
+
+// Check if Pi SDK is available in the browser environment
+const isPiAvailable = (): boolean => {
+  return typeof window !== 'undefined' && typeof (window as any).Pi !== 'undefined';
 };
 
-// Authenticate user
-export const authenticateUser = async () => {
+// Create a payment transaction
+export const createPayment = async (amount: number, memo: string): Promise<PaymentData | null> => {
   try {
-    const scopes = ['payments', 'username'];
-    const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
-    console.log('Authentication successful:', auth);
+    if (!isPiAvailable()) {
+      console.error('Pi SDK not available. Are you using the Pi Browser?');
+      throw new Error('Pi SDK not available');
+    }
+
+    // Call Pi.createPayment method
+    const payment = await (window as any).Pi.createPayment({
+      amount: amount,
+      memo: memo,
+      metadata: { orderId: `order-${Date.now()}` }
+    });
+
+    console.log('Payment created:', payment);
+    return payment;
+  } catch (error: any) {
+    console.error('Error creating payment:', error.message);
+    return null;
+  }
+};
+
+// Complete a payment transaction
+export const completePayment = async (paymentId: string): Promise<PaymentData | null> => {
+  try {
+    if (!isPiAvailable()) {
+      console.error('Pi SDK not available. Are you using the Pi Browser?');
+      throw new Error('Pi SDK not available');
+    }
+
+    // Call Pi.completePayment method
+    const payment = await (window as any).Pi.completePayment(paymentId);
+    console.log('Payment completed:', payment);
+    return payment;
+  } catch (error: any) {
+    console.error('Error completing payment:', error.message);
+    return null;
+  }
+};
+
+// Authenticate user with Pi Network
+export const authenticateWithPi = async (): Promise<any> => {
+  try {
+    if (!isPiAvailable()) {
+      console.error('Pi SDK not available. Are you using the Pi Browser?');
+      throw new Error('Pi SDK not available');
+    }
+
+    // Call Pi.authenticate method
+    const auth = await (window as any).Pi.authenticate(
+      ['username', 'payments', 'wallet_address'], 
+      onIncompletePaymentFound
+    );
+    
+    console.log('Pi authentication result:', auth);
     return auth;
-  } catch (error) {
-    console.error('Authentication error:', error);
+  } catch (error: any) {
+    console.error('Pi authentication error:', error.message);
     return null;
   }
 };
 
 // Handle incomplete payments
-const onIncompletePaymentFound = (payment: any) => {
+const onIncompletePaymentFound = (payment: PaymentData) => {
   console.log('Incomplete payment found:', payment);
-  // Handle incomplete payment
+  // You can implement custom logic to handle incomplete payments here
+  return completePayment(payment.identifier || payment.paymentId || payment._id || '');
 };
 
-// Create a new payment
-export const createPayment = async (amount: number, memo: string) => {
-  try {
-    // The Pi API expects a specific format for createPayment
-    const paymentData = await Pi.createPayment({
-      amount: amount.toString(),
-      memo,
-      metadata: { orderId: Date.now().toString() }
-    });
-    
-    console.log('Payment created:', paymentData);
-    return paymentData;
-  } catch (error) {
-    console.error('Error creating payment:', error);
-    return null;
-  }
-};
-
-// Callback when payment is ready for approval
-const onReadyForServerApproval = (paymentId: string) => {
-  console.log('Ready for server approval:', paymentId);
-  // Handle approval logic
-};
-
-// Callback when payment is ready for completion
-const onReadyForServerCompletion = (paymentId: string) => {
-  console.log('Ready for server completion:', paymentId);
-  // Handle completion logic
-};
-
-// Callback when payment is cancelled
-const onCancel = (paymentId: string) => {
-  console.log('Payment cancelled:', paymentId);
-  // Handle cancellation
-};
-
-// Callback for payment errors
-const onError = (error: Error, payment?: any) => {
-  console.error('Payment error:', error, payment);
-  // Handle error
-};
-
-// Complete payment
-export const completePayment = async (paymentId: string) => {
-  try {
-    // In the latest SDK, completing a payment requires calling Pi.createPayment with the paymentId
-    const completedPayment = await Pi.createPayment({
-      paymentId,
-      amount: '0', // These fields are required but will be ignored when completing
-      memo: '',
-    });
-    
-    console.log('Payment completed:', completedPayment);
-    return completedPayment;
-  } catch (error) {
-    console.error('Error completing payment:', error);
-    return null;
-  }
-};
-
-// Cancel payment
-export const cancelPayment = async (paymentId: string, reason: string) => {
-  try {
-    // In the latest SDK, cancellation is handled differently
-    console.log('Attempting to cancel payment:', paymentId, reason);
-    // This is a placeholder to maintain API compatibility
-    return { cancelled: true, paymentId };
-  } catch (error) {
-    console.error('Error cancelling payment:', error);
-    return null;
-  }
+export default {
+  createPayment,
+  completePayment,
+  authenticateWithPi
 };

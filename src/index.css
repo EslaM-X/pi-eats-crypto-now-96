@@ -6,179 +6,120 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    --foreground: 224 71.4% 4.1%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
- 
+    --card-foreground: 224 71.4% 4.1%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
- 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
- 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
- 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
- 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
- 
+    --popover-foreground: 224 71.4% 4.1%;
+    --primary: 262.1 83.3% 57.8%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 220.9 39.3% 11%;
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 220.9 39.3% 11%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
- 
+    --destructive-foreground: 210 20% 98%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 262.1 83.3% 57.8%;
     --radius: 0.5rem;
-    
-    /* PiEat custom colors */
-    --pi: 261 85% 61%;
-    --pi-dark: 262 83% 44%;
-    --orange: 24 94% 53%;
-    --orange-dark: 24 94% 43%;
+    --pi: 262.1 83.3% 57.8%;
+    --orange: 24.6 95% 53.1%;
   }
  
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
- 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
- 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
- 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
- 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
- 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
- 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
- 
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 20% 98%;
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 263.4 70% 50.4%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 215 27.9% 16.9%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+    --accent: 215 27.9% 16.9%;
+    --accent-foreground: 210 20% 98%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
- 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 263.4 70% 50.4%;
+    --pi: 263.4 70% 50.4%;
+    --orange: 20.5 90.2% 48.2%;
   }
 }
- 
+
 @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  [dir="rtl"] .rtl-flip {
+    transform: scaleX(-1);
   }
 }
 
-.button-gradient {
-  @apply bg-gradient-to-r from-[#8B5CF6] to-orange hover:opacity-90 text-white transition-all duration-300;
+@layer utilities {
+  .button-gradient {
+    @apply bg-gradient-to-r from-pi to-orange text-white hover:from-pi/90 hover:to-orange/90 transition-all;
+  }
+
+  .interactive-button {
+    @apply hover:scale-[1.03] active:scale-[0.97] transform transition-all;
+  }
+
+  .glass-card {
+    @apply bg-white/70 dark:bg-gray-800/70 backdrop-blur-md shadow-lg border border-white/20 dark:border-gray-700/30;
+  }
+
+  .pi-color {
+    color: #8B5CF6;
+  }
+
+  .animate-gradient {
+    animation: gradient-shift 3s ease infinite;
+    background-size: 200% 200%;
+  }
 }
 
-@keyframes colorShift {
-  0% {
+@keyframes gradient-shift {
+  0%, 100% {
     background-position: 0% 50%;
   }
   50% {
     background-position: 100% 50%;
   }
-  100% {
-    background-position: 0% 50%;
-  }
 }
 
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-/* Glass card effect */
-.glass-card {
-  @apply border border-white/10 bg-white/5 backdrop-blur-sm;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.dark .glass-card {
-  @apply border-white/5 bg-black/10;
-}
-
-/* Grid patterns for placeholders */
-.bg-grid-pattern-light {
-  background-size: 10px 10px;
-  background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
-}
-
-.bg-grid-pattern-dark {
-  background-size: 10px 10px;
-  background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
-}
-
-/* Pi color specific styling */
-.pi-color {
-  color: #8B5CF6;
-}
-
-/* Custom styling for wallet.manage text */
-.wallet-manage-text {
-  font-weight: 800;
-  letter-spacing: 0.05rem;
-  background: linear-gradient(45deg, #10B981 0%, #3B82F6 50%, #8B5CF6 100%);
-  background-size: 200% auto;
-  animation: colorShift 3s ease-in-out infinite;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.2);
-  font-size: 1.25rem;
-  transform: scale(1.05);
-  display: inline-block;
-  padding: 2px;
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted));
   border-radius: 4px;
 }
 
-/* Interactive button styles */
-.interactive-button {
-  @apply transform transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-md;
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
 }
 
-/* Connect with π button special styling */
-.animate-gradient {
-  animation: gradient 3s ease infinite;
-  background-size: 200% 200%;
-}
-
-/* Particle animation */
-@keyframes particle-float {
-  0% {
-    transform: translateY(0) rotate(0);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-100px) rotate(360deg);
-    opacity: 0;
-  }
-}
-
-.particle {
-  @apply absolute h-1 w-1 rounded-full bg-pi;
-  animation: particle-float 2s ease-in-out infinite;
+/* RTL support */
+[dir="rtl"] body {
+  text-align: right;
 }
