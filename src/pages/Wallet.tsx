@@ -27,7 +27,7 @@ const Wallet = () => {
   return (
     <>
       <Helmet>
-        <title>{t('wallet.title')} | PiEat-Me</title>
+        <title>Portfolio Management | PiEat-Me</title>
       </Helmet>
 
       <Header />
@@ -36,7 +36,7 @@ const Wallet = () => {
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold">
             <span className="bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent">
-              {t('wallet.title')}
+              Portfolio Management
             </span>
           </h1>
           <PiPriceIndicator showDetails={true} />
