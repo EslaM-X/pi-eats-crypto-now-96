@@ -9,7 +9,7 @@ import { Container } from '@/components/ui/container';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Hero = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { theme } = useTheme();
   const isMobile = useIsMobile();
   
@@ -25,9 +25,20 @@ const Hero = () => {
             <PiEatLogo size={isMobile ? "lg" : "xl"} showEmoji={true} />
           </div>
           
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent">
-            {t('home.welcome')}
-          </h1>
+          {language === 'ar' ? (
+            <div className="flex flex-col gap-3 mb-6">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-orange animate-pulse-slow">
+                {t('home.welcomeHighlight')}
+              </h2>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent">
+                {t('home.welcome')}
+              </h1>
+            </div>
+          ) : (
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent">
+              {t('home.welcome')}
+            </h1>
+          )}
           
           <p className="text-lg sm:text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-muted-foreground leading-relaxed">
             {t('home.subtitle')}

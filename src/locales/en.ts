@@ -24,6 +24,7 @@ export default {
   },
   home: {
     welcome: 'Order Food with Pi Cryptocurrency',
+    welcomeHighlight: 'Enjoy a unique experience',
     subtitle: 'Discover restaurants and home chefs near you, and pay with Pi Network currency!',
     featured: 'Featured Restaurants',
     categories: 'Popular Categories',
