@@ -1,150 +1,165 @@
 
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { toast } from '@/components/ui/use-toast';
-import { useLanguage } from './LanguageContext';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { toast } from 'sonner';
 
-type PiPriceData = {
+interface PiPriceData {
   price: number;
-  currency: string;
   change24h: number;
   lastUpdated: Date;
-  source: string;
-  usdRate: number;
   egpRate: number;
-};
+  source: 'OKX' | 'Fallback';
+}
 
-type PiPriceContextType = {
+interface PiPriceContextType {
   priceData: PiPriceData | null;
   isLoading: boolean;
-  error: string | null;
   refreshPrice: () => Promise<void>;
-  convertPiToUsd: (piAmount: number) => number;
-  convertPiToEgp: (piAmount: number) => number;
-};
+  convertPiToUsd: (amount: number) => number;
+  convertPiToEgp: (amount: number) => number;
+}
 
-const PiPriceContext = createContext<PiPriceContextType>({
-  priceData: null,
-  isLoading: false,
-  error: null,
-  refreshPrice: async () => {},
-  convertPiToUsd: () => 0,
-  convertPiToEgp: () => 0,
-});
+const PiPriceContext = createContext<PiPriceContextType | undefined>(undefined);
 
-export const usePiPrice = () => useContext(PiPriceContext);
+// OKX API endpoint to fetch Pi price
+const OKX_API_URL = 'https://www.okx.com/api/v5/market/ticker?instId=PI-USDT';
 
-export const PiPriceProvider = ({ children }: { children: ReactNode }) => {
+// EGP to USD exchange rate (as of May 2025)
+const EGP_USD_RATE = 30.85; // 1 USD = 30.85 EGP
+
+export const PiPriceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [priceData, setPriceData] = useState<PiPriceData | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { t } = useLanguage();
-  
-  // EGP to USD exchange rate (will be updated periodically)
-  const [usdToEgpRate, setUsdToEgpRate] = useState(31.2); // Default rate, will be updated
+  const [isLoading, setIsLoading] = useState(true);
 
-  const fetchEgpRate = async () => {
+  // Function to fetch price from OKX
+  const fetchPiPrice = async (): Promise<PiPriceData | null> => {
     try {
-      // We could use an actual currency API here, but for simplicity using a fixed rate
-      // that updates occasionally (this could be replaced with an actual API call)
-      const newRate = 31.2 + (Math.random() * 0.5); // Random fluctuation for demo
-      setUsdToEgpRate(newRate);
-    } catch (err) {
-      console.error('Failed to fetch EGP rate', err);
-    }
-  };
-
-  const fetchPiPrice = async (): Promise<void> => {
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      // Fetch Pi price data from OKX API
-      const response = await fetch('https://www.okx.com/api/v5/market/ticker?instId=PI-USDT');
-      const data = await response.json();
-      
-      if (!data.data || data.data.length === 0) {
-        throw new Error('Failed to fetch data from OKX');
+      const response = await fetch(OKX_API_URL);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
       
-      const ticker = data.data[0];
-      const currentPrice = parseFloat(ticker.last);
+      const data = await response.json();
       
-      // Calculate 24h change
-      const open24h = parseFloat(ticker.open24h);
-      const change24h = ((currentPrice - open24h) / open24h) * 100;
-      
-      // Update EGP rate periodically
-      await fetchEgpRate();
-      
-      setPriceData({
-        price: currentPrice,
-        currency: 'USDT',
-        change24h: change24h,
-        lastUpdated: new Date(),
-        source: 'OKX',
-        usdRate: currentPrice, // 1 Pi = currentPrice USD
-        egpRate: currentPrice * usdToEgpRate, // Convert to EGP
-      });
-    } catch (err) {
-      console.error('Failed to fetch Pi price', err);
-      const errorMessage = 'Failed to load Pi price data. Using fallback data.';
-      setError(errorMessage);
-      toast({
-        title: t('error.priceUpdateFailed'),
-        description: errorMessage,
-        variant: "destructive",
-      });
-      
-      // Use fallback data if API fails
-      const mockPrice = (Math.random() * (15 - 5) + 5) / 100;
-      const mockChange = (Math.random() * 10) - 5;
-      
-      setPriceData({
-        price: mockPrice,
-        currency: 'USDT',
-        change24h: mockChange,
-        lastUpdated: new Date(),
-        source: 'Fallback',
-        usdRate: mockPrice, // 1 Pi = mockPrice USD
-        egpRate: mockPrice * usdToEgpRate, // Convert to EGP
-      });
+      if (data.code === '0' && data.data && data.data[0]) {
+        const { last, open24h, ts } = data.data[0];
+        const price = parseFloat(last);
+        const prevPrice = parseFloat(open24h);
+        const change24h = ((price - prevPrice) / prevPrice) * 100;
+        
+        return {
+          price,
+          change24h,
+          lastUpdated: new Date(),
+          egpRate: price * EGP_USD_RATE,
+          source: 'OKX'
+        };
+      } else {
+        throw new Error('Invalid data format from OKX');
+      }
+    } catch (error) {
+      console.error('Error fetching Pi price:', error);
+      return null;
+    }
+  };
+  
+  // Fallback to static price if API fails
+  const getFallbackPrice = (): PiPriceData => {
+    return {
+      price: 0.59,
+      change24h: 1.5,
+      lastUpdated: new Date(),
+      egpRate: 0.59 * EGP_USD_RATE,
+      source: 'Fallback'
+    };
+  };
+  
+  // Function to refresh price data
+  const refreshPrice = async () => {
+    setIsLoading(true);
+    try {
+      const freshPriceData = await fetchPiPrice();
+      if (freshPriceData) {
+        setPriceData(freshPriceData);
+        localStorage.setItem('piPriceData', JSON.stringify(freshPriceData));
+      } else {
+        const fallbackData = getFallbackPrice();
+        setPriceData(fallbackData);
+        toast.error('Could not fetch latest Pi price. Using fallback data.');
+      }
+    } catch (error) {
+      console.error('Error refreshing price:', error);
+      toast.error('Failed to refresh Pi price');
     } finally {
       setIsLoading(false);
     }
   };
-
-  // Conversion helpers
-  const convertPiToUsd = (piAmount: number): number => {
-    if (!priceData) return 0;
-    return piAmount * priceData.usdRate;
+  
+  // Initialize price data
+  useEffect(() => {
+    const loadPriceData = async () => {
+      setIsLoading(true);
+      
+      // Try to get cached price data first
+      const cachedPriceData = localStorage.getItem('piPriceData');
+      
+      if (cachedPriceData) {
+        try {
+          const parsed = JSON.parse(cachedPriceData);
+          parsed.lastUpdated = new Date(parsed.lastUpdated);
+          setPriceData(parsed);
+          
+          // If cached data is older than 5 minutes, refresh it
+          const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+          if (parsed.lastUpdated < fiveMinutesAgo) {
+            refreshPrice();
+          } else {
+            setIsLoading(false);
+          }
+        } catch (error) {
+          console.error('Error parsing cached price data:', error);
+          refreshPrice();
+        }
+      } else {
+        refreshPrice();
+      }
+    };
+    
+    loadPriceData();
+    
+    // Set up auto-refresh every 5 minutes
+    const intervalId = setInterval(refreshPrice, 5 * 60 * 1000);
+    
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+  
+  // Conversion functions
+  const convertPiToUsd = (amount: number): number => {
+    return priceData ? amount * priceData.price : 0;
   };
   
-  const convertPiToEgp = (piAmount: number): number => {
-    if (!priceData) return 0;
-    return piAmount * priceData.egpRate;
+  const convertPiToEgp = (amount: number): number => {
+    return priceData ? amount * priceData.egpRate : 0;
   };
-
-  useEffect(() => {
-    fetchPiPrice();
-    
-    // Set up interval to refresh price data every 30 seconds
-    const intervalId = setInterval(fetchPiPrice, 30000);
-    
-    return () => clearInterval(intervalId);
-  }, []);
-
+  
   return (
-    <PiPriceContext.Provider
-      value={{
-        priceData,
-        isLoading,
-        error,
-        refreshPrice: fetchPiPrice,
-        convertPiToUsd,
-        convertPiToEgp,
-      }}
-    >
+    <PiPriceContext.Provider value={{
+      priceData,
+      isLoading,
+      refreshPrice,
+      convertPiToUsd,
+      convertPiToEgp
+    }}>
       {children}
     </PiPriceContext.Provider>
   );
+};
+
+export const usePiPrice = () => {
+  const context = useContext(PiPriceContext);
+  if (context === undefined) {
+    throw new Error('usePiPrice must be used within a PiPriceProvider');
+  }
+  return context;
 };

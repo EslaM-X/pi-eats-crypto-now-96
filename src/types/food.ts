@@ -1,32 +1,32 @@
 
+// Food provider types
 export interface FoodProvider {
   id: string;
   name: string;
-  type: 'homemade' | 'small_restaurant';
-  description: string;
-  cuisine: string[];
-  location: string;
-  rating: number;
-  reviewCount: number;
+  type: 'homemade' | 'restaurant';
   image: string;
   coverImage?: string;
+  description: string;
+  cuisine: string[];
+  rating: number;
+  reviewCount: number;
+  location: string;
   contactInfo: {
+    address: string;
     phone?: string;
     email?: string;
-    address: string;
     socialMedia?: {
       facebook?: string;
       instagram?: string;
       whatsapp?: string;
     }
   };
-  menu: FoodItem[];
-  isActive: boolean;
-  createdAt: Date;
-  userId?: string;
+  menu: MenuItem[];
+  isAvailable: boolean;
 }
 
-export interface FoodItem {
+// Menu item
+export interface MenuItem {
   id: string;
   name: string;
   description: string;
@@ -34,30 +34,25 @@ export interface FoodItem {
   image: string;
   category: string;
   popular?: boolean;
-  ingredients?: string[];
-  allergyInfo?: string[];
-  preparationTime?: string;
 }
 
+// Review
 export interface Review {
   id: string;
-  providerId: string;
   userId: string;
   userName: string;
   userImage?: string;
   rating: number;
   comment: string;
-  createdAt: Date;
-  images?: string[];
+  createdAt: string;
 }
 
+// Message
 export interface Message {
   id: string;
-  providerId: string;
   userId: string;
   userName: string;
-  providerName: string;
   content: string;
-  createdAt: Date;
+  createdAt: string;
   isFromProvider: boolean;
 }

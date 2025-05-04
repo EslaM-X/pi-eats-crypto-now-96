@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,8 +22,6 @@ import FoodProviderDetails from "./pages/FoodProviderDetails";
 import AddFoodListing from "./pages/AddFoodListing";
 import { MobileNavigation, MobileNavbar } from "./frontend"; 
 import { useIsMobile } from "./frontend/hooks/use-mobile";
-import { toast } from "sonner";
-import { Capacitor } from '@capacitor/core';
 
 // Configure the QueryClient with Pi Network styling
 const queryClient = new QueryClient({
@@ -36,73 +34,8 @@ const queryClient = new QueryClient({
   },
 });
 
-// This function initializes the Pi SDK when available
-const initPiSDK = () => {
-  console.log("Initializing Pi SDK integration");
-  
-  // Check if we're in Pi Browser
-  const isPiMobileApp = 
-    /Pi Network/i.test(navigator.userAgent) ||
-    /PiNetwork/i.test(navigator.userAgent);
-  
-  if (isPiMobileApp) {
-    console.log("Running in Pi Browser environment");
-    toast.success("Pi Browser detected! SDK integration enabled.");
-  }
-  
-  // Check if Pi SDK is available globally
-  if (typeof window !== 'undefined' && 'Pi' in window) {
-    console.log("Pi SDK detected, initializing...");
-    try {
-      // Set up the Pi SDK
-      // @ts-ignore - Pi is injected by the Pi Browser
-      window.Pi.init({ 
-        version: "2.0",
-        sandbox: process.env.NODE_ENV !== "production"
-      });
-      
-      // Log successful initialization
-      console.log("Pi SDK initialized successfully");
-      toast.success("Pi Network integration initialized successfully");
-      
-      // We don't auto-authenticate here, users will click the "Connect with Pi" button
-    } catch (error) {
-      console.error("Error initializing Pi SDK:", error);
-      toast.error("Could not initialize Pi Network integration");
-    }
-  } else {
-    console.log("Pi SDK not available - running in standard browser");
-  }
-};
-
 const App = () => {
   const isMobile = useIsMobile();
-  
-  // Call the Pi SDK initialization function on mount
-  useEffect(() => {
-    initPiSDK();
-    
-    // Add event listener for network changes
-    window.addEventListener('online', () => {
-      toast.success("Internet connection restored");
-      queryClient.refetchQueries();
-    });
-    
-    window.addEventListener('offline', () => {
-      toast.error("Internet connection lost");
-    });
-    
-    // Check if we're running as a native app
-    if (Capacitor.isNativePlatform()) {
-      toast.success(`Running as a native ${Capacitor.getPlatform()} app!`);
-      console.log('Native platform detected:', Capacitor.getPlatform());
-    }
-    
-    return () => {
-      window.removeEventListener('online', () => {});
-      window.removeEventListener('offline', () => {});
-    };
-  }, []);
 
   return (
     <HelmetProvider>

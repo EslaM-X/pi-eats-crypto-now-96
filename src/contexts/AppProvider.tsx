@@ -1,41 +1,29 @@
 
-import React, { ReactNode } from 'react';
-import { LanguageProvider } from './language';
+import React from 'react';
+import { ThemeProvider } from './ThemeContext';
+import { LanguageProvider } from './LanguageContext';
 import { PiAuthProvider } from './PiAuthContext';
 import { PiPriceProvider } from './PiPriceContext';
-import { WalletProvider } from './WalletContext';
-import { RewardsProvider } from './RewardsContext';
-import { ThemeProvider } from './ThemeContext';
 import { CartProvider } from './CartContext';
-import { OrdersProvider } from './OrdersContext';
-import { HomeFoodProvider } from './HomeFoodContext';
-import { MiningProvider } from './MiningContext';
+import { WalletProvider } from './WalletContext';
 
 interface AppProviderProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
-const AppProvider = ({ children }: AppProviderProps) => {
+const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <PiAuthProvider>
-          <PiPriceProvider>
-            <WalletProvider>
-              <RewardsProvider>
-                <MiningProvider>
-                  <CartProvider>
-                    <OrdersProvider>
-                      <HomeFoodProvider>
-                        {children}
-                      </HomeFoodProvider>
-                    </OrdersProvider>
-                  </CartProvider>
-                </MiningProvider>
-              </RewardsProvider>
-            </WalletProvider>
-          </PiPriceProvider>
-        </PiAuthProvider>
+        <PiPriceProvider>
+          <PiAuthProvider>
+            <CartProvider>
+              <WalletProvider>
+                {children}
+              </WalletProvider>
+            </CartProvider>
+          </PiAuthProvider>
+        </PiPriceProvider>
       </LanguageProvider>
     </ThemeProvider>
   );

@@ -2,82 +2,57 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   :root {
-    /* ...keep existing code */
-    
-    --pi: 271 81% 56%;
-    --pi-dark: 273 65% 48%;
-    --orange: 24 95% 53%;
-    --orange-dark: 21 90% 48%;
-
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
-
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 271 81% 56%;
+    --primary: 262.1 83.3% 57.8%; /* Pi Purple */
     --primary-foreground: 210 40% 98%;
-
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
-
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
-
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.75rem;
+    --ring: 262.1 83.3% 57.8%; /* Pi Purple */
+    --radius: 0.5rem;
+    
+    /* Custom colors */
+    --pi: 262.1 83.3% 57.8%; /* Pi Purple: #9333ea */
+    --pi-dark: 262.1 83.3% 47.8%; /* Darker Pi: #7b28c7 */
+    --orange: 24.6 95% 53.1%; /* Pi Orange-ish: #f97316 */
+    --orange-dark: 24.6 95% 43.1%; /* Darker Orange: #c75c11 */
   }
 
   .dark {
-    /* ...keep existing code */
-    
-    --pi: 271 81% 56%;
-    --pi-dark: 273 65% 48%;
-    --orange: 24 95% 53%;
-    --orange-dark: 21 90% 48%;
-
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
-
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-
-    --primary: 271 81% 56%;
-    --primary-foreground: 222.2 84% 4.9%;
-
+    --primary: 262.1 83.3% 57.8%; /* Pi Purple */
+    --primary-foreground: 222.2 47.4% 11.2%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
-
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
-
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --ring: 262.1 83.3% 57.8%; /* Pi Purple */
   }
 }
 
@@ -89,85 +64,86 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+
+  /* RTL Support */
+  html[dir="rtl"] .ltr {
+    direction: ltr;
+  }
+
+  html[dir="rtl"] .rtl {
+    direction: rtl;
+  }
 }
 
-/* Button Gradient Style */
+/* Custom gradient backgrounds */
 .button-gradient {
-  @apply bg-gradient-to-r from-pi to-orange hover:opacity-90 text-white;
+  background: linear-gradient(to right, hsl(var(--pi)), hsl(var(--orange)));
+  color: white;
 }
 
-/* Glass Card Style */
+.button-gradient:hover {
+  background: linear-gradient(to right, hsl(var(--pi-dark)), hsl(var(--orange-dark)));
+}
+
+/* Glass card effect */
 .glass-card {
-  @apply bg-card/60 backdrop-blur-md border border-border/50;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Grid background patterns */
+.dark .glass-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Grid patterns for backgrounds */
 .bg-grid-pattern-light {
-  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-                     linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 
 .bg-grid-pattern-dark {
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                     linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 
 /* Mining animation particles */
-@keyframes particle-animation {
-  0% {
-    transform: translate(0, 0) scale(0);
-    opacity: 0;
-  }
-  50% {
-    opacity: var(--particle-opacity);
-  }
-  100% {
-    transform: translate(var(--particle-x), var(--particle-y)) scale(var(--particle-scale));
-    opacity: 0;
-  }
-}
-
 .particle-container {
   position: absolute;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .particle {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 8px;
-  height: 8px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  animation: particle-animation var(--particle-duration) ease-out forwards;
-  animation-delay: var(--particle-delay);
-  transform-origin: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: var(--particle-opacity);
+  transform: scale(var(--particle-scale));
+  animation: particleFly var(--particle-duration) ease-out var(--particle-delay) forwards;
 }
 
-/* Make sure tailwind utilities have access to the custom colors */
-@layer utilities {
-  .text-pi {
-    color: hsl(var(--pi));
+@keyframes particleFly {
+  from {
+    transform: scale(0);
+    opacity: 0;
   }
-  .bg-pi {
-    background-color: hsl(var(--pi));
+  20% {
+    opacity: var(--particle-opacity);
   }
-  .text-orange {
-    color: hsl(var(--orange));
-  }
-  .bg-orange {
-    background-color: hsl(var(--orange));
-  }
-  .border-pi {
-    border-color: hsl(var(--pi));
-  }
-  .border-orange {
-    border-color: hsl(var(--orange));
+  to {
+    transform: translate(var(--particle-x), var(--particle-y)) scale(var(--particle-scale));
+    opacity: 0;
   }
 }
-
-/* ... keep other existing code */

@@ -4,25 +4,13 @@ import { cn } from '@/lib/utils';
 
 interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
-  size?: 'default' | 'small' | 'large' | 'full';
 }
 
-export function Container({ 
-  children, 
-  className, 
-  size = 'default', 
-  ...props 
-}: ContainerProps) {
+export const Container = ({ children, className, ...props }: ContainerProps) => {
   return (
     <div 
       className={cn(
-        "mx-auto px-4 sm:px-6 w-full",
-        {
-          'max-w-7xl': size === 'default',
-          'max-w-5xl': size === 'small',
-          'max-w-screen-2xl': size === 'large',
-          'max-w-none': size === 'full',
-        },
+        "container mx-auto px-4 md:px-6",
         className
       )}
       {...props}
@@ -30,4 +18,4 @@ export function Container({
       {children}
     </div>
   );
-}
+};

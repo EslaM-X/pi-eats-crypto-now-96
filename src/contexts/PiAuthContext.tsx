@@ -1,244 +1,138 @@
 
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'sonner';
 
-type PiUser = {
-  username: string;
-  accessToken: string;
+// Pi User interface
+interface PiUser {
   uid: string;
-  isLoggedIn: boolean;
-  displayName?: string;
-  photoURL?: string;
-};
+  username: string;
+  accessToken?: string;
+}
 
-type PaymentDTO = {
-  amount: number;
-  memo: string;
-  metadata?: Record<string, any>;
-  uid?: string;
-};
-
-type PiAuthContextType = {
+// Context interface
+interface PiAuthContextType {
   user: PiUser | null;
   login: () => Promise<void>;
   logout: () => void;
   isAuthenticating: boolean;
-  openPiPayment: (amount: number, memo: string, metadata?: Record<string, any>) => Promise<boolean>;
-  isPiSDKAvailable: boolean;
-  isPiBrowser: boolean;
-};
+}
 
-const PiAuthContext = createContext<PiAuthContextType>({
-  user: null,
-  login: async () => {},
-  logout: () => {},
-  isAuthenticating: false,
-  openPiPayment: async () => false,
-  isPiSDKAvailable: false,
-  isPiBrowser: false,
-});
+// Create the context
+const PiAuthContext = createContext<PiAuthContextType | undefined>(undefined);
 
-export const usePiAuth = () => useContext(PiAuthContext);
-
-export const PiAuthProvider = ({ children }: { children: ReactNode }) => {
+// Pi Auth Provider component
+export const PiAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<PiUser | null>(null);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
-  const [isPiSDKAvailable, setIsPiSDKAvailable] = useState(false);
-  const [isPiBrowser, setIsPiBrowser] = useState(false);
-
-  // Check for Pi SDK availability and saved user session on mount
+  
+  // Initialize Pi SDK
   useEffect(() => {
-    // Check if running in Pi Browser
-    const checkPiBrowser = () => {
-      const isPiApp = 
-        /Pi Network/i.test(navigator.userAgent) ||
-        /PiNetwork/i.test(navigator.userAgent);
-      
-      setIsPiBrowser(isPiApp);
-      return isPiApp;
-    };
+    // Check for stored user in localStorage
+    const storedUser = localStorage.getItem('piUser');
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error('Failed to parse stored user data:', error);
+        localStorage.removeItem('piUser');
+      }
+    }
     
-    // Check if the Pi SDK is available
-    const checkPiSDKAvailability = () => {
-      const isSDKAvailable = typeof window !== 'undefined' && 'Pi' in window;
-      setIsPiSDKAvailable(isSDKAvailable);
-      return isSDKAvailable;
-    };
-    
-    // Check for saved user data
-    const loadSavedUser = () => {
-      const savedUser = localStorage.getItem('pi_user');
-      if (savedUser) {
+    // Initialize Pi SDK when available
+    const initPiSdk = () => {
+      if (typeof window !== 'undefined' && 'Pi' in window) {
         try {
-          setUser(JSON.parse(savedUser));
-          console.log('User session restored from local storage');
+          // @ts-ignore - Pi is injected by the Pi Browser
+          window.Pi.init({ 
+            version: "2.0",
+            sandbox: process.env.NODE_ENV !== "production"
+          });
+          console.log("Pi SDK initialized");
         } catch (error) {
-          console.error('Failed to parse saved user', error);
-          localStorage.removeItem('pi_user');
+          console.error("Error initializing Pi SDK:", error);
         }
       }
     };
     
-    // Run all checks
-    const inPiBrowser = checkPiBrowser();
-    const sdkAvailable = checkPiSDKAvailability();
-    loadSavedUser();
-    
-    if (inPiBrowser && !sdkAvailable) {
-      console.warn('Running in Pi Browser but SDK not detected!');
-    }
+    initPiSdk();
   }, []);
-
-  // Mock Pi Network SDK functions for development/testing
-  const mockPiSDK = {
-    authenticate: async (): Promise<PiUser> => {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      return {
-        username: 'pi_user_' + Math.floor(Math.random() * 10000),
-        accessToken: 'mock_token_' + Math.random().toString(36).substring(2),
-        uid: 'user_' + Math.random().toString(36).substring(2),
-        isLoggedIn: true,
-        displayName: 'Pi User',
-      };
-    },
-    createPayment: async (paymentData: PaymentDTO): Promise<boolean> => {
-      console.log('Mock payment request:', paymentData);
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      // 90% success rate for mock payments
-      return Math.random() > 0.1;
+  
+  // Login function
+  const login = async () => {
+    if (typeof window === 'undefined' || !('Pi' in window)) {
+      toast.error('Please use the Pi Browser for authentication');
+      return;
     }
-  };
-
-  // Handle incomplete payments
-  const onIncompletePaymentFound = (payment: any) => {
-    console.log('Incomplete payment found:', payment);
-    toast.warning('Incomplete payment detected. Please complete your transaction.');
-    // In a real app, you'd handle the incomplete payment here
-  };
-
-  // Authenticate with Pi Network
-  const login = async (): Promise<void> => {
+    
     setIsAuthenticating(true);
     
     try {
-      let authResult: PiUser;
+      // @ts-ignore - Pi is injected by the Pi Browser
+      const scopes = ['username', 'payments', 'wallet_address'];
       
-      // If Pi SDK is available, use it, otherwise use mock
-      if (isPiSDKAvailable && 'Pi' in window) {
-        console.log('Authenticating with Pi Network SDK');
+      // @ts-ignore - Pi is injected by the Pi Browser
+      const authResult = await window.Pi.authenticate(scopes, onIncompletePaymentFound);
+      
+      if (authResult) {
+        const piUser: PiUser = {
+          uid: authResult.user.uid,
+          username: authResult.user.username,
+          accessToken: authResult.accessToken,
+        };
         
-        try {
-          // @ts-ignore - Pi is injected by the Pi Browser
-          const piAuth = await window.Pi.authenticate(['username', 'payments'], onIncompletePaymentFound);
-          
-          authResult = {
-            username: piAuth.user.username,
-            accessToken: piAuth.accessToken,
-            uid: piAuth.user.uid || piAuth.user.username,
-            isLoggedIn: true,
-            displayName: piAuth.user.displayName,
-            photoURL: piAuth.user.photoURL
-          };
-          
-          console.log('Pi authentication successful');
-        } catch (piError) {
-          console.error('Pi SDK authentication error:', piError);
-          throw new Error('Pi authentication failed');
-        }
-      } else {
-        console.log('Using mock authentication');
-        authResult = await mockPiSDK.authenticate();
+        // Store in state and localStorage
+        setUser(piUser);
+        localStorage.setItem('piUser', JSON.stringify(piUser));
+        toast.success(`Welcome ${piUser.username}!`);
       }
-      
-      // Save authenticated user
-      setUser(authResult);
-      localStorage.setItem('pi_user', JSON.stringify(authResult));
-      toast.success('Successfully connected with Pi Network');
     } catch (error) {
-      console.error('Authentication failed:', error);
-      toast.error('Failed to connect with Pi Network. Please try again.');
+      console.error('Pi authentication error:', error);
+      toast.error('Authentication failed. Please try again.');
     } finally {
       setIsAuthenticating(false);
     }
   };
-
-  // Log out from Pi Network
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('pi_user');
-    toast.info('Disconnected from Pi Network');
+  
+  // Handle incomplete payments
+  const onIncompletePaymentFound = (payment: any) => {
+    console.log('Incomplete payment found:', payment);
+    // Here we would implement payment completion logic
+    toast.info('You have an incomplete payment. Please complete it in the Pi app.');
   };
   
-  // Process a Pi payment
-  const openPiPayment = async (
-    amount: number, 
-    memo: string, 
-    metadata?: Record<string, any>
-  ): Promise<boolean> => {
-    if (!user) {
-      toast.error('Please log in to make a payment');
-      return false;
-    }
-    
-    toast.info('Initiating Pi payment...');
-    
-    try {
-      let success: boolean;
-      const paymentData: PaymentDTO = {
-        amount,
-        memo,
-        metadata: {
-          ...metadata,
-          orderId: Date.now().toString()
-        }
+  // Logout function
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('piUser');
+    toast.info('Logged out successfully');
+  };
+  
+  // Mock login for development
+  const mockLogin = () => {
+    if (process.env.NODE_ENV === 'development') {
+      const mockUser: PiUser = {
+        uid: 'mock-uid-123456',
+        username: 'pi_tester',
+        accessToken: 'mock-token-123456',
       };
-      
-      // If Pi SDK is available, use it, otherwise use mock
-      if (isPiSDKAvailable && 'Pi' in window) {
-        console.log('Creating payment with Pi Network SDK');
-        
-        try {
-          // @ts-ignore - Pi is injected by the Pi Browser
-          const payment = await window.Pi.createPayment(paymentData);
-          
-          console.log('Pi payment result:', payment);
-          success = payment.status === 'COMPLETED';
-        } catch (piError) {
-          console.error('Pi SDK payment error:', piError);
-          throw new Error('Payment process failed');
-        }
-      } else {
-        console.log('Using mock payment');
-        success = await mockPiSDK.createPayment(paymentData);
-      }
-      
-      if (success) {
-        toast.success(`Payment of π${amount} successful!`);
-        return true;
-      } else {
-        toast.error('Payment failed or was cancelled');
-        return false;
-      }
-    } catch (error) {
-      console.error('Payment error:', error);
-      toast.error('Payment process encountered an error');
-      return false;
+      setUser(mockUser);
+      localStorage.setItem('piUser', JSON.stringify(mockUser));
+      toast.success(`Development mode: Logged in as ${mockUser.username}`);
     }
   };
-
+  
   return (
-    <PiAuthContext.Provider
-      value={{
-        user,
-        login,
-        logout,
-        isAuthenticating,
-        openPiPayment,
-        isPiSDKAvailable,
-        isPiBrowser,
-      }}
-    >
+    <PiAuthContext.Provider value={{ user, login, logout, isAuthenticating }}>
       {children}
     </PiAuthContext.Provider>
   );
+};
+
+// Custom hook to use the Pi Auth context
+export const usePiAuth = () => {
+  const context = useContext(PiAuthContext);
+  if (context === undefined) {
+    throw new Error('usePiAuth must be used within a PiAuthProvider');
+  }
+  return context;
 };
