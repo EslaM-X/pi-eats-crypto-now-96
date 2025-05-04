@@ -61,7 +61,7 @@ const MiningStats = () => {
         <CardContent>
           <div className="text-2xl font-bold flex items-center">
             <PiEatLogo piOnly={true} showEmoji={true} size="sm" className="mr-1" />
-            {(0.05 / miningStats.difficulty).toFixed(4)}
+            {(0.25).toFixed(2)}
           </div>
         </CardContent>
       </Card>
@@ -74,7 +74,7 @@ const MiningStats = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">60s</div>
+          <div className="text-2xl font-bold">24h</div>
         </CardContent>
       </Card>
       

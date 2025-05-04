@@ -14,115 +14,90 @@ import AdPlaceholder from '@/components/mining/AdPlaceholder';
 import CountdownTimer from '@/components/mining/CountdownTimer';
 import MiningActivity from '@/components/mining/MiningActivity';
 import PiEatLogo from '@/components/PiEatLogo';
+import { useMining } from '@/contexts/MiningContext';
+import { toast } from 'sonner';
+import MiningHeader from '@/components/mining/MiningHeader';
+import MiningStats from '@/components/mining/MiningStats';
+import MiningAnimation from '@/components/mining/MiningAnimation';
 
 const Mining = () => {
   const { user } = usePiAuth();
   const { theme } = useTheme();
   const [activeTab, setActiveTab] = useState<string>('mining');
   const [isMining, setIsMining] = useState<boolean>(false);
-  const [currentMinedAmount, setCurrentMinedAmount] = useState<number>(0);
-  const [miningProgress, setMiningProgress] = useState<number>(0);
-  const [totalMined, setTotalMined] = useState<number>(0.1823);
-  const [remainingTime, setRemainingTime] = useState<number>(0);
+  const [showAnimation, setShowAnimation] = useState<boolean>(false);
   const [showAd, setShowAd] = useState<boolean>(false);
-  const [miningTimer, setMiningTimer] = useState<NodeJS.Timeout | null>(null);
   
-  // Mining session constants
-  const MAX_MINING_TIME = 15 * 60; // 15 minutes in seconds
-  const MIN_MINING_REWARD = 0.0001;
-  const MAX_MINING_REWARD = 0.005;
+  const { 
+    ptmBalance, 
+    totalMined, 
+    canMine, 
+    isOnCooldown, 
+    timeUntilNextMining, 
+    lastMiningTime, 
+    startMining 
+  } = useMining();
   
-  // Load previous mining data
-  useEffect(() => {
-    const savedTotalMined = localStorage.getItem('pti-mining-total');
-    if (savedTotalMined) {
-      setTotalMined(parseFloat(savedTotalMined));
-    }
-    
-    // Check if there's an active mining session
-    const lastMiningTimestamp = localStorage.getItem('pti-mining-timestamp');
-    if (lastMiningTimestamp) {
-      const elapsed = Math.floor((Date.now() - parseInt(lastMiningTimestamp)) / 1000);
-      if (elapsed < MAX_MINING_TIME) {
-        // Resume mining session
-        setIsMining(true);
-        setRemainingTime(MAX_MINING_TIME - elapsed);
-        setMiningProgress((elapsed / MAX_MINING_TIME) * 100);
-        startMiningTimer(MAX_MINING_TIME - elapsed);
-      } else {
-        // Mining session expired
-        localStorage.removeItem('pti-mining-timestamp');
-      }
-    }
-  }, []);
+  // Daily mining reward
+  const MINING_REWARD = 0.25; // Increased reward for daily mining
   
-  const startMiningTimer = (duration: number) => {
-    if (miningTimer) clearInterval(miningTimer);
-    
-    const timer = setInterval(() => {
-      setRemainingTime(prev => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          handleMiningComplete();
-          return 0;
-        }
-        
-        const newValue = prev - 1;
-        setMiningProgress(((MAX_MINING_TIME - newValue) / MAX_MINING_TIME) * 100);
-        return newValue;
-      });
-    }, 1000);
-    
-    setMiningTimer(timer);
-    return timer;
-  };
-  
-  const startMining = () => {
-    if (!user) return;
-    
-    setIsMining(true);
-    setRemainingTime(MAX_MINING_TIME);
-    setMiningProgress(0);
-    localStorage.setItem('pti-mining-timestamp', Date.now().toString());
-    
-    // Generate a random amount to be mined at the end
-    const miningReward = MIN_MINING_REWARD + Math.random() * (MAX_MINING_REWARD - MIN_MINING_REWARD);
-    setCurrentMinedAmount(miningReward);
-    
-    startMiningTimer(MAX_MINING_TIME);
-  };
-  
-  const handleMiningComplete = () => {
-    setIsMining(false);
-    localStorage.removeItem('pti-mining-timestamp');
-    
-    // 25% chance to show an ad
-    if (Math.random() < 0.25) {
-      setShowAd(true);
-      return;
-    }
-    
-    claimReward();
-  };
-  
-  const handleAdComplete = () => {
-    setShowAd(false);
-    claimReward();
-  };
-  
-  const claimReward = () => {
-    // Add the mined amount to the total
-    const newTotal = totalMined + currentMinedAmount;
-    setTotalMined(newTotal);
-    localStorage.setItem('pti-mining-total', newTotal.toString());
-    
-    // Reset mining state
-    setCurrentMinedAmount(0);
-  };
-  
+  // Format number with appropriate precision
   const formatNumberPrecision = (num: number) => {
     if (num < 0.001) return num.toFixed(6);
     return num.toFixed(4);
+  };
+  
+  // Handle mining button click
+  const handleStartMining = () => {
+    if (!user) {
+      toast.error('You need to login to mine PTM tokens');
+      return;
+    }
+    
+    if (!canMine) {
+      toast.error('Mining is in cooldown. Please wait 24 hours between mining sessions.');
+      return;
+    }
+    
+    setShowAnimation(true);
+    
+    // After animation completes, process the mining
+    setTimeout(() => {
+      // 25% chance to show an ad
+      if (Math.random() < 0.25) {
+        setShowAd(true);
+      } else {
+        completeMining();
+      }
+    }, 5000); // Animation runs for 5 seconds
+  };
+  
+  // Handle ad completion
+  const handleAdComplete = () => {
+    setShowAd(false);
+    completeMining();
+  };
+  
+  // Complete mining process
+  const completeMining = () => {
+    startMining(MINING_REWARD);
+    setShowAnimation(false);
+    toast.success(`Successfully mined ${MINING_REWARD} PTM tokens!`);
+  };
+  
+  // Handle animation complete
+  const handleAnimationComplete = () => {
+    setShowAnimation(false);
+  };
+  
+  // Format time until next mining
+  const formatTimeUntilNextMining = () => {
+    if (!isOnCooldown) return 'Available Now';
+    
+    const hours = Math.floor(timeUntilNextMining / (60 * 60 * 1000));
+    const minutes = Math.floor((timeUntilNextMining % (60 * 60 * 1000)) / (60 * 1000));
+    
+    return `${hours}h ${minutes}m`;
   };
   
   return (
@@ -146,10 +121,12 @@ const Mining = () => {
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Mining Information</AlertTitle>
             <AlertDescription>
-              Mine PiEat tokens (PTM) by keeping this page open. You'll earn PTM while the timer is running.
+              Mine PiEat tokens (PTM) once every 24 hours. Click the mining button to earn your daily tokens.
             </AlertDescription>
           </Alert>
         </div>
+        
+        <MiningHeader onStartMining={handleStartMining} isMining={showAnimation} />
         
         <Tabs defaultValue="mining" value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid grid-cols-2 mb-6">
@@ -161,36 +138,41 @@ const Mining = () => {
             <div className="grid md:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-xl">Mine PTM Tokens</CardTitle>
+                  <CardTitle className="text-xl">Daily Mining Status</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {!isMining ? (
+                  {canMine ? (
                     <>
                       <p className="mb-4 text-muted-foreground">
-                        Start mining to earn PTM tokens. Keep this tab open while mining is active.
+                        Your daily mining is available! Start mining to earn PTM tokens.
                       </p>
                       <Button 
-                        onClick={startMining} 
+                        onClick={handleStartMining} 
                         className="w-full button-gradient"
-                        disabled={!user}
+                        disabled={!user || showAnimation}
                       >
                         <Pickaxe className="mr-2 h-4 w-4" />
-                        {user ? 'Start Mining' : 'Login to Mine'}
+                        {!user ? 'Login to Mine' : showAnimation ? 'Mining...' : 'Claim Daily Tokens'}
                       </Button>
                     </>
                   ) : (
                     <div>
                       <div className="flex justify-between mb-2">
-                        <span>Mining in progress...</span>
-                        <CountdownTimer seconds={remainingTime} />
+                        <span>Next mining available:</span>
+                        <span className="font-bold">{formatTimeUntilNextMining()}</span>
                       </div>
-                      <Progress value={miningProgress} className="h-3 mb-4" />
+                      <Progress 
+                        value={100 - (timeUntilNextMining / (24 * 60 * 60 * 1000) * 100)} 
+                        className="h-3 mb-4" 
+                      />
                       <p className="text-sm text-muted-foreground mb-4">
-                        Keep this tab open to continue mining. Mining will stop if you close this page.
+                        You've already claimed your daily mining rewards. Return tomorrow to mine again.
                       </p>
                       <div className="text-center">
-                        <div className="text-sm mb-1">You will mine approximately:</div>
-                        <div className="text-2xl font-bold text-pi">{formatNumberPrecision(currentMinedAmount)} PTM</div>
+                        <div className="text-sm mb-1">Last mining session:</div>
+                        <div className="text-lg font-bold">
+                          {lastMiningTime ? new Date(lastMiningTime).toLocaleString() : 'Never'}
+                        </div>
                       </div>
                     </div>
                   )}
@@ -204,12 +186,12 @@ const Mining = () => {
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Mining Rate</span>
-                      <span className="font-medium">~0.0234 PTM/hour</span>
+                      <span className="text-muted-foreground">Daily Reward</span>
+                      <span className="font-medium">~{MINING_REWARD} PTM/day</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Daily Potential</span>
-                      <span className="font-medium">~0.56 PTM/day</span>
+                      <span className="text-muted-foreground">Monthly Potential</span>
+                      <span className="font-medium">~{(MINING_REWARD * 30).toFixed(2)} PTM/month</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Mining Level</span>
@@ -225,7 +207,7 @@ const Mining = () => {
                     <h4 className="font-medium mb-2">Mining Bonuses</h4>
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span>First Daily Mining</span>
+                        <span>Consecutive Daily Mining</span>
                         <span className="text-green-500">+15%</span>
                       </div>
                       <div className="flex justify-between text-sm">
@@ -310,6 +292,9 @@ const Mining = () => {
             </div>
           </TabsContent>
         </Tabs>
+        
+        {/* Mining Animation */}
+        {showAnimation && <MiningAnimation onClose={handleAnimationComplete} />}
         
         {/* Ad Modal */}
         {showAd && (

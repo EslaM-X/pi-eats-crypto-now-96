@@ -62,8 +62,11 @@ export const MiningProvider = ({ children }: { children: ReactNode }) => {
     networkHashrate: 12453
   });
   
-  // Calculate if mining is available (60 second cooldown)
-  const canMine = !isOnCooldown && (!lastMiningTime || (new Date().getTime() - lastMiningTime.getTime()) > 60000);
+  // Cooldown period in milliseconds (24 hours)
+  const COOLDOWN_PERIOD = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+  
+  // Calculate if mining is available (24 hour cooldown)
+  const canMine = !isOnCooldown && (!lastMiningTime || (new Date().getTime() - lastMiningTime.getTime()) > COOLDOWN_PERIOD);
   
   // Update cooldown timer
   useEffect(() => {
@@ -74,8 +77,8 @@ export const MiningProvider = ({ children }: { children: ReactNode }) => {
       const lastTime = lastMiningTime.getTime();
       const difference = now - lastTime;
       
-      if (difference < 60000) {
-        setTimeUntilNextMining(60000 - difference);
+      if (difference < COOLDOWN_PERIOD) {
+        setTimeUntilNextMining(COOLDOWN_PERIOD - difference);
         setIsOnCooldown(true);
       } else {
         setTimeUntilNextMining(0);
@@ -145,9 +148,12 @@ export const MiningProvider = ({ children }: { children: ReactNode }) => {
   const startMining = (reward = 0.05) => {
     if (!user) return;
     
+    // Increase reward for daily mining (since it's once per 24 hours)
+    const dailyReward = reward * 5; // Increased reward for daily mining
+    
     // Update balance and stats
-    const newBalance = ptmBalance + reward;
-    const newTotal = totalMined + reward;
+    const newBalance = ptmBalance + dailyReward;
+    const newTotal = totalMined + dailyReward;
     
     setPtmBalance(newBalance);
     setTotalMined(newTotal);
@@ -161,7 +167,7 @@ export const MiningProvider = ({ children }: { children: ReactNode }) => {
     // Update network stats
     setMiningStats(prev => ({
       ...prev,
-      circulatingSupply: prev.circulatingSupply + reward,
+      circulatingSupply: prev.circulatingSupply + dailyReward,
       difficulty: prev.difficulty + 0.005 // Slight increase in difficulty
     }));
   };
