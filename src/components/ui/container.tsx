@@ -5,11 +5,12 @@ import { cn } from "@/lib/utils";
 interface ContainerProps {
   className?: string;
   children: React.ReactNode;
+  dir?: string;
 }
 
-export const Container: React.FC<ContainerProps> = ({ className, children }) => {
+export const Container: React.FC<ContainerProps> = ({ className, children, dir }) => {
   return (
-    <div className={cn("container mx-auto px-4", className)}>
+    <div className={cn("container mx-auto px-4", className)} dir={dir}>
       {children}
     </div>
   );
