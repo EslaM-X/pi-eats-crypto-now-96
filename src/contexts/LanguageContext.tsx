@@ -67,7 +67,15 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   useEffect(() => {
     document.documentElement.lang = language;
     document.documentElement.dir = dir;
-    document.body.setAttribute('dir', dir); // Add this line to ensure body also has the direction
+    document.body.setAttribute('dir', dir);
+    
+    // Add special class for Arabic text rendering
+    if (language === 'ar') {
+      document.documentElement.classList.add('arabic-text-rendering');
+    } else {
+      document.documentElement.classList.remove('arabic-text-rendering');
+    }
+    
     localStorage.setItem('language', language);
   }, [language, dir]);
   

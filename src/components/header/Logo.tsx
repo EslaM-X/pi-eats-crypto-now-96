@@ -12,7 +12,7 @@ const Logo = () => {
       <div className={`${language === 'ar' ? 'flex flex-row-reverse' : 'flex'}`}>
         <PiEatLogo />
         <span className={`text-2xl font-bold bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent ${language === 'ar' ? 'mr-2 app-name' : ''}`}>
-          PiEat-Me
+          {language === 'ar' ? 'مي' : 'Me'}
         </span>
       </div>
     </Link>

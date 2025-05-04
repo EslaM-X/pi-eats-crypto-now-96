@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface PiEatLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -20,6 +21,9 @@ const PiEatLogo: React.FC<PiEatLogoProps> = ({
   showEat = true,
   style = 'default'
 }) => {
+  const { language } = useLanguage();
+  const isArabic = language === 'ar';
+
   const sizeClasses = {
     sm: 'text-2xl',
     md: 'text-3xl',
@@ -30,7 +34,7 @@ const PiEatLogo: React.FC<PiEatLogoProps> = ({
   if (textOnly) {
     return (
       <span className={`font-bold ${sizeClasses[size]} ${className}`}>
-        {piOnly ? 'π' : 'πEat'}
+        {piOnly ? 'π' : isArabic ? 'بإيت' : 'πEat'}
       </span>
     );
   }
@@ -71,7 +75,25 @@ const PiEatLogo: React.FC<PiEatLogoProps> = ({
   };
 
   const currentStyle = styleVariants[style];
+
+  // Create the Arabic version of the logo
+  if (isArabic) {
+    return (
+      <div className={`font-bold ${sizeClasses[size]} flex items-center ${className} ${currentStyle.container}`}>
+        <span className="relative">
+          <span className={currentStyle.pi + " text-sm"}>بـِ</span>
+          {showEmoji && (
+            <span className={currentStyle.emoji}>
+              🍕
+            </span>
+          )}
+        </span>
+        {showEat && <span className={currentStyle.eat + " text-sm"}>إيت</span>}
+      </div>
+    );
+  }
   
+  // English version
   return (
     <div className={`font-bold ${sizeClasses[size]} flex items-center ${className} ${currentStyle.container}`}>
       <span className="relative">

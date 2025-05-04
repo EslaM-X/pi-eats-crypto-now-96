@@ -4,6 +4,9 @@
 [dir="rtl"] {
   /* Text alignment */
   text-align: right;
+  font-feature-settings: "dlig", "kern", "rlig";
+  font-feature-settings: "dlig", "kern", "rlig";
+  text-rendering: optimizeLegibility;
 }
 
 [dir="rtl"] .logo-container {
@@ -65,9 +68,11 @@
 }
 
 [dir="rtl"] .arabic-text {
-  font-family: 'Tajawal', sans-serif;
+  font-family: 'Noto Sans Arabic', sans-serif;
   letter-spacing: 0;
   line-height: 1.6;
+  font-feature-settings: "dlig", "kern", "rlig";
+  text-rendering: optimizeLegibility;
 }
 
 /* RTL adjustments for header components */
