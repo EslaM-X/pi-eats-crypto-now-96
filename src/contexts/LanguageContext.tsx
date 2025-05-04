@@ -67,6 +67,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   useEffect(() => {
     document.documentElement.lang = language;
     document.documentElement.dir = dir;
+    document.body.setAttribute('dir', dir); // Add this line to ensure body also has the direction
     localStorage.setItem('language', language);
   }, [language, dir]);
   

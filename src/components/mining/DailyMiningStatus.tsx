@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Pickaxe } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { useMining } from '@/contexts/MiningContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface DailyMiningStatusProps {
   handleStartMining: () => void;
@@ -14,27 +15,28 @@ interface DailyMiningStatusProps {
 
 const DailyMiningStatus = ({ handleStartMining, showAnimation, user }: DailyMiningStatusProps) => {
   const { canMine, isOnCooldown, timeUntilNextMining, lastMiningTime } = useMining();
+  const { t } = useLanguage();
 
   // Format time until next mining
   const formatTimeUntilNextMining = () => {
-    if (!isOnCooldown) return 'Available Now';
+    if (!isOnCooldown) return t('mining.availableNow');
     
     const hours = Math.floor(timeUntilNextMining / (60 * 60 * 1000));
     const minutes = Math.floor((timeUntilNextMining % (60 * 60 * 1000)) / (60 * 1000));
     
-    return `${hours}h ${minutes}m`;
+    return `${hours}${t('mining.hours')} ${minutes}${t('mining.minutes')}`;
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl">Daily Mining Status</CardTitle>
+        <CardTitle className="text-xl">{t('mining.dailyMiningStatus')}</CardTitle>
       </CardHeader>
       <CardContent>
         {canMine ? (
           <>
             <p className="mb-4 text-muted-foreground">
-              Your daily mining is available! Start mining to earn PTM tokens.
+              {t('mining.subtitle')}
             </p>
             <Button 
               onClick={handleStartMining} 
@@ -42,13 +44,13 @@ const DailyMiningStatus = ({ handleStartMining, showAnimation, user }: DailyMini
               disabled={!user || showAnimation}
             >
               <Pickaxe className="mr-2 h-4 w-4" />
-              {!user ? 'Login to Mine' : showAnimation ? 'Mining...' : 'Claim Daily Tokens'}
+              {!user ? t('mining.loginToMine') : showAnimation ? t('mining.miningInProgress') : t('mining.claimDailyTokens')}
             </Button>
           </>
         ) : (
           <div>
             <div className="flex justify-between mb-2">
-              <span>Next mining available:</span>
+              <span>{t('mining.nextMiningAvailable')}</span>
               <span className="font-bold">{formatTimeUntilNextMining()}</span>
             </div>
             <Progress 
@@ -56,12 +58,12 @@ const DailyMiningStatus = ({ handleStartMining, showAnimation, user }: DailyMini
               className="h-3 mb-4" 
             />
             <p className="text-sm text-muted-foreground mb-4">
-              You've already claimed your daily mining rewards. Return tomorrow to mine again.
+              {t('mining.alreadyClaimed')}
             </p>
             <div className="text-center">
-              <div className="text-sm mb-1">Last mining session:</div>
+              <div className="text-sm mb-1">{t('mining.lastMiningSession')}:</div>
               <div className="text-lg font-bold">
-                {lastMiningTime ? new Date(lastMiningTime).toLocaleString() : 'Never'}
+                {lastMiningTime ? new Date(lastMiningTime).toLocaleString() : t('mining.never')}
               </div>
             </div>
           </div>

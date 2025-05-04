@@ -1,16 +1,19 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface MiningLeaderboardProps {
   totalMined: number;
 }
 
 const MiningLeaderboard = ({ totalMined }: MiningLeaderboardProps) => {
+  const { t } = useLanguage();
+  
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl">Leaderboard</CardTitle>
+        <CardTitle className="text-xl">{t('mining.leaderboard')}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -59,7 +62,7 @@ const MiningLeaderboard = ({ totalMined }: MiningLeaderboardProps) => {
           <div className="flex justify-between items-center">
             <div className="flex items-center">
               <div className="bg-pi/20 text-pi h-6 w-6 flex items-center justify-center rounded-full mr-2">?</div>
-              <span>You</span>
+              <span>{t('orders.you')}</span>
             </div>
             <span className="font-medium">{totalMined.toFixed(4)} PTM</span>
           </div>

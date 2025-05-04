@@ -10,9 +10,11 @@ import MiningHeader from '@/components/mining/MiningHeader';
 import MiningPageHeader from '@/components/mining/MiningPageHeader';
 import MiningTabs from '@/components/mining/MiningTabs';
 import MiningAdDisplay from '@/components/mining/MiningAdDisplay';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Mining = () => {
   const { user } = usePiAuth();
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<string>('mining');
   const [showAnimation, setShowAnimation] = useState<boolean>(false);
   const [showAd, setShowAd] = useState<boolean>(false);
@@ -36,12 +38,12 @@ const Mining = () => {
   // Handle mining button click
   const handleStartMining = () => {
     if (!user) {
-      toast.error('You need to login to mine PTM tokens');
+      toast.error(t('mining.connectWallet'));
       return;
     }
     
     if (!canMine) {
-      toast.error('Mining is in cooldown. Please wait 24 hours between mining sessions.');
+      toast.error(t('mining.cooldown'));
       return;
     }
     
@@ -68,7 +70,7 @@ const Mining = () => {
   const completeMining = () => {
     startMining(MINING_REWARD);
     setShowAnimation(false);
-    toast.success(`Successfully mined ${MINING_REWARD} PTM tokens!`);
+    toast.success(`${t('mining.miningSuccess')} ${MINING_REWARD} PTM!`);
   };
   
   // Handle animation complete

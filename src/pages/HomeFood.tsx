@@ -76,7 +76,7 @@ const HomeFood = () => {
   
   const handleAddListing = () => {
     if (!user) {
-      toast.error('Please login to add your food listing');
+      toast.error(t('auth.authorizationRequired'));
       return;
     }
     navigate('/homefood/add');
@@ -89,9 +89,9 @@ const HomeFood = () => {
       <main className="container mx-auto px-4 py-6">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Home Cooking & Small Restaurants</h1>
+            <h1 className="text-3xl font-bold mb-2">{t('homefood.title')}</h1>
             <p className="text-muted-foreground">
-              Discover authentic home-cooked food and small local restaurants in your area
+              {t('homefood.subtitle')}
             </p>
           </div>
           
@@ -100,7 +100,7 @@ const HomeFood = () => {
             className="button-gradient"
           >
             <PlusCircle className="mr-2 h-4 w-4" />
-            Add Your Listing
+            {t('homefood.addYourListing')}
           </Button>
         </div>
         
@@ -112,9 +112,9 @@ const HomeFood = () => {
           className="mb-6"
         >
           <TabsList>
-            <TabsTrigger value="all">All Listings</TabsTrigger>
-            <TabsTrigger value="homemade">Home Cooking</TabsTrigger>
-            <TabsTrigger value="restaurants">Small Restaurants</TabsTrigger>
+            <TabsTrigger value="all">{t('homefood.allListings')}</TabsTrigger>
+            <TabsTrigger value="homemade">{t('homefood.homeCooking')}</TabsTrigger>
+            <TabsTrigger value="restaurants">{t('homefood.smallRestaurants')}</TabsTrigger>
           </TabsList>
         </Tabs>
         
@@ -125,7 +125,7 @@ const HomeFood = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Search by name, cuisine, or description..."
+                placeholder={t('homefood.search')}
                 className="pl-10"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -137,7 +137,7 @@ const HomeFood = () => {
               className="flex items-center gap-2"
             >
               <Filter size={18} />
-              Filters
+              {t('homefood.filters')}
             </Button>
           </div>
           
@@ -147,7 +147,7 @@ const HomeFood = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {/* Rating Filter */}
                 <div>
-                  <h3 className="font-medium mb-3">Minimum Rating</h3>
+                  <h3 className="font-medium mb-3">{t('homefood.rating')}</h3>
                   <div className="flex items-center gap-4 mb-2">
                     <Slider
                       defaultValue={[0]}
@@ -164,7 +164,7 @@ const HomeFood = () => {
                 
                 {/* Cuisine Filter */}
                 <div>
-                  <h3 className="font-medium mb-3">Cuisine</h3>
+                  <h3 className="font-medium mb-3">{t('homefood.cuisine')}</h3>
                   <div className="flex flex-wrap gap-2">
                     {allCuisines.map((cuisine) => (
                       <Badge
@@ -181,7 +181,7 @@ const HomeFood = () => {
                 
                 {/* Location Filter */}
                 <div>
-                  <h3 className="font-medium mb-3">Location</h3>
+                  <h3 className="font-medium mb-3">{t('homefood.location')}</h3>
                   <div className="flex flex-wrap gap-2">
                     {allLocations.map((location) => (
                       <Badge
@@ -214,7 +214,7 @@ const HomeFood = () => {
         
         {filteredProviders.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-muted-foreground text-lg">No listings found matching your criteria.</p>
+            <p className="text-muted-foreground text-lg">{t('homefood.noListings')}</p>
           </div>
         )}
       </main>

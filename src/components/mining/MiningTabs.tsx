@@ -6,6 +6,7 @@ import MiningActivity from './MiningActivity';
 import DailyMiningStatus from './DailyMiningStatus';
 import MiningStatistics from './MiningStatistics';
 import MiningLeaderboard from './MiningLeaderboard';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface MiningTabsProps {
   activeTab: string;
@@ -26,11 +27,13 @@ const MiningTabs = ({
   MINING_REWARD,
   totalMined
 }: MiningTabsProps) => {
+  const { t } = useLanguage();
+  
   return (
     <Tabs defaultValue="mining" value={activeTab} onValueChange={setActiveTab}>
       <TabsList className="grid grid-cols-2 mb-6">
-        <TabsTrigger value="mining">Mining</TabsTrigger>
-        <TabsTrigger value="activity">Activity</TabsTrigger>
+        <TabsTrigger value="mining">{t('mining.mining')}</TabsTrigger>
+        <TabsTrigger value="activity">{t('mining.activity')}</TabsTrigger>
       </TabsList>
       
       <TabsContent value="mining" className="focus-visible:outline-none focus-visible:ring-0">
