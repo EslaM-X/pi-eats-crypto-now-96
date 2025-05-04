@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { WalletIcon, Pickaxe, Tally5, RefreshCw, BadgeInfo, Info } from 'lucide-react';
@@ -61,7 +60,6 @@ const Wallet = () => {
 
             <WalletCard
               title="piEat Balance (PTM)"
-              abbreviation="PTM"
               icon={<Tally5 className="h-6 w-6 text-orange" />}
               balance={balance.ptm}
               symbol="PTM"
