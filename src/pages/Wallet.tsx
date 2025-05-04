@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useWallet } from '@/contexts/WalletContext';
@@ -11,6 +10,7 @@ import { toast } from 'sonner';
 import WalletCard from '@/components/WalletCard';
 import TransactionHistory from '@/components/TransactionHistory';
 import PiEatLogo from '@/components/PiEatLogo';
+import PiNetworkLogo from '@/components/PiNetworkLogo';
 
 const Wallet = () => {
   const { t } = useLanguage();
@@ -156,7 +156,7 @@ const Wallet = () => {
           <WalletCard
             title={t('wallet.piNetwork')}
             abbreviation="π"
-            icon={<PiEatLogo piOnly={true} showEmoji={true} size="xl" />}
+            icon={<PiNetworkLogo size="xl" />}
             balance={balance}
             isUser={!!user}
             isPi={true}

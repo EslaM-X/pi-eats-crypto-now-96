@@ -1,6 +1,5 @@
 
 import React from 'react';
-import PiEatLogo from './PiEatLogo';
 
 interface PiNetworkLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -11,16 +10,16 @@ const PiNetworkLogo: React.FC<PiNetworkLogoProps> = ({
   size = 'md',
   className = ''
 }) => {
-  // تحسين وضوح رمز π - جعله واضح بدون ظل
+  const sizeClasses = {
+    sm: 'text-2xl',
+    md: 'text-3xl',
+    lg: 'text-4xl',
+    xl: 'text-5xl',
+  };
+
   return (
-    <div className={`pi-symbol-solid ${className}`}>
-      <PiEatLogo 
-        size={size} 
-        className={className} 
-        showEat={false} 
-        piOnly={true} 
-        showEmoji={true} 
-      />
+    <div className={`font-extrabold ${sizeClasses[size]} text-[#8B5CF6] ${className}`}>
+      π
     </div>
   );
 };

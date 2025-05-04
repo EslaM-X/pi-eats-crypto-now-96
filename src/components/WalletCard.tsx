@@ -5,6 +5,7 @@ import { PiPriceIndicator } from '@/components/PiPriceIndicator';
 import CurrencyValue from '@/components/CurrencyValue';
 import { ExternalLink, WalletIcon, SendHorizontal, ArrowRightLeft, PlusCircle, History, DollarSign } from 'lucide-react';
 import PiEatLogo from '@/components/PiEatLogo';
+import PiNetworkLogo from '@/components/PiNetworkLogo';
 
 interface WalletCardProps {
   title: string;
@@ -63,7 +64,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
             <div className="text-3xl md:text-4xl font-bold flex items-center">
               {isPi && (
                 <span className="mr-1 font-extrabold text-4xl md:text-5xl">
-                  <PiEatLogo piOnly={true} showEmoji={true} size="md" />
+                  <PiNetworkLogo size="md" />
                 </span>
               )}
               {isPtm && <PiEatLogo piOnly={true} showEmoji={true} size="md" className="mr-1" />}
