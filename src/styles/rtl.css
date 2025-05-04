@@ -1,255 +1,81 @@
 
-/* RTL (Right-to-Left) specific styles for Arabic language */
+/* RTL (Right-to-Left) Specific Styles */
 
-@layer base {
-  /* Arabic font setting for RTL mode */
-  html[dir="rtl"] {
-    font-family: var(--font-arabic);
-    letter-spacing: 0; /* Remove letter spacing for Arabic text */
-  }
-  
-  /* Better text alignment for RTL mode */
-  html[dir="rtl"] * {
-    text-align: right;
-  }
-  
-  /* Fix logo alignment in RTL mode to prevent reversing */
-  html[dir="rtl"] .logo-container {
-    direction: ltr; /* Keep logo LTR to prevent flipping */
-  }
-  
-  html[dir="rtl"] .logo-text {
-    direction: rtl; /* But keep text RTL */
-    margin-right: 0.5rem;
-  }
-  
-  /* Prevent SVG flipping in RTL mode */
-  html[dir="rtl"] svg {
-    transform: none !important;
-  }
-  
-  /* Explicitly prevent PiEatLogo from flipping */
-  html[dir="rtl"] .pi-color {
-    direction: ltr;
-  }
-  
-  /* Keep no-reverse class elements from flipping in RTL */
-  html[dir="rtl"] .no-reverse {
-    flex-direction: row !important;
-  }
-  
-  /* Improve Arabic text rendering */
-  html[dir="rtl"] h1,
-  html[dir="rtl"] h2,
-  html[dir="rtl"] h3,
-  html[dir="rtl"] h4,
-  html[dir="rtl"] h5,
-  html[dir="rtl"] h6 {
-    font-family: var(--font-arabic);
-    line-height: 1.6;
-  }
-
-  html[dir="rtl"] p,
-  html[dir="rtl"] span,
-  html[dir="rtl"] a,
-  html[dir="rtl"] button,
-  html[dir="rtl"] input,
-  html[dir="rtl"] label {
-    font-family: var(--font-arabic);
-  }
-  
-  /* Fix flex direction for RTL layout */
-  html[dir="rtl"] .flex-row {
-    flex-direction: row-reverse;
-  }
-  
-  /* Exception for components that should not be reversed */
-  html[dir="rtl"] .no-reverse {
-    flex-direction: row;
-  }
-  
-  /* Fix margins and paddings for RTL */
-  html[dir="rtl"] .ml-1 { margin-right: 0.25rem !important; margin-left: 0 !important; }
-  html[dir="rtl"] .ml-2 { margin-right: 0.5rem !important; margin-left: 0 !important; }
-  html[dir="rtl"] .ml-3 { margin-right: 0.75rem !important; margin-left: 0 !important; }
-  html[dir="rtl"] .ml-4 { margin-right: 1rem !important; margin-left: 0 !important; }
-  
-  html[dir="rtl"] .mr-1 { margin-left: 0.25rem !important; margin-right: 0 !important; }
-  html[dir="rtl"] .mr-2 { margin-left: 0.5rem !important; margin-right: 0 !important; }
-  html[dir="rtl"] .mr-3 { margin-left: 0.75rem !important; margin-right: 0 !important; }
-  html[dir="rtl"] .mr-4 { margin-left: 1rem !important; margin-right: 0 !important; }
-  
-  html[dir="rtl"] .pl-1 { padding-right: 0.25rem !important; padding-left: 0 !important; }
-  html[dir="rtl"] .pl-2 { padding-right: 0.5rem !important; padding-left: 0 !important; }
-  html[dir="rtl"] .pl-3 { padding-right: 0.75rem !important; padding-left: 0 !important; }
-  html[dir="rtl"] .pl-4 { padding-right: 1rem !important; padding-left: 0 !important; }
-  
-  html[dir="rtl"] .pr-1 { padding-left: 0.25rem !important; padding-right: 0 !important; }
-  html[dir="rtl"] .pr-2 { padding-left: 0.5rem !important; padding-right: 0 !important; }
-  html[dir="rtl"] .pr-3 { padding-left: 0.75rem !important; padding-right: 0 !important; }
-  html[dir="rtl"] .pr-4 { padding-left: 1rem !important; padding-right: 0 !important; }
-
-  /* RTL specific line-height adjustments for mobile */
-  @media (max-width: 640px) {
-    html[dir="rtl"] h1 {
-      line-height: 1.4 !important;
-    }
-    
-    html[dir="rtl"] .app-name {
-      font-size: 1.9rem !important;
-      line-height: 2 !important;
-    }
-  }
-  
-  /* Fix icon placement in RTL */
-  html[dir="rtl"] .inline-block.mr-1 {
-    margin-right: 0 !important;
-    margin-left: 0.25rem !important;
-  }
-  
-  html[dir="rtl"] .inline-block.mr-2 {
-    margin-right: 0 !important;
-    margin-left: 0.5rem !important;
-  }
-  
-  /* Specific fix for Arabic diacritical marks visibility */
-  html[dir="rtl"] .app-name {
-    font-size: 2.25rem; /* Slightly smaller to show diacritical marks */
-    line-height: 1.8; /* Increased line height for better readability */
-    letter-spacing: 0.01em; /* Slight letter spacing for better mark visibility */
-    font-weight: 700; /* Bold for better visibility */
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1); /* Subtle text shadow for better contrast */
-  }
-
-  /* Enhanced Arabic text styling for improved diacritical marks */
-  html[dir="rtl"] .arabic-text,
-  html[dir="rtl"] .welcome-highlight {
-    text-rendering: optimizeLegibility;
-    letter-spacing: 0.02em; /* Just enough to show diacritical marks clearly */
-    font-size: 110%; /* Slightly larger for better visibility */
-    line-height: 1.7; /* More space for diacritical marks */
-    font-weight: 600; /* Semi-bold to help marks stand out */
-  }
-
-  /* Special styles for welcome highlight text with diacritical marks */
-  html[dir="rtl"] .welcome-highlight {
-    font-size: 125%;
-    line-height: 2;
-    padding: 0.5rem 0;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-  }
-  
-  /* Prevent image flipping in RTL mode */
-  html[dir="rtl"] img {
-    transform: none !important;
-  }
-  
-  /* Prevent logo flipping in RTL mode - reinforcing this rule */
-  html[dir="rtl"] .logo svg,
-  html[dir="rtl"] .pi-color,
-  html[dir="rtl"] .logo-container * {
-    transform: none !important;
-    direction: ltr !important;
-  }
+[dir="rtl"] {
+  /* Text alignment */
+  text-align: right;
 }
 
-@layer components {
-  /* RTL specific components */
-  html[dir="rtl"] .card,
-  html[dir="rtl"] .button {
-    direction: rtl;
-  }
-
-  /* Fix gradients for RTL */
-  html[dir="rtl"] .button-gradient {
-    @apply bg-gradient-to-l from-pi to-orange hover:from-pi-dark hover:to-orange-dark;
-  }
-  
-  html[dir="rtl"] .bg-gradient-to-r {
-    @apply bg-gradient-to-l;
-  }
-  
-  /* Fix alignment for header elements in RTL */
-  html[dir="rtl"] .space-x-4 > * {
-    margin-left: 1rem !important;
-    margin-right: 0 !important;
-  }
-  
-  html[dir="rtl"] .space-x-6 > * {
-    margin-left: 1.5rem !important;
-    margin-right: 0 !important;
-  }
-  
-  /* Add spacing to navigation items in RTL mode */
-  html[dir="rtl"] nav a {
-    margin-left: 1.75rem !important;
-    margin-right: 0 !important;
-  }
-  
-  /* Fix icons in buttons for RTL */
-  html[dir="rtl"] button svg,
-  html[dir="rtl"] a svg {
-    margin-left: 0.5rem;
-    margin-right: 0;
-  }
-  
-  /* Fix Pi Price Indicator for RTL */
-  html[dir="rtl"] .price-indicator .space-x-2 > * + * {
-    margin-right: 0.5rem !important;
-    margin-left: 0 !important;
-  }
-  
-  /* Ad spaces styling */
-  .ad-space {
-    @apply my-6 rounded-lg overflow-hidden border border-muted;
-    min-height: 120px;
-  }
-  
-  .ad-space.horizontal {
-    @apply w-full;
-  }
-  
-  .ad-space.vertical {
-    @apply h-full;
-    min-height: 400px;
-  }
-  
-  .ad-space.square {
-    @apply aspect-square;
-  }
+[dir="rtl"] .logo-container {
+  flex-direction: row-reverse;
 }
 
-/* RTL responsive adjustments */
-/* Improve RTL spacing for mobile */
-@media (max-width: 640px) {
-  html[dir="rtl"] .container {
-    padding-right: 1rem;
-    padding-left: 1rem;
-  }
-  
-  /* Fix mobile menu for RTL */
-  html[dir="rtl"] .mobile-nav-items {
-    right: 0;
-    left: auto;
-  }
-  
-  /* Better text rendering for small screens in RTL */
-  html[dir="rtl"] {
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+[dir="rtl"] .no-reverse {
+  /* Elements that should not be reversed in RTL mode */
+  flex-direction: row !important;
 }
 
-/* Improve RTL spacing for tablet */
-@media (min-width: 641px) and (max-width: 1023px) {
-  html[dir="rtl"] .container {
-    padding-right: 1.5rem;
-    padding-left: 1.5rem;
-  }
+[dir="rtl"] .reverse-on-rtl {
+  flex-direction: row-reverse !important;
 }
 
-/* Fix RTL in mobile navigation */
-html[dir="rtl"] .mobile-bottom-nav {
+[dir="rtl"] .mr-1 {
+  margin-right: 0;
+  margin-left: 0.25rem;
+}
+
+[dir="rtl"] .mr-2 {
+  margin-right: 0;
+  margin-left: 0.5rem;
+}
+
+[dir="rtl"] .mr-3 {
+  margin-right: 0;
+  margin-left: 0.75rem;
+}
+
+[dir="rtl"] .mr-4 {
+  margin-right: 0;
+  margin-left: 1rem;
+}
+
+[dir="rtl"] .ml-1 {
+  margin-left: 0;
+  margin-right: 0.25rem;
+}
+
+[dir="rtl"] .ml-2 {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+[dir="rtl"] .ml-3 {
+  margin-left: 0;
+  margin-right: 0.75rem;
+}
+
+[dir="rtl"] .ml-4 {
+  margin-left: 0;
+  margin-right: 1rem;
+}
+
+/* Special RTL adjustments for app components */
+[dir="rtl"] .app-name {
+  direction: rtl;
+}
+
+[dir="rtl"] .arabic-text {
+  font-family: 'Tajawal', sans-serif;
+  letter-spacing: 0;
+  line-height: 1.6;
+}
+
+/* RTL adjustments for header components */
+[dir="rtl"] .pi-color {
+  direction: ltr;
+}
+
+/* Mobile navigation RTL adjustments */
+[dir="rtl"] .mobile-nav {
   flex-direction: row-reverse;
 }

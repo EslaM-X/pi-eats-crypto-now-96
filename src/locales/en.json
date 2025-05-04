@@ -1,0 +1,143 @@
+
+{
+  "app": {
+    "name": "Pi-Eat",
+    "tagline": "Order Food with Pi"
+  },
+  "loading": "Loading...",
+  "nav": {
+    "home": "Home",
+    "restaurants": "Restaurants",
+    "homefood": "Home Food",
+    "addFood": "Add Food",
+    "orders": "My Orders",
+    "wallet": "Wallet",
+    "rewards": "Rewards",
+    "mining": "Mining"
+  },
+  "auth": {
+    "connectWithPi": "Connect with Pi",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "profile": "Profile",
+    "settings": "Settings",
+    "authorizationRequired": "Authorization required to access this page"
+  },
+  "home": {
+    "welcome": "Eat with Pi",
+    "welcomeHighlight": "Use Pi to order food",
+    "subtitle": "The first platform in Egypt for ordering food with Pi cryptocurrency",
+    "orderNow": "Order Now",
+    "joinPiNetwork": "Join Pi Network",
+    "featured": "Featured Restaurants",
+    "categories": "Browse by Category",
+    "homemade": "Homemade Food",
+    "viewAll": "View All"
+  },
+  "restaurants": {
+    "title": "Restaurants",
+    "subtitle": "Discover the best restaurants",
+    "searchPlaceholder": "Search for a restaurant..."
+  },
+  "food": {
+    "addToCart": "Add to Cart",
+    "viewMenu": "View Menu",
+    "popular": "Popular",
+    "discount": "{percent}% OFF",
+    "emptyMenu": "Menu is empty",
+    "addReview": "Add Review"
+  },
+  "homefood": {
+    "title": "Home Food",
+    "subtitle": "Discover the best homemade food",
+    "add": {
+      "title": "Add Home Food",
+      "subtitle": "Sell your homemade food and earn Pi",
+      "name": "Food Name",
+      "description": "Description",
+      "price": "Price",
+      "image": "Food Image",
+      "category": "Category",
+      "submit": "Submit"
+    }
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "continueToCheckout": "Continue to Checkout",
+    "total": "Total:",
+    "removeItem": "Remove"
+  },
+  "wallet": {
+    "title": "Wallet",
+    "balance": "Balance",
+    "transaction": "Transactions",
+    "send": "Send",
+    "receive": "Receive",
+    "refresh": "Refresh",
+    "lastUpdated": "Last Updated",
+    "amountPi": "Amount (Pi)",
+    "recipient": "Recipient",
+    "message": "Message",
+    "sendPi": "Send Pi",
+    "receivePi": "Receive Pi",
+    "piAddress": "Your Pi Address",
+    "sendAgain": "Send Again"
+  },
+  "orders": {
+    "title": "My Orders",
+    "empty": "No orders found",
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    },
+    "order": "Order",
+    "date": "Date",
+    "total": "Total",
+    "status": "Status",
+    "actions": "Actions",
+    "viewDetails": "View Details",
+    "cancel": "Cancel Order",
+    "noOrders": "No Orders"
+  },
+  "rewards": {
+    "title": "Rewards",
+    "subtitle": "Earn and redeem reward points",
+    "points": "Your Points",
+    "availableRewards": "Available Rewards",
+    "pointsNeeded": "Points Needed",
+    "redeem": "Redeem",
+    "history": "Rewards History",
+    "earnedOn": "Earned on",
+    "noRewards": "No rewards"
+  },
+  "mining": {
+    "title": "Pi Mining",
+    "subtitle": "Press the mine button daily",
+    "button": "Mine",
+    "nextSession": "Next Session",
+    "lastSession": "Last Session",
+    "miningSuccess": "Successfully mined!",
+    "points": "points",
+    "hours": "hours",
+    "minutes": "minutes",
+    "seconds": "seconds"
+  },
+  "theme": {
+    "light": "Light Mode",
+    "dark": "Dark Mode"
+  },
+  "pi": {
+    "viewOnOKX": "View on OKX"
+  },
+  "error": {
+    "404": "Page not found",
+    "goBack": "Go back home",
+    "generalError": "Something went wrong",
+    "tryAgain": "Try again"
+  }
+}

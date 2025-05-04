@@ -1,0 +1,143 @@
+
+{
+  "app": {
+    "name": "بي-إيت",
+    "tagline": "اطلب الطعام بعملة باي"
+  },
+  "loading": "جاري التحميل...",
+  "nav": {
+    "home": "الرئيسية",
+    "restaurants": "المطاعم",
+    "homefood": "طعام منزلي",
+    "addFood": "إضافة طعام",
+    "orders": "طلباتي",
+    "wallet": "المحفظة",
+    "rewards": "المكافآت",
+    "mining": "التعدين"
+  },
+  "auth": {
+    "connectWithPi": "تسجيل الدخول باستخدام باي",
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "logout": "تسجيل الخروج",
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات",
+    "authorizationRequired": "يجب تسجيل الدخول للوصول لهذه الصفحة"
+  },
+  "home": {
+    "welcome": "أطعم بايك",
+    "welcomeHighlight": "اطلب طعامك بعملة باي",
+    "subtitle": "المنصة الأولى في مصر لطلب الطعام باستخدام عملة باي المشفرة",
+    "orderNow": "اطلب الآن",
+    "joinPiNetwork": "انضم لشبكة باي",
+    "featured": "المطاعم المميزة",
+    "categories": "تصفح حسب التصنيف",
+    "homemade": "الأطعمة المنزلية",
+    "viewAll": "عرض الكل"
+  },
+  "restaurants": {
+    "title": "المطاعم",
+    "subtitle": "اكتشف أفضل المطاعم",
+    "searchPlaceholder": "ابحث عن مطعم..."
+  },
+  "food": {
+    "addToCart": "أضف إلى السلة",
+    "viewMenu": "عرض القائمة",
+    "popular": "الأكثر طلباً",
+    "discount": "خصم {percent}%",
+    "emptyMenu": "قائمة الطعام فارغة",
+    "addReview": "أضف تقييم"
+  },
+  "homefood": {
+    "title": "الطعام المنزلي",
+    "subtitle": "اكتشف أفضل الأكلات المنزلية",
+    "add": {
+      "title": "إضافة طعام منزلي",
+      "subtitle": "قم ببيع طعامك المنزلي وكسب عملة باي",
+      "name": "اسم الطعام",
+      "description": "وصف الطعام",
+      "price": "السعر",
+      "image": "صورة الطعام",
+      "category": "التصنيف",
+      "submit": "نشر"
+    }
+  },
+  "cart": {
+    "title": "سلة التسوق",
+    "empty": "سلة التسوق فارغة",
+    "continueToCheckout": "متابعة للدفع",
+    "total": "المجموع:",
+    "removeItem": "إزالة"
+  },
+  "wallet": {
+    "title": "المحفظة",
+    "balance": "الرصيد",
+    "transaction": "المعاملات",
+    "send": "إرسال",
+    "receive": "استلام",
+    "refresh": "تحديث",
+    "lastUpdated": "آخر تحديث",
+    "amountPi": "المبلغ (باي)",
+    "recipient": "المستلم",
+    "message": "رسالة",
+    "sendPi": "إرسال باي",
+    "receivePi": "استلام باي",
+    "piAddress": "عنوان باي الخاص بك",
+    "sendAgain": "إرسال مرة أخرى"
+  },
+  "orders": {
+    "title": "طلباتي",
+    "empty": "لا يوجد طلبات",
+    "status": {
+      "pending": "قيد الانتظار",
+      "processing": "قيد المعالجة",
+      "shipped": "تم الشحن",
+      "delivered": "تم التوصيل",
+      "cancelled": "ملغي"
+    },
+    "order": "طلب",
+    "date": "التاريخ",
+    "total": "المجموع",
+    "status": "الحالة",
+    "actions": "الإجراءات",
+    "viewDetails": "عرض التفاصيل",
+    "cancel": "إلغاء الطلب",
+    "noOrders": "لا توجد طلبات"
+  },
+  "rewards": {
+    "title": "المكافآت",
+    "subtitle": "اكسب واستبدل نقاط المكافآت",
+    "points": "نقاطك",
+    "availableRewards": "المكافآت المتاحة",
+    "pointsNeeded": "النقاط المطلوبة",
+    "redeem": "استبدال",
+    "history": "سجل المكافآت",
+    "earnedOn": "اكتسبت في",
+    "noRewards": "لا توجد مكافآت"
+  },
+  "mining": {
+    "title": "تعدين باي",
+    "subtitle": "اضغط زر التعدين بشكل يومي",
+    "button": "تعدين",
+    "nextSession": "الجلسة القادمة",
+    "lastSession": "آخر جلسة",
+    "miningSuccess": "تم التعدين بنجاح!",
+    "points": "نقطة",
+    "hours": "ساعة",
+    "minutes": "دقيقة",
+    "seconds": "ثانية"
+  },
+  "theme": {
+    "light": "وضع النهار",
+    "dark": "وضع الليل"
+  },
+  "pi": {
+    "viewOnOKX": "عرض على OKX"
+  },
+  "error": {
+    "404": "الصفحة غير موجودة",
+    "goBack": "العودة للصفحة الرئيسية",
+    "generalError": "حدث خطأ ما",
+    "tryAgain": "حاول مرة أخرى"
+  }
+}
