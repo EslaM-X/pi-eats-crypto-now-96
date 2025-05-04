@@ -127,15 +127,25 @@ const AddFoodListing = () => {
           address: values.location,
           email: user.username + "@example.com", // Default email based on username
         },
-        menu: [], // Empty menu initially
-        // Store additional fields that aren't in the FoodProvider type directly
+        menu: [] // Empty menu initially
+      };
+      
+      // Store additional data as custom properties in localStorage or context if needed
+      const extraData = {
         deliveryTime: values.deliveryTime || "30-45 min",
         openingHours: values.openingHours || "9:00 AM - 9:00 PM",
         specialties: values.specialties || "",
         allergyInfo: values.allergyInfo || ""
       };
       
+      // You could store this extra data somewhere else if needed
+      // For example, in localStorage keyed by the provider ID
+      
       const providerId = addProvider(newProvider);
+      
+      // Store the extra data if needed
+      // localStorage.setItem(`provider_${providerId}_extra`, JSON.stringify(extraData));
+      
       toast.success("Food provider added successfully!");
       navigate(`/homefood/${providerId}`);
     } catch (error: any) {
