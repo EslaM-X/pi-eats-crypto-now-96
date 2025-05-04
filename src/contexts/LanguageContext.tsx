@@ -50,6 +50,15 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
         '--font-arabic', 
         '"Noto Kufi Arabic", "Noto Sans Arabic", "Droid Arabic Kufi", Tahoma, sans-serif'
       );
+      
+      // Add additional styles for better Arabic rendering
+      document.documentElement.style.setProperty('text-rendering', 'optimizeLegibility');
+      document.documentElement.style.setProperty('-webkit-font-smoothing', 'antialiased');
+      document.documentElement.style.setProperty('-moz-osx-font-smoothing', 'grayscale');
+    } else {
+      document.documentElement.style.removeProperty('text-rendering');
+      document.documentElement.style.removeProperty('-webkit-font-smoothing');
+      document.documentElement.style.removeProperty('-moz-osx-font-smoothing');
     }
   }, [rtl, language]);
 

@@ -64,6 +64,11 @@
     html[dir="rtl"] h1 {
       line-height: 1.4 !important;
     }
+    
+    html[dir="rtl"] .app-name {
+      font-size: 1.9rem !important;
+      line-height: 2 !important;
+    }
   }
   
   /* Fix icon placement in RTL */
@@ -82,6 +87,8 @@
     font-size: 2.25rem; /* Slightly smaller to show diacritical marks */
     line-height: 1.8; /* Increased line height for better readability */
     letter-spacing: 0.01em; /* Slight letter spacing for better mark visibility */
+    font-weight: 700; /* Bold for better visibility */
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1); /* Subtle text shadow for better contrast */
   }
 }
 
@@ -94,7 +101,7 @@
 
   /* Fix gradients for RTL */
   html[dir="rtl"] .button-gradient {
-    @apply bg-gradient-to-l from-pi to-pi-light hover:from-pi-dark hover:to-pi;
+    @apply bg-gradient-to-l from-pi to-orange hover:from-pi-dark hover:to-orange-dark;
   }
   
   html[dir="rtl"] .bg-gradient-to-r {
@@ -139,6 +146,13 @@
     right: 0;
     left: auto;
   }
+  
+  /* Better text rendering for small screens in RTL */
+  html[dir="rtl"] {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
 /* Improve RTL spacing for tablet */
@@ -153,4 +167,3 @@
 html[dir="rtl"] .mobile-bottom-nav {
   flex-direction: row-reverse;
 }
-
