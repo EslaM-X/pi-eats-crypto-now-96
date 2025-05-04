@@ -60,7 +60,7 @@ const Wallet = () => {
             />
 
             <WalletCard
-              title={t('wallet.piEat')}
+              title="piEat Balance (PTM)"
               abbreviation="PTM"
               icon={<Tally5 className="h-6 w-6 text-orange" />}
               balance={balance.ptm}
