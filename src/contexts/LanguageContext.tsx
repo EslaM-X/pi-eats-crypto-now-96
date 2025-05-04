@@ -43,6 +43,14 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     } else {
       document.body.classList.remove('rtl');
     }
+    
+    // Add Arabic font variable for better rendering of diacritical marks
+    if (rtl) {
+      document.documentElement.style.setProperty(
+        '--font-arabic', 
+        '"Noto Kufi Arabic", "Noto Sans Arabic", "Droid Arabic Kufi", Tahoma, sans-serif'
+      );
+    }
   }, [rtl, language]);
 
   // Translation function

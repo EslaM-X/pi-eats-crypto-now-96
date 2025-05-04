@@ -76,6 +76,13 @@
     margin-right: 0 !important;
     margin-left: 0.5rem !important;
   }
+  
+  /* Specific fix for Arabic diacritical marks visibility */
+  html[dir="rtl"] .app-name {
+    font-size: 2.25rem; /* Slightly smaller to show diacritical marks */
+    line-height: 1.8; /* Increased line height for better readability */
+    letter-spacing: 0.01em; /* Slight letter spacing for better mark visibility */
+  }
 }
 
 @layer components {
@@ -146,3 +153,4 @@
 html[dir="rtl"] .mobile-bottom-nav {
   flex-direction: row-reverse;
 }
+

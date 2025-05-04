@@ -30,7 +30,7 @@ const Hero = () => {
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-orange animate-pulse-slow">
                 {t('home.welcomeHighlight')}
               </h2>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent">
+              <h1 className="app-name text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent">
                 {t('home.welcome')}
               </h1>
             </div>

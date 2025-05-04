@@ -3,6 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import Arabic font for better diacritical mark display */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap');
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -29,6 +32,7 @@
     --orange: 24 95% 53%;
     --orange-dark: 24 95% 43%;
     --radius: 0.5rem;
+    --font-arabic: "Noto Kufi Arabic", "Noto Sans Arabic", Tahoma, sans-serif;
   }
 
   .dark {
@@ -126,7 +130,7 @@
 
 /* Custom font settings for Arabic */
 html[lang="ar"] {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--font-arabic);
   font-size: 15px; /* Slightly smaller base font size for Arabic text */
   line-height: 1.6; /* Increased line height for better readability */
 }
@@ -136,4 +140,11 @@ html[lang="ar"] span,
 html[lang="ar"] div {
   font-feature-settings: "kern" 1, "liga" 1;
   letter-spacing: -0.01em; /* Slight negative letter spacing for Arabic */
+}
+
+/* Fixed for logo text */
+html[lang="ar"] .app-name {
+  font-family: var(--font-arabic);
+  line-height: 1.8;
+  letter-spacing: 0.01em;
 }
