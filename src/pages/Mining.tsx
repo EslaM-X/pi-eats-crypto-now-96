@@ -98,7 +98,11 @@ const Mining = () => {
         {/* Logo Header Section */}
         <div className="flex flex-col items-center justify-center mb-6 sm:mb-8">
           <div className="bg-gradient-to-r from-pi to-orange p-4 sm:p-6 rounded-full shadow-lg mb-4">
-            <PiEatLogo size={isMobile ? "md" : "xl"} showEmoji={true} className="animate-pulse" />
+            <PiEatLogo 
+              size={isMobile ? "md" : "xl"} 
+              showEmoji={true} 
+              className="animate-pulse" 
+            />
           </div>
           
           <div className="text-center">

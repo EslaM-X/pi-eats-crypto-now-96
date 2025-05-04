@@ -16,6 +16,7 @@ interface PiAuthContextType {
   login: () => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
+  isAuthenticating: boolean; // أضفت هذه الخاصية الجديدة
   openPiPayment: (amount: number, memo: string) => Promise<boolean>;
 }
 
@@ -24,6 +25,7 @@ const PiAuthContext = createContext<PiAuthContextType>({
   login: async () => {},
   logout: () => {},
   isAuthenticated: false,
+  isAuthenticating: false, // أضفت قيمة افتراضية
   openPiPayment: async () => false,
 });
 
@@ -32,6 +34,7 @@ export const usePiAuth = () => useContext(PiAuthContext);
 export const PiAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<PiUser | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isAuthenticating, setIsAuthenticating] = useState(false); // أضفنا حالة جديدة
 
   // Initialize Pi SDK and check for stored user
   useEffect(() => {
@@ -65,6 +68,9 @@ export const PiAuthProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   // Mock login function for demo
   const login = async () => {
     try {
+      // تعيين حالة المصادقة إلى true عند بدء عملية تسجيل الدخول
+      setIsAuthenticating(true);
+      
       // In a real app, we would authenticate with Pi Network
       // For demo purposes, we'll create a mock user
       const mockUser: PiUser = {
@@ -74,11 +80,17 @@ export const PiAuthProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         walletAddress: '0x' + Array(40).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('')
       };
       
+      // محاكاة تأخير الشبكة
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
       setUser(mockUser);
       toast.success('Logged in successfully!');
     } catch (error) {
       console.error('Login error:', error);
       toast.error('Failed to login. Please try again.');
+    } finally {
+      // تعيين حالة المصادقة إلى false بعد الانتهاء من عملية تسجيل الدخول
+      setIsAuthenticating(false);
     }
   };
 
@@ -125,6 +137,7 @@ export const PiAuthProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         login,
         logout,
         isAuthenticated: !!user,
+        isAuthenticating, // إضافة الخاصية الجديدة إلى القيمة المقدمة
         openPiPayment
       }}
     >

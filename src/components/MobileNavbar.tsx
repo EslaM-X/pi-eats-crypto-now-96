@@ -1,7 +1,7 @@
 
 import React from 'react';
-// Re-export from frontend for backwards compatibility
-import MobileNavbarComponent from '../frontend/components/MobileNavbar';
+// استيراد المكون بشكل صحيح
+import { MobileNavbar as MobileNavbarComponent } from '../frontend/components/MobileNavbar';
 
 const MobileNavbar = () => {
   return <MobileNavbarComponent />;

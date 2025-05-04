@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Restaurant, ShoppingBag, Wallet, CircleDollarSign } from 'lucide-react';
+import { Home, ShoppingBag, Wallet, CircleDollarSign } from 'lucide-react';
+import { Utensils } from 'lucide-react'; // استبدلنا Restaurant بـ Utensils
 import { useCart } from '@/contexts/CartContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -19,7 +20,7 @@ export const MobileNavigation: React.FC = () => {
     {
       path: '/restaurants',
       label: t('nav.restaurants'),
-      icon: Restaurant,
+      icon: Utensils, // استخدمنا Utensils بدلاً من Restaurant
       matchPaths: ['/restaurants', '/homefood']
     },
     {
