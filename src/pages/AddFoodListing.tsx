@@ -127,16 +127,12 @@ const AddFoodListing = () => {
           address: values.location,
           email: user.username + "@example.com", // Default email based on username
         },
-        // Don't include deliveryTime, openingHours, specialties, allergyInfo directly
-        // but rather in a metadata field if the type supports it
         menu: [], // Empty menu initially
-        metadata: {
-          // Add these fields in metadata to avoid TypeScript errors
-          deliveryTime: values.deliveryTime || "30-45 min",
-          openingHours: values.openingHours || "9:00 AM - 9:00 PM",
-          specialties: values.specialties || "",
-          allergyInfo: values.allergyInfo || ""
-        }
+        // Store additional fields that aren't in the FoodProvider type directly
+        deliveryTime: values.deliveryTime || "30-45 min",
+        openingHours: values.openingHours || "9:00 AM - 9:00 PM",
+        specialties: values.specialties || "",
+        allergyInfo: values.allergyInfo || ""
       };
       
       const providerId = addProvider(newProvider);
