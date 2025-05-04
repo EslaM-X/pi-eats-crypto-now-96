@@ -45,8 +45,11 @@ const PiPayment: React.FC<PiPaymentProps> = ({
         throw new Error('فشل في إنشاء الدفعة');
       }
 
-      // Get the payment ID (handle both API versions)
-      const paymentId = paymentData.paymentId || paymentData.identifier;
+      // In Pi Network SDK, payment data structure can vary
+      // We need to handle different property names for compatibility
+      const paymentId = typeof paymentData === 'object' ? 
+        (paymentData as any).identifier || (paymentData as any).paymentId || (paymentData as any)._id : 
+        paymentData;
       
       if (!paymentId) {
         throw new Error('لا يوجد معرف دفع صالح');
@@ -55,7 +58,7 @@ const PiPayment: React.FC<PiPaymentProps> = ({
       // Complete the payment
       const completedPayment = await completePayment(paymentId);
 
-      if (completedPayment && completedPayment.status === 'COMPLETED') {
+      if (completedPayment && (completedPayment as any).status === 'COMPLETED') {
         setPaymentStatus('success');
         toast.success('تمت عملية الدفع بنجاح!');
         onSuccess(completedPayment);

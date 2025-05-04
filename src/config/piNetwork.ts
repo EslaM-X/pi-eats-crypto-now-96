@@ -47,8 +47,7 @@ export const createPayment = async (amount: number, memo: string) => {
 // Complete payment
 export const completePayment = async (paymentId: string) => {
   try {
-    // In the latest SDK, you need to use the payment object returned from createPayment
-    // For now, we will adapt to the new interface
+    // In the latest SDK, completing a payment requires calling Pi.createPayment with the paymentId
     const completedPayment = await Pi.createPayment({
       paymentId,
       amount: '0', // These fields are required but will be ignored when completing
@@ -66,9 +65,7 @@ export const completePayment = async (paymentId: string) => {
 export const cancelPayment = async (paymentId: string, reason: string) => {
   try {
     // In the latest SDK, cancellation is handled differently
-    // We'll adapt to the new interface
     console.log('Attempting to cancel payment:', paymentId, reason);
-    // Cancellation is typically handled by the Payment object itself
     // This is a placeholder to maintain API compatibility
     return { cancelled: true, paymentId };
   } catch (error) {
