@@ -1,6 +1,6 @@
 
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { authenticateWithPi } from '@/config/piNetwork';
+import { authenticateWithPi, loadPiNetworkSDK } from '@/config/piNetwork';
 import { toast } from 'sonner';
 
 // Define the Pi user type
@@ -29,6 +29,11 @@ export const PiAuthProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [user, setUser] = useState<PiUser | null>(null);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [isPiNetworkAvailable, setIsPiNetworkAvailable] = useState(false);
+
+  // Load Pi Network SDK
+  useEffect(() => {
+    loadPiNetworkSDK();
+  }, []);
 
   // Check if Pi Network is available
   useEffect(() => {

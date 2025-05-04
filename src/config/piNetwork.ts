@@ -69,7 +69,7 @@ export const authenticateWithPi = async (): Promise<any> => {
       throw new Error('Pi SDK not available');
     }
 
-    // Call Pi.authenticate method
+    // Call Pi.authenticate method with required scopes
     const auth = await (window as any).Pi.authenticate(
       ['username', 'payments', 'wallet_address'], 
       onIncompletePaymentFound
@@ -90,8 +90,27 @@ const onIncompletePaymentFound = (payment: PaymentData) => {
   return completePayment(payment.identifier || payment.paymentId || payment._id || '');
 };
 
+// Add Pi Network SDK script to the document
+export const loadPiNetworkSDK = () => {
+  if (document.getElementById('pi-sdk-script')) return;
+  
+  const script = document.createElement('script');
+  script.id = 'pi-sdk-script';
+  script.src = 'https://sdk.minepi.com/pi-sdk.js';
+  script.async = true;
+  script.onload = () => {
+    // Dispatch an event to notify components that Pi SDK is loaded
+    const event = new Event('pi-sdk-loaded');
+    window.dispatchEvent(event);
+    console.log('Pi Network SDK loaded');
+  };
+  document.body.appendChild(script);
+};
+
+// Export functions
 export default {
   createPayment,
   completePayment,
-  authenticateWithPi
+  authenticateWithPi,
+  loadPiNetworkSDK
 };
