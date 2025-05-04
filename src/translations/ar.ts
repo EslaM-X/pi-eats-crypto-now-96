@@ -7,8 +7,8 @@ export const arTranslations = {
   },
   home: {
     welcome: 'باي إيت',
-    welcomeHighlight: 'استخدم عملة باي لطلب الطعام',
-    subtitle: 'اطلب الطعام من المطاعم أو الطهاة المحليين وادفع بعملة باي',
+    welcomeHighlight: 'اطلبْ الطعامَ بعملةِ بايْ المُشفَّرةِ',
+    subtitle: 'اطلبْ الطعامَ منَ المطاعمِ أو الطهاةِ المحليينَ وادفعْ بعملةِ بايْ',
     homefood: 'طعام منزلي',
     categories: 'تصفح حسب الفئات',
     featured: 'مطاعم مميزة',

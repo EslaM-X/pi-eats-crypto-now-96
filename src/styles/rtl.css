@@ -1,3 +1,4 @@
+
 /* RTL (Right-to-Left) specific styles for Arabic language */
 
 @layer base {
@@ -119,6 +120,24 @@
     font-weight: 700; /* Bold for better visibility */
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1); /* Subtle text shadow for better contrast */
   }
+
+  /* Enhanced Arabic text styling for improved diacritical marks */
+  html[dir="rtl"] .arabic-text,
+  html[dir="rtl"] .welcome-highlight {
+    text-rendering: optimizeLegibility;
+    letter-spacing: 0.02em; /* Just enough to show diacritical marks clearly */
+    font-size: 110%; /* Slightly larger for better visibility */
+    line-height: 1.7; /* More space for diacritical marks */
+    font-weight: 600; /* Semi-bold to help marks stand out */
+  }
+
+  /* Special styles for welcome highlight text with diacritical marks */
+  html[dir="rtl"] .welcome-highlight {
+    font-size: 125%;
+    line-height: 2;
+    padding: 0.5rem 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  }
   
   /* Prevent image flipping in RTL mode */
   html[dir="rtl"] img {
@@ -228,3 +247,4 @@
 html[dir="rtl"] .mobile-bottom-nav {
   flex-direction: row-reverse;
 }
+

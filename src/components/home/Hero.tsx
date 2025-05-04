@@ -27,7 +27,7 @@ const Hero = () => {
           
           {language === 'ar' ? (
             <div className="flex flex-col gap-3 mb-6">
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-orange animate-pulse-slow">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-orange animate-pulse-slow welcome-highlight">
                 {t('home.welcomeHighlight')}
               </h2>
               <h1 className="app-name text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent">
@@ -45,7 +45,7 @@ const Hero = () => {
             </div>
           )}
           
-          <p className="text-lg sm:text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-muted-foreground leading-relaxed">
+          <p className={`text-lg sm:text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-muted-foreground leading-relaxed ${language === 'ar' ? 'arabic-text' : ''}`}>
             {t('home.subtitle')}
           </p>
           
@@ -59,7 +59,7 @@ const Hero = () => {
           </div>
           
           <div className={`p-6 rounded-2xl ${theme === 'dark' ? 'bg-muted/40 backdrop-blur-lg' : 'glass-card'} max-w-2xl mx-auto`}>
-            <p className={`text-muted-foreground ${language === 'ar' ? 'text-sm leading-6' : ''}`}>
+            <p className={`text-muted-foreground ${language === 'ar' ? 'arabic-text' : ''}`}>
               {t('app.tagline')}
             </p>
           </div>
@@ -70,3 +70,4 @@ const Hero = () => {
 };
 
 export default Hero;
+
