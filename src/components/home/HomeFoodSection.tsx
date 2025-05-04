@@ -4,7 +4,7 @@ import { ArrowRight, ChefHat } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import FoodProviderCard from '../FoodProviderCard';
-import { useHomeFood } from '@/contexts/HomeFoodContext';
+import { useHomeFood } from '@/contexts/homefood/HomeFoodContext';
 import { Container } from '@/components/ui/container';
 
 const HomeFoodSection = () => {

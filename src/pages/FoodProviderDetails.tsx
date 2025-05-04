@@ -6,7 +6,7 @@ import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { useHomeFood } from '@/contexts/HomeFoodContext';
+import { useHomeFood } from '@/contexts/homefood/HomeFoodContext';
 import { usePiAuth } from '@/contexts/PiAuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { useTheme } from '@/contexts/ThemeContext';

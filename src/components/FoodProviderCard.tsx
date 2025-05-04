@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Star, MapPin, Heart } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useHomeFood } from '@/contexts/HomeFoodContext';
+import { useHomeFood } from '@/contexts/homefood/HomeFoodContext';
 import { usePiAuth } from '@/contexts/PiAuthContext';
 import { FoodProvider } from '@/types/food';
 

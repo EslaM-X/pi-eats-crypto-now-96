@@ -4,7 +4,7 @@ import { ThemeProvider } from './ThemeContext';
 import { LanguageProvider } from './LanguageContext';
 import { PiAuthProvider } from './PiAuthContext';
 import { PiPriceProvider } from './PiPriceContext';
-import { HomeFoodProvider } from './HomeFoodContext';
+import { HomeFoodProvider } from './homefood/HomeFoodContext';
 import { WalletProvider } from './WalletContext';
 import { RewardsProvider } from './RewardsContext';
 

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Search, Filter, MapPin, Star, PlusCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useHomeFood } from '@/contexts/HomeFoodContext';
+import { useHomeFood } from '@/contexts/homefood/HomeFoodContext';
 import { usePiAuth } from '@/contexts/PiAuthContext';
 import Header from '@/components/Header';
 import FoodProviderCard from '@/components/FoodProviderCard';
