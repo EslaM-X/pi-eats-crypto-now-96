@@ -62,6 +62,16 @@
     z-index: 50;
     backdrop-filter: blur(10px);
   }
+  
+  /* Fix bottom safe area for mobile browsers */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 16px);
+  }
+  
+  /* Fix top safe area for mobile browsers */
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 16px);
+  }
 }
 
 /* Better tablet responsiveness */
@@ -91,6 +101,15 @@
   .fixed-bottom {
     position: sticky;
   }
+  
+  /* Add safe area support */
+  .safe-area-bottom {
+    margin-bottom: env(safe-area-inset-bottom, 0);
+  }
+  
+  .safe-area-top {
+    margin-top: env(safe-area-inset-top, 0);
+  }
 }
 
 /* Handle orientation changes */
@@ -113,4 +132,19 @@
   .hover\:bg-opacity-90:hover {
     background-opacity: 1 !important;
   }
+}
+
+/* Prevent pull-to-refresh on mobile */
+html {
+  overscroll-behavior-y: contain;
+}
+
+/* Fix viewport height issues on mobile */
+:root {
+  --vh: 1vh;
+}
+
+.full-height {
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
 }
