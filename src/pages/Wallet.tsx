@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useWallet } from '@/contexts/WalletContext';
@@ -24,13 +23,13 @@ const Wallet = () => {
   // Function to open Pi Browser
   const openPiBrowser = () => {
     window.open('https://browser.minepi.com', '_blank');
-    toast.info('Opening Pi Browser...');
+    toast.info('Opening π Browser...');
   };
   
   // Function to visit PiEat website
   const visitPiEatSite = () => {
     window.open('https://pieat.me', '_blank');
-    toast.info('Visiting Pieat-Me...');
+    toast.info('Visiting πEat-Me...');
   };
   
   // Function to simulate top up
@@ -42,7 +41,7 @@ const Wallet = () => {
         description: 'Top up from test wallet',
         status: 'completed',
       });
-      toast.success('Successfully topped up 5 Pi');
+      toast.success('Successfully topped up 5 π');
     } else {
       login();
     }
@@ -51,7 +50,7 @@ const Wallet = () => {
   // Function to simulate sending Pi
   const handleSendPi = () => {
     if (user) {
-      toast.info('Send Pi feature coming soon!');
+      toast.info('Send π feature coming soon!');
     } else {
       login();
     }
@@ -68,7 +67,7 @@ const Wallet = () => {
   // Function to handle Pi payment
   const handlePiPayment = async () => {
     if (user) {
-      const success = await openPiPayment(1.0, 'Testing Pi payment');
+      const success = await openPiPayment(1.0, 'Testing π payment');
       if (success) {
         toast.success('Payment successful!');
       }
@@ -155,7 +154,7 @@ const Wallet = () => {
           {/* Pi Network Wallet */}
           <WalletCard
             title={t('wallet.piNetwork')}
-            abbreviation="Pi"
+            abbreviation="π"
             icon={<div className="text-6xl font-bold">π</div>}
             balance={balance}
             isUser={!!user}
@@ -170,7 +169,7 @@ const Wallet = () => {
           
           {/* PiEat Wallet */}
           <WalletCard
-            title="Pieat-Me Balance"
+            title="πEat-Me Balance"
             abbreviation="PTM"
             icon={<PiEatLogo size="lg" />}
             balance={piEatBalance}

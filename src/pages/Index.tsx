@@ -32,10 +32,10 @@ const Index = () => {
         <Container>
           <div className="text-center">
             <p className="text-muted-foreground font-medium">
-              &copy; {new Date().getFullYear()} Pieat-Me. All rights reserved. Powered by the Pi Network.
+              &copy; {new Date().getFullYear()} πEat-Me. All rights reserved. Powered by the π Network.
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Pi is not affiliated with this application. This is a demo application.
+              π is not affiliated with this application. This is a demo application.
             </p>
           </div>
         </Container>

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useRewards } from '@/contexts/RewardsContext';
@@ -9,16 +8,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
+import PiEatLogo from '@/components/PiEatLogo';
 
-// Custom PiEat logo component
-const PiEatLogo = () => (
-  <div className="relative inline-flex items-center justify-center">
-    <div className="text-2xl font-bold">π</div>
-    <div className="absolute -top-2 -right-2 text-xs bg-orange text-white rounded-full h-4 w-4 flex items-center justify-center">
-      🍕
-    </div>
-  </div>
-);
+// We'll use our improved PiEatLogo component instead of this custom component
+// const PiEatLogo = () => (...); // Remove this custom component
 
 const Rewards = () => {
   const { t } = useLanguage();
@@ -59,7 +52,7 @@ const Rewards = () => {
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
             <div className="flex items-center">
               <div className="bg-pi/10 p-4 rounded-full mr-4">
-                <PiEatLogo />
+                <PiEatLogo size="md" />
               </div>
               <div>
                 <h2 className="text-2xl font-bold">{t('rewards.piEat')}</h2>

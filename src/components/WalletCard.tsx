@@ -104,7 +104,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
               onClick={onConnect}
               className="mt-4 lg:mt-0 button-gradient w-full lg:w-auto animate-pulse hover:animate-none"
             >
-              Connect with Pi
+              Connect with π
             </Button>
           )}
         </div>

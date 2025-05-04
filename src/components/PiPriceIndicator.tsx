@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { TrendingUp, TrendingDown, RefreshCcw, ExternalLink, Wallet, DollarSign, CircleDollarSign } from 'lucide-react';
 import { usePiPrice } from '@/contexts/PiPriceContext';

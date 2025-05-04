@@ -1,6 +1,6 @@
 
 import React from 'react';
-// استيراد المكون بشكل صحيح
+// Import the component correctly
 import { MobileNavbar as MobileNavbarComponent } from '../frontend/components/MobileNavbar';
 
 const MobileNavbar = () => {
