@@ -7,144 +7,136 @@
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
+
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
+ 
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 263.4 70% 50.4%;
+ 
+    --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
+ 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
+ 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
+ 
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
+ 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
+
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 263.4 70% 50.4%;
-    --radius: 0.75rem;
-    --pi: 263.4 70% 50.4%;
-    --orange: 24 95% 53%;
+    --ring: 222.2 84% 4.9%;
+ 
+    --radius: 0.5rem;
+    
+    /* PiEat custom colors */
+    --pi: 261 85% 61%;
+    --pi-dark: 262 83% 44%;
+    --orange: 24 94% 53%;
+    --orange-dark: 24 94% 43%;
   }
-
+ 
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
+ 
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
+ 
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 263.4 66% 57%;
-    --primary-foreground: 210 40% 98%;
+ 
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+ 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
+ 
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
+ 
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
+ 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
+ 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 263.4 66% 57%;
-    --pi: 263.4 66% 57%;
-    --orange: 24 95% 53%;
+    --ring: 212.7 26.8% 83.9%;
   }
 }
-
+ 
 @layer base {
   * {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground;
   }
 }
 
-@layer components {
-  .button-gradient {
-    @apply bg-gradient-to-r from-pi to-orange text-white hover:opacity-90;
+.button-gradient {
+  @apply bg-gradient-to-r from-[#8B5CF6] to-orange hover:opacity-90 text-white transition-all duration-300;
+}
+
+@keyframes colorShift {
+  0% {
+    background-position: 0% 50%;
   }
-  
-  .glass-card {
-    @apply backdrop-blur-sm bg-white/10 border border-white/20 shadow-xl;
+  50% {
+    background-position: 100% 50%;
   }
-  
-  .bg-grid-pattern-light {
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-    background-size: 20px 20px;
-  }
-  
-  .bg-grid-pattern-dark {
-    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-    background-size: 20px 20px;
-  }
-  
-  /* تعزيز ظهور رمز π - بدون ظل وبألوان واضحة */
-  .pi-color {
-    color: #8B5CF6;
-  }
-  
-  .pi-symbol-solid {
-    @apply font-extrabold text-4xl text-[#8B5CF6];
-  }
-  
-  /* حفظ الإصدار السابق للتوافق مع بقية التطبيق */
-  .pi-symbol {
-    @apply font-extrabold text-4xl text-[#8B5CF6];
+  100% {
+    background-position: 0% 50%;
   }
 }
 
-/* RTL Support */
-html.rtl {
-  direction: rtl;
-  text-align: right;
+/* Glass card effect */
+.glass-card {
+  @apply border border-white/10 bg-white/5 backdrop-blur-sm;
 }
 
-html.rtl .ml-1,
-html.rtl .ml-2,
-html.rtl .ml-3,
-html.rtl .ml-4,
-html.rtl .ml-5 {
-  margin-left: 0 !important;
+.dark .glass-card {
+  @apply border-white/5 bg-black/10;
 }
 
-html.rtl .mr-1,
-html.rtl .mr-2,
-html.rtl .mr-3,
-html.rtl .mr-4,
-html.rtl .mr-5 {
-  margin-right: 0 !important;
+/* Grid patterns for placeholders */
+.bg-grid-pattern-light {
+  background-size: 10px 10px;
+  background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
 }
 
-html.rtl .ml-1 { margin-right: 0.25rem !important; }
-html.rtl .ml-2 { margin-right: 0.5rem !important; }
-html.rtl .ml-3 { margin-right: 0.75rem !important; }
-html.rtl .ml-4 { margin-right: 1rem !important; }
-html.rtl .ml-5 { margin-right: 1.25rem !important; }
-
-html.rtl .mr-1 { margin-left: 0.25rem !important; }
-html.rtl .mr-2 { margin-left: 0.5rem !important; }
-html.rtl .mr-3 { margin-left: 0.75rem !important; }
-html.rtl .mr-4 { margin-left: 1rem !important; }
-html.rtl .mr-5 { margin-left: 1.25rem !important; }
-
-html.rtl .text-left { text-align: right !important; }
-html.rtl .text-right { text-align: left !important; }
-
-html.rtl .space-x-1 > :not([hidden]) ~ :not([hidden]),
-html.rtl .space-x-2 > :not([hidden]) ~ :not([hidden]),
-html.rtl .space-x-3 > :not([hidden]) ~ :not([hidden]),
-html.rtl .space-x-4 > :not([hidden]) ~ :not([hidden]) {
-  --tw-space-x-reverse: 1 !important;
+.bg-grid-pattern-dark {
+  background-size: 10px 10px;
+  background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
 }
 
-html.rtl .flex-row-reverse { flex-direction: row !important; }
-html.rtl .flex-row { flex-direction: row-reverse !important; }
+/* Pi color specific styling */
+.pi-color {
+  color: #8B5CF6;
+}
 
-/* To prevent double reversing when using flex-row-reverse intentionally in RTL */
-html.rtl .preserve-direction { flex-direction: inherit !important; }
+/* Custom styling for wallet.manage text */
+.wallet-manage-text {
+  font-weight: 800;
+  letter-spacing: 0.05rem;
+  background: linear-gradient(45deg, #00DBDE 0%, #FC00FF 100%);
+  background-size: 200% auto;
+  animation: colorShift 3s ease-in-out infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  font-size: 1.25rem;
+  transform: scale(1.05);
+  display: inline-block;
+}
