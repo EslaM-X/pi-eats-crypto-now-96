@@ -35,13 +35,38 @@ export const createPayment = async (amount: number, memo: string) => {
       amount: amount.toString(),
       memo,
       metadata: { orderId: Date.now().toString() }
-    });
+    }, onReadyForServerApproval, onReadyForServerCompletion, onCancel, onError);
+    
     console.log('Payment created:', paymentData);
     return paymentData;
   } catch (error) {
     console.error('Error creating payment:', error);
     return null;
   }
+};
+
+// Callback when payment is ready for approval
+const onReadyForServerApproval = (paymentId: string) => {
+  console.log('Ready for server approval:', paymentId);
+  // Handle approval logic
+};
+
+// Callback when payment is ready for completion
+const onReadyForServerCompletion = (paymentId: string) => {
+  console.log('Ready for server completion:', paymentId);
+  // Handle completion logic
+};
+
+// Callback when payment is cancelled
+const onCancel = (paymentId: string) => {
+  console.log('Payment cancelled:', paymentId);
+  // Handle cancellation
+};
+
+// Callback for payment errors
+const onError = (error: Error, payment?: any) => {
+  console.error('Payment error:', error, payment);
+  // Handle error
 };
 
 // Complete payment
@@ -52,7 +77,8 @@ export const completePayment = async (paymentId: string) => {
       paymentId,
       amount: '0', // These fields are required but will be ignored when completing
       memo: '',
-    });
+    }, onReadyForServerApproval, onReadyForServerCompletion, onCancel, onError);
+    
     console.log('Payment completed:', completedPayment);
     return completedPayment;
   } catch (error) {
