@@ -1,4 +1,3 @@
-
 /* RTL (Right-to-Left) specific styles for Arabic language */
 
 @layer base {
@@ -16,12 +15,26 @@
   /* Fix logo alignment in RTL mode to prevent reversing */
   html[dir="rtl"] .logo-container {
     direction: ltr; /* Keep logo LTR to prevent flipping */
-    display: inline-block;
   }
   
   html[dir="rtl"] .logo-text {
     direction: rtl; /* But keep text RTL */
     margin-right: 0.5rem;
+  }
+  
+  /* Prevent SVG flipping in RTL mode */
+  html[dir="rtl"] svg {
+    transform: none !important;
+  }
+  
+  /* Explicitly prevent PiEatLogo from flipping */
+  html[dir="rtl"] .pi-color {
+    direction: ltr;
+  }
+  
+  /* Keep no-reverse class elements from flipping in RTL */
+  html[dir="rtl"] .no-reverse {
+    flex-direction: row !important;
   }
   
   /* Improve Arabic text rendering */
@@ -112,9 +125,12 @@
     transform: none !important;
   }
   
-  /* Prevent logo flipping in RTL mode */
-  html[dir="rtl"] .logo svg {
+  /* Prevent logo flipping in RTL mode - reinforcing this rule */
+  html[dir="rtl"] .logo svg,
+  html[dir="rtl"] .pi-color,
+  html[dir="rtl"] .logo-container * {
     transform: none !important;
+    direction: ltr !important;
   }
 }
 

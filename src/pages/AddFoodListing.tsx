@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Container } from '@/components/ui/container';
@@ -128,11 +127,16 @@ const AddFoodListing = () => {
           address: values.location,
           email: user.username + "@example.com", // Default email based on username
         },
-        deliveryTime: values.deliveryTime || "30-45 min",
-        openingHours: values.openingHours || "9:00 AM - 9:00 PM",
-        specialties: values.specialties || "",
-        allergyInfo: values.allergyInfo || "",
-        menu: [] // Empty menu initially
+        // Don't include deliveryTime, openingHours, specialties, allergyInfo directly
+        // but rather in a metadata field if the type supports it
+        menu: [], // Empty menu initially
+        metadata: {
+          // Add these fields in metadata to avoid TypeScript errors
+          deliveryTime: values.deliveryTime || "30-45 min",
+          openingHours: values.openingHours || "9:00 AM - 9:00 PM",
+          specialties: values.specialties || "",
+          allergyInfo: values.allergyInfo || ""
+        }
       };
       
       const providerId = addProvider(newProvider);
@@ -379,7 +383,7 @@ const AddFoodListing = () => {
                           name="openingHours"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>{language === 'ar' ? 'ساعات العمل' : 'Opening Hours'}</FormLabel>
+                              <FormLabel>{language === 'ar' ? '��اعات العمل' : 'Opening Hours'}</FormLabel>
                               <div className="flex items-center space-x-2">
                                 <Clock className="h-4 w-4 text-muted-foreground" />
                                 <FormControl>

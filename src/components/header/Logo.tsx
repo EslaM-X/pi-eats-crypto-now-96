@@ -8,11 +8,13 @@ const Logo = () => {
   const { language } = useLanguage();
   
   return (
-    <Link to="/" className="flex items-center logo-container">
-      <PiEatLogo />
-      <span className={`text-2xl font-bold bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent ${language === 'ar' ? 'app-name mr-2 logo-text' : ''}`}>
-        PiEat-Me
-      </span>
+    <Link to="/" className="flex items-center logo-container no-reverse">
+      <div className={`${language === 'ar' ? 'flex flex-row-reverse' : 'flex'}`}>
+        <PiEatLogo />
+        <span className={`text-2xl font-bold bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent ${language === 'ar' ? 'mr-2 app-name' : ''}`}>
+          PiEat-Me
+        </span>
+      </div>
     </Link>
   );
 };
