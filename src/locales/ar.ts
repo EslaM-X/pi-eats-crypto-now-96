@@ -2,7 +2,7 @@
 export default {
   app: {
     name: 'باي ايت مي',
-    tagline: 'اطلب الطعام باستخدام عملة باي المشفرة',
+    tagline: 'اطلب الطعام باستخدام عملة باي المشفرة، بسهولة وأمان. استمتع بتجربة دفع سلسة في مطاعمك المفضلة.',
     description: 'باي ايت مي يربطك بالمطاعم والطهاة المنزليين. ادفع بعملة باي المشفرة.'
   },
   nav: {
@@ -13,7 +13,7 @@ export default {
     wallet: 'المحفظة',
     rewards: 'المكافآت',
     mining: 'التعدين',
-    addFood: 'اضف طعام',
+    addFood: 'أضف طعامك',
     cart: 'السلة'
   },
   auth: {
@@ -23,16 +23,16 @@ export default {
     connectWithPi: 'الاتصال بـ باي'
   },
   home: {
-    welcome: 'اطلب الطعام بعملة باي المشفرة',
-    welcomeHighlight: 'استمتع بتجربة فريدة',
-    subtitle: 'اكتشف المطاعم والطهاة المنزليين بالقرب منك، وادفع بعملة شبكة باي!',
+    welcome: 'باي إيت',
+    welcomeHighlight: 'اطلبْ الطعامَ بعملةِ بايْ المُشفَّرةِ',
+    subtitle: 'اطلبْ الطعامَ منَ المطاعمِ أو الطهاةِ المحليينَ وادفعْ بعملةِ بايْ',
     featured: 'المطاعم المميزة',
     categories: 'الفئات الشائعة',
     viewAll: 'عرض الكل',
-    homefood: 'طهي منزلي'
+    homefood: 'طعام منزلي'
   },
   food: {
-    addToCart: 'أضف',
+    addToCart: 'أضف إلى السلة',
     viewDetails: 'عرض التفاصيل',
     orderNow: 'اطلب الآن',
     categories: 'الفئات',
@@ -40,7 +40,8 @@ export default {
     rating: 'التقييم',
     delivery: 'وقت التوصيل',
     menu: 'القائمة',
-    reviews: 'التقييمات'
+    reviews: 'التقييمات',
+    customize: 'تخصيص'
   },
   wallet: {
     balance: 'الرصيد',
@@ -49,20 +50,38 @@ export default {
     receive: 'استلام',
     topUp: 'شحن',
     history: 'السجل',
-    lastUpdated: 'آخر تحديث'
+    lastUpdated: 'آخر تحديث',
+    piEat: 'رصيد باي إيت',
+    piNetwork: 'محفظة شبكة باي',
+    connect: 'اتصل بمتصفح باي',
+    totalBalance: 'الرصيد الإجمالي',
+    totalUsd: 'المجموع بالدولار',
+    totalEgp: 'المجموع بالجنيه',
+    quickOptions: 'خيارات سريعة',
+    swap: 'تبديل',
+    manage: 'إدارة',
+    estimatedValue: 'القيمة التقديرية',
+    mine: 'تعدين',
+    aboutPTM: 'حول رموز PTM',
+    ptmDescription: 'رموز PTM هي عملة مكافآت داخلية تستخدم في تطبيق باي إيت. يمكنك كسبها عن طريق التعدين واستخدامها للحصول على خصومات ومزايا حصرية.',
+    learnMore: 'اعرف المزيد'
   },
   cart: {
     title: 'سلة التسوق',
     empty: 'سلة التسوق فارغة',
     total: 'المجموع',
     checkout: 'إتمام الطلب',
-    continueShopping: 'مواصلة التسوق'
+    continueShopping: 'مواصلة التسوق',
+    items: 'العناصر',
+    viewCart: 'عرض السلة'
   },
   loading: 'جار التحميل...',
   error: 'حدث خطأ',
   success: 'تم بنجاح!',
   pi: {
-    viewOnOKX: 'عرض على منصة OKX'
+    viewOnOKX: 'عرض على منصة OKX',
+    currentPrice: 'سعر Pi الحالي',
+    lastUpdated: 'آخر تحديث'
   },
   tagline: {
     subtitle: 'دع رحلة الطعام اللذيذ تبدأ!'
@@ -70,5 +89,90 @@ export default {
   theme: {
     light: 'الوضع النهاري',
     dark: 'الوضع الليلي'
+  },
+  restaurant: {
+    explore: 'استكشف المطاعم المحلية بالقرب منك',
+    search: 'بحث عن مطاعم...',
+    filters: 'تصفية',
+    rating: 'التقييم',
+    cuisine: 'نوع المأكولات',
+    location: 'الموقع',
+    price: 'السعر',
+    distance: 'المسافة'
+  },
+  orders: {
+    track: 'تتبع طلباتك الحالية وسجل الطلبات السابقة',
+    loginRequired: 'تسجيل الدخول مطلوب',
+    loginMessage: 'يرجى تسجيل الدخول لعرض طلباتك السابقة والحالية',
+    noOrders: 'لا توجد طلبات',
+    browseRestaurants: 'تصفح المطاعم وقم بطلب الطعام للبدء',
+    browseNow: 'تصفح المطاعم الآن',
+    all: 'جميع الطلبات',
+    pending: 'قيد الانتظار',
+    preparing: 'قيد التحضير',
+    delivering: 'قيد التوصيل',
+    delivered: 'تم التوصيل',
+    cancelled: 'ملغي',
+    ready: 'جاهز للاستلام',
+    id: 'رقم الطلب',
+    date: 'التاريخ',
+    status: 'الحالة',
+    items: 'العناصر',
+    total: 'المجموع',
+    view: 'عرض',
+    cancel: 'إلغاء',
+    itemsCount: 'عنصر'
+  },
+  rewards: {
+    description: 'اكسب واستبدل النقاط للحصول على خصومات ومكافآت حصرية',
+    piEat: 'مكافآت باي إيت',
+    earnWithPiEat: 'اكسب النقاط مع كل طلب واستبدلها بمكافآت',
+    yourPoints: 'نقاطك',
+    tiers: 'مستويات المكافآت',
+    bronze: 'المستوى البرونزي',
+    silver: 'المستوى الفضي',
+    gold: 'المستوى الذهبي',
+    pointsNeeded: 'النقاط المطلوبة',
+    available: 'المكافآت المتاحة',
+    points: 'نقاط',
+    redeem: 'استبدال',
+    notEnoughPoints: 'ليس لديك نقاط كافية',
+    redeemSuccess: 'تم استبدال المكافأة بنجاح',
+    tier: {
+      discount: 'خصم',
+      points: 'مضاعفة النقاط',
+      freeDelivery: 'توصيل مجاني',
+      exclusiveOffers: 'عروض حصرية'
+    }
+  },
+  mining: {
+    title: 'مركز تعدين PTM',
+    subtitle: 'قم بتعدين رموز باي إيت (PTM) للحصول على مكافآت وخصومات ومزايا حصرية',
+    startMining: 'ابدأ التعدين الآن',
+    miningInProgress: 'التعدين قيد التقدم...',
+    connectWallet: 'اتصل بالمحفظة أولاً',
+    yourBalance: 'رصيد PTM الخاص بك',
+    totalMined: 'إجمالي التعدين',
+    miningPower: 'قوة التعدين',
+    networkDifficulty: 'صعوبة الشبكة',
+    cooldown: 'سيكون التعدين متاحًا بعد فترة الانتظار',
+    dailyRewards: 'المكافآت اليومية',
+    claim: 'المطالبة بالمكافأة',
+    claimed: 'تم المطالبة',
+    howItWorks: 'كيف يعمل تعدين PTM',
+    viewAds: 'شاهد إعلانين',
+    viewAdsDesc: 'شاهد إعلانين قصيرين لبدء عملية التعدين',
+    mineTokens: 'تعدين رموز PTM',
+    mineTokensDesc: 'ابدأ التعدين واكسب رموز PTM بناءً على قوة التعدين الخاصة بك',
+    getRewards: 'احصل على المكافآت',
+    getRewardsDesc: 'استخدم رموز PTM للحصول على خصومات ومميزات حصرية',
+    advertisement: 'إعلان',
+    continue: 'متابعة',
+    adSpace: 'مساحة إعلانية',
+    leaderboard: 'لوحة المتصدرين',
+    rank: 'المركز',
+    username: 'اسم المستخدم',
+    mined: 'تم تعدينه',
+    activity: 'النشاط'
   }
 };

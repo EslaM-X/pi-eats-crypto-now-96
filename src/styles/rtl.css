@@ -180,6 +180,12 @@
     margin-right: 0 !important;
   }
   
+  /* Add spacing to navigation items in RTL mode */
+  html[dir="rtl"] nav a {
+    margin-left: 1.75rem !important;
+    margin-right: 0 !important;
+  }
+  
   /* Fix icons in buttons for RTL */
   html[dir="rtl"] button svg,
   html[dir="rtl"] a svg {
@@ -247,4 +253,3 @@
 html[dir="rtl"] .mobile-bottom-nav {
   flex-direction: row-reverse;
 }
-

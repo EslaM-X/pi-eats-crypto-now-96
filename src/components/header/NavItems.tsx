@@ -31,7 +31,7 @@ const NavItems = ({ items, currentPath }: NavItemsProps) => {
             item.highlight 
             ? 'bg-gradient-to-r from-pi to-orange text-white px-3 py-1 rounded-full hover:opacity-90 hover:text-white' 
             : ''
-          } ${language === 'ar' ? 'flex flex-row-reverse' : 'flex'} items-center`}
+          } ${language === 'ar' ? 'flex flex-row-reverse mr-4' : 'flex'} items-center`}
         >
           {item.icon && <span className={language === 'ar' ? 'ml-1' : 'mr-1'}>{item.icon}</span>}
           {item.path === '/homefood/add' && (
