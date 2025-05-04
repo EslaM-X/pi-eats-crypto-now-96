@@ -37,6 +37,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { FoodProvider } from '@/types/food';
 
 // Define form validation schema
 const formSchema = z.object({
@@ -84,23 +85,22 @@ const AddFoodListing = () => {
     }
     
     try {
-      // Create a new food provider with the form values
-      const newProvider = {
+      // Create a new food provider with the form values that matches the FoodProvider structure
+      const newProvider: Omit<FoodProvider, 'id'> = {
         name: values.name,
         description: values.description,
-        location: values.location,
-        cuisineType: values.cuisine,
-        phoneNumber: values.phone,
-        acceptsPi: acceptsPi,
+        image: "/placeholder.svg", // Default placeholder image
         rating: 0,
-        imageUrl: "/placeholder.svg", // Default placeholder image
-        reviews: [],
-        menu: [],
-        // Add owner information from Pi Auth
-        owner: {
-          id: user.uid,
-          username: user.username
-        }
+        reviewCount: 0,
+        type: 'homemade', // Default value
+        cuisine: [values.cuisine], // Convert to array as per FoodProvider type
+        location: values.location,
+        contactInfo: {
+          phone: values.phone,
+          address: values.location,
+          email: user.username + "@example.com", // Default email based on username
+        },
+        menu: [] // Empty menu initially
       };
       
       const providerId = addProvider(newProvider);
