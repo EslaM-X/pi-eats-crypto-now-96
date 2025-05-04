@@ -35,8 +35,8 @@ const PiPriceContext = createContext<PiPriceContextType>({
 // Custom hook to use the Pi price context
 export const usePiPrice = () => useContext(PiPriceContext);
 
-// Auto refresh interval in milliseconds (5 minutes)
-const AUTO_REFRESH_INTERVAL = 5 * 60 * 1000;
+// Auto refresh interval in milliseconds (25 seconds)
+const AUTO_REFRESH_INTERVAL = 25 * 1000;
 
 export const PiPriceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [priceData, setPriceData] = useState<PiPriceData | null>(null);
@@ -44,20 +44,18 @@ export const PiPriceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [error, setError] = useState<string | null>(null);
 
   // Function to fetch fresh price data
-  const refreshPrice = useCallback(async () => {
+  const refreshPrice = useCallback(async (): Promise<void> => {
     setIsLoading(true);
     setError(null);
     
     try {
       const freshPriceData = await fetchPiPrice();
       setPriceData(freshPriceData);
-      return freshPriceData;
     } catch (err: any) {
       const errorMessage = err?.message || 'Failed to fetch Pi price';
       setError(errorMessage);
       toast.error(`خطأ في تحديث سعر Pi: ${errorMessage}`);
       console.error('Pi price fetch error:', err);
-      return null;
     } finally {
       setIsLoading(false);
     }
