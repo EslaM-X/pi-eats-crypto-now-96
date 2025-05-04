@@ -2,137 +2,133 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'sonner';
 
-// Pi User interface
-interface PiUser {
+// User type for Pi Network authentication
+export interface PiUser {
   uid: string;
   username: string;
   accessToken?: string;
+  roles?: string[];
+  walletAddress?: string;
 }
 
-// Context interface
 interface PiAuthContextType {
   user: PiUser | null;
   login: () => Promise<void>;
   logout: () => void;
-  isAuthenticating: boolean;
+  isAuthenticated: boolean;
+  openPiPayment: (amount: number, memo: string) => Promise<boolean>;
 }
 
-// Create the context
-const PiAuthContext = createContext<PiAuthContextType | undefined>(undefined);
+const PiAuthContext = createContext<PiAuthContextType>({
+  user: null,
+  login: async () => {},
+  logout: () => {},
+  isAuthenticated: false,
+  openPiPayment: async () => false,
+});
 
-// Pi Auth Provider component
+export const usePiAuth = () => useContext(PiAuthContext);
+
 export const PiAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<PiUser | null>(null);
-  const [isAuthenticating, setIsAuthenticating] = useState(false);
-  
-  // Initialize Pi SDK
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Initialize Pi SDK and check for stored user
   useEffect(() => {
-    // Check for stored user in localStorage
-    const storedUser = localStorage.getItem('piUser');
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error('Failed to parse stored user data:', error);
-        localStorage.removeItem('piUser');
-      }
-    }
-    
-    // Initialize Pi SDK when available
-    const initPiSdk = () => {
-      if (typeof window !== 'undefined' && 'Pi' in window) {
+    const initializePiSDK = async () => {
+      // Check for stored user data
+      const storedUser = localStorage.getItem('pi_user');
+      if (storedUser) {
         try {
-          // @ts-ignore - Pi is injected by the Pi Browser
-          window.Pi.init({ 
-            version: "2.0",
-            sandbox: process.env.NODE_ENV !== "production"
-          });
-          console.log("Pi SDK initialized");
+          setUser(JSON.parse(storedUser));
         } catch (error) {
-          console.error("Error initializing Pi SDK:", error);
+          console.error('Failed to parse stored user data:', error);
+          localStorage.removeItem('pi_user');
         }
       }
+      
+      setIsInitialized(true);
     };
-    
-    initPiSdk();
+
+    initializePiSDK();
   }, []);
-  
-  // Login function
+
+  // Save user data to localStorage whenever it changes
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('pi_user', JSON.stringify(user));
+    } else if (isInitialized) {
+      localStorage.removeItem('pi_user');
+    }
+  }, [user, isInitialized]);
+
+  // Mock login function for demo
   const login = async () => {
-    if (typeof window === 'undefined' || !('Pi' in window)) {
-      toast.error('Please use the Pi Browser for authentication');
-      return;
-    }
-    
-    setIsAuthenticating(true);
-    
     try {
-      // @ts-ignore - Pi is injected by the Pi Browser
-      const scopes = ['username', 'payments', 'wallet_address'];
+      // In a real app, we would authenticate with Pi Network
+      // For demo purposes, we'll create a mock user
+      const mockUser: PiUser = {
+        uid: 'pi_' + Date.now(),
+        username: 'PiUser_' + Math.floor(Math.random() * 1000),
+        accessToken: 'demo_token_' + Date.now(),
+        walletAddress: '0x' + Array(40).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('')
+      };
       
-      // @ts-ignore - Pi is injected by the Pi Browser
-      const authResult = await window.Pi.authenticate(scopes, onIncompletePaymentFound);
-      
-      if (authResult) {
-        const piUser: PiUser = {
-          uid: authResult.user.uid,
-          username: authResult.user.username,
-          accessToken: authResult.accessToken,
-        };
-        
-        // Store in state and localStorage
-        setUser(piUser);
-        localStorage.setItem('piUser', JSON.stringify(piUser));
-        toast.success(`Welcome ${piUser.username}!`);
-      }
+      setUser(mockUser);
+      toast.success('Logged in successfully!');
     } catch (error) {
-      console.error('Pi authentication error:', error);
-      toast.error('Authentication failed. Please try again.');
-    } finally {
-      setIsAuthenticating(false);
+      console.error('Login error:', error);
+      toast.error('Failed to login. Please try again.');
     }
   };
-  
-  // Handle incomplete payments
-  const onIncompletePaymentFound = (payment: any) => {
-    console.log('Incomplete payment found:', payment);
-    // Here we would implement payment completion logic
-    toast.info('You have an incomplete payment. Please complete it in the Pi app.');
-  };
-  
-  // Logout function
+
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('piUser');
     toast.info('Logged out successfully');
   };
-  
-  // Mock login for development
-  const mockLogin = () => {
-    if (process.env.NODE_ENV === 'development') {
-      const mockUser: PiUser = {
-        uid: 'mock-uid-123456',
-        username: 'pi_tester',
-        accessToken: 'mock-token-123456',
-      };
-      setUser(mockUser);
-      localStorage.setItem('piUser', JSON.stringify(mockUser));
-      toast.success(`Development mode: Logged in as ${mockUser.username}`);
+
+  // Mock Pi Payment function
+  const openPiPayment = async (amount: number, memo: string): Promise<boolean> => {
+    if (!user) {
+      toast.error('Please log in to make payments');
+      return false;
+    }
+
+    try {
+      // Simulate a payment request
+      toast.info(`Requesting payment of ${amount} Pi...`);
+      
+      // Simulate payment processing time
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // 80% chance of success for demo purposes
+      const success = Math.random() > 0.2;
+      
+      if (success) {
+        toast.success(`Payment of ${amount} Pi completed successfully!`);
+        return true;
+      } else {
+        toast.error('Payment cancelled or failed');
+        return false;
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      toast.error('Payment process failed. Please try again.');
+      return false;
     }
   };
-  
+
   return (
-    <PiAuthContext.Provider value={{ user, login, logout, isAuthenticating }}>
+    <PiAuthContext.Provider
+      value={{
+        user,
+        login,
+        logout,
+        isAuthenticated: !!user,
+        openPiPayment
+      }}
+    >
       {children}
     </PiAuthContext.Provider>
   );
-};
-
-// Custom hook to use the Pi Auth context
-export const usePiAuth = () => {
-  const context = useContext(PiAuthContext);
-  if (context === undefined) {
-    throw new Error('usePiAuth must be used within a PiAuthProvider');
-  }
-  return context;
 };

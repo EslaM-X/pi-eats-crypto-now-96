@@ -6,6 +6,8 @@ import { PiAuthProvider } from './PiAuthContext';
 import { PiPriceProvider } from './PiPriceContext';
 import { CartProvider } from './CartContext';
 import { WalletProvider } from './WalletContext';
+import { OrdersProvider } from './OrdersContext';
+import { HomeFoodProvider } from './HomeFoodContext';
 
 interface AppProviderProps {
   children: React.ReactNode;
@@ -19,7 +21,11 @@ const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
           <PiAuthProvider>
             <CartProvider>
               <WalletProvider>
-                {children}
+                <OrdersProvider>
+                  <HomeFoodProvider>
+                    {children}
+                  </HomeFoodProvider>
+                </OrdersProvider>
               </WalletProvider>
             </CartProvider>
           </PiAuthProvider>

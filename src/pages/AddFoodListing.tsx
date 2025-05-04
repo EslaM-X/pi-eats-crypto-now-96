@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Plus, Trash } from 'lucide-react';
@@ -20,7 +19,7 @@ import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { useHomeFood } from '@/contexts/HomeFoodContext';
 import { usePiAuth } from '@/contexts/PiAuthContext';
-import { FoodItem } from '@/types/food';
+import { MenuItem } from '@/types/food';
 
 // Sample cuisine options
 const cuisineOptions = [
@@ -61,7 +60,7 @@ const AddFoodListing = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
-    type: 'homemade' as 'homemade' | 'small_restaurant',
+    type: 'homemade' as 'homemade' | 'restaurant',
     description: '',
     cuisine: [] as string[],
     location: '',
@@ -79,7 +78,7 @@ const AddFoodListing = () => {
     coverImage: sampleImageUrls[1],
   });
   
-  const [menuItems, setMenuItems] = useState<Partial<FoodItem>[]>([
+  const [menuItems, setMenuItems] = useState<Partial<MenuItem>[]>([
     { 
       name: '', 
       description: '', 
@@ -213,7 +212,7 @@ const AddFoodListing = () => {
         menu: formattedMenuItems,
         rating: 0,
         reviewCount: 0,
-        isActive: true
+        isAvailable: true
       });
       
       toast({
@@ -273,7 +272,7 @@ const AddFoodListing = () => {
                   <Label>Type</Label>
                   <RadioGroup 
                     value={formData.type}
-                    onValueChange={(value) => setFormData({...formData, type: value as 'homemade' | 'small_restaurant'})}
+                    onValueChange={(value) => setFormData({...formData, type: value as 'homemade' | 'restaurant'})}
                     className="flex space-x-4"
                   >
                     <div className="flex items-center space-x-2">
@@ -281,7 +280,7 @@ const AddFoodListing = () => {
                       <Label htmlFor="homemade">Home Cooking</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="small_restaurant" id="restaurant" />
+                      <RadioGroupItem value="restaurant" id="restaurant" />
                       <Label htmlFor="restaurant">Small Restaurant</Label>
                     </div>
                   </RadioGroup>
@@ -373,7 +372,7 @@ const AddFoodListing = () => {
                       ...formData, 
                       contactInfo: {...formData.contactInfo, phone: e.target.value}
                     })}
-                    placeholder="+20 123 456 7890"
+                    placeholder="+20 123 456 789"
                   />
                 </div>
                 
@@ -390,66 +389,6 @@ const AddFoodListing = () => {
                     placeholder="your@email.com"
                   />
                 </div>
-                
-                <Separator />
-                <p className="text-sm text-muted-foreground">Social Media (Optional)</p>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="facebook">Facebook Username</Label>
-                  <Input 
-                    id="facebook"
-                    value={formData.contactInfo.socialMedia.facebook}
-                    onChange={(e) => setFormData({
-                      ...formData, 
-                      contactInfo: {
-                        ...formData.contactInfo, 
-                        socialMedia: {
-                          ...formData.contactInfo.socialMedia,
-                          facebook: e.target.value
-                        }
-                      }
-                    })}
-                    placeholder="yourpage"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="instagram">Instagram Username</Label>
-                  <Input 
-                    id="instagram"
-                    value={formData.contactInfo.socialMedia.instagram}
-                    onChange={(e) => setFormData({
-                      ...formData, 
-                      contactInfo: {
-                        ...formData.contactInfo, 
-                        socialMedia: {
-                          ...formData.contactInfo.socialMedia,
-                          instagram: e.target.value
-                        }
-                      }
-                    })}
-                    placeholder="yourhandle"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="whatsapp">WhatsApp Number</Label>
-                  <Input 
-                    id="whatsapp"
-                    value={formData.contactInfo.socialMedia.whatsapp}
-                    onChange={(e) => setFormData({
-                      ...formData, 
-                      contactInfo: {
-                        ...formData.contactInfo, 
-                        socialMedia: {
-                          ...formData.contactInfo.socialMedia,
-                          whatsapp: e.target.value
-                        }
-                      }
-                    })}
-                    placeholder="+201234567890"
-                  />
-                </div>
               </CardContent>
             </Card>
           </div>
@@ -459,123 +398,118 @@ const AddFoodListing = () => {
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Menu Items</CardTitle>
               <Button 
-                type="button" 
-                variant="outline" 
+                type="button"
+                size="sm"
                 onClick={handleAddMenuItem}
+                className="button-gradient"
               >
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="h-4 w-4 mr-1" />
                 Add Item
               </Button>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-6">
               {menuItems.map((item, index) => (
-                <div key={index} className="mb-6 pb-6 border-b last:border-b-0">
-                  <div className="flex justify-between items-start mb-4">
-                    <h3 className="font-medium">Item #{index + 1}</h3>
-                    {menuItems.length > 1 && (
-                      <Button 
-                        type="button" 
-                        variant="ghost" 
-                        size="icon"
-                        onClick={() => handleRemoveMenuItem(index)}
-                      >
-                        <Trash className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
+                <div key={index} className="p-4 border rounded-lg relative">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleRemoveMenuItem(index)}
+                    className="absolute top-2 right-2 h-8 w-8 text-muted-foreground hover:text-destructive"
+                  >
+                    <Trash className="h-4 w-4" />
+                  </Button>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor={`item-name-${index}`}>Item Name</Label>
-                      <Input 
-                        id={`item-name-${index}`}
-                        value={item.name}
-                        onChange={(e) => handleMenuItemChange(index, 'name', e.target.value)}
-                        placeholder="Food item name"
-                        required
-                      />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor={`item-name-${index}`}>Item Name</Label>
+                        <Input 
+                          id={`item-name-${index}`}
+                          value={item.name}
+                          onChange={(e) => handleMenuItemChange(index, 'name', e.target.value)}
+                          placeholder="Food item name"
+                          required
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor={`item-description-${index}`}>Description</Label>
+                        <Textarea 
+                          id={`item-description-${index}`}
+                          value={item.description}
+                          onChange={(e) => handleMenuItemChange(index, 'description', e.target.value)}
+                          placeholder="Brief description"
+                          rows={3}
+                        />
+                      </div>
                     </div>
                     
-                    <div className="space-y-2">
-                      <Label htmlFor={`item-price-${index}`}>Price (π)</Label>
-                      <Input 
-                        id={`item-price-${index}`}
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={item.price}
-                        onChange={(e) => handleMenuItemChange(index, 'price', Number(e.target.value))}
-                        required
-                      />
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor={`item-price-${index}`}>Price (π)</Label>
+                        <Input 
+                          id={`item-price-${index}`}
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={item.price}
+                          onChange={(e) => handleMenuItemChange(index, 'price', parseFloat(e.target.value) || 0)}
+                          placeholder="0.00"
+                          required
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor={`item-category-${index}`}>Category</Label>
+                        <Select 
+                          value={item.category}
+                          onValueChange={(value) => handleMenuItemChange(index, 'category', value)}
+                        >
+                          <SelectTrigger id={`item-category-${index}`}>
+                            <SelectValue placeholder="Select category" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categoryOptions.map((category) => (
+                              <SelectItem key={category} value={category}>
+                                {category}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id={`item-popular-${index}`}
+                          checked={!!item.popular}
+                          onChange={(e) => handleMenuItemChange(index, 'popular', e.target.checked)}
+                          className="rounded border-gray-300 text-primary focus:ring-primary"
+                        />
+                        <Label htmlFor={`item-popular-${index}`}>Popular Item</Label>
+                      </div>
                     </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor={`item-category-${index}`}>Category</Label>
-                      <Select 
-                        value={item.category}
-                        onValueChange={(value) => handleMenuItemChange(index, 'category', value)}
-                      >
-                        <SelectTrigger id={`item-category-${index}`}>
-                          <SelectValue placeholder="Select category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {categoryOptions.map((category) => (
-                            <SelectItem key={category} value={category}>
-                              {category}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-4 space-y-2">
-                    <Label htmlFor={`item-description-${index}`}>Description</Label>
-                    <Textarea 
-                      id={`item-description-${index}`}
-                      value={item.description}
-                      onChange={(e) => handleMenuItemChange(index, 'description', e.target.value)}
-                      placeholder="Describe your food item..."
-                      rows={2}
-                    />
-                  </div>
-                  
-                  <div className="mt-4 flex items-center">
-                    <input
-                      type="checkbox"
-                      id={`item-popular-${index}`}
-                      checked={item.popular}
-                      onChange={(e) => handleMenuItemChange(index, 'popular', e.target.checked)}
-                      className="mr-2"
-                    />
-                    <Label htmlFor={`item-popular-${index}`}>Mark as popular item</Label>
                   </div>
                 </div>
               ))}
+              
+              {menuItems.length === 0 && (
+                <div className="text-center py-8 text-muted-foreground">
+                  No menu items yet. Click "Add Item" to start creating your menu.
+                </div>
+              )}
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex justify-end">
               <Button 
-                type="button" 
-                variant="outline" 
-                onClick={handleAddMenuItem}
-                className="w-full"
+                type="submit"
+                className="button-gradient"
+                disabled={isSubmitting}
               >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Another Item
+                {isSubmitting ? 'Creating...' : 'Create Food Listing'}
               </Button>
             </CardFooter>
           </Card>
-          
-          {/* Submit Button */}
-          <div className="flex justify-end">
-            <Button 
-              type="submit" 
-              className="button-gradient px-8" 
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Creating...' : 'Create Listing'}
-            </Button>
-          </div>
         </form>
       </div>
     </div>

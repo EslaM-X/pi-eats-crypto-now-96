@@ -1,9 +1,8 @@
 
 import React from 'react';
-import { Message } from '@/types/food';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { format } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { Message } from '@/types/food';
 
 interface MessageItemProps {
   message: Message;
@@ -11,38 +10,21 @@ interface MessageItemProps {
 }
 
 const MessageItem: React.FC<MessageItemProps> = ({ message, isCurrentUser }) => {
-  const { content, userName, createdAt, isFromProvider } = message;
-  const initial = userName[0].toUpperCase();
+  const formattedTime = formatDistanceToNow(new Date(message.createdAt), { addSuffix: true });
   
   return (
     <div className={cn(
-      "flex w-full mb-4",
+      "flex",
       isCurrentUser ? "justify-end" : "justify-start"
     )}>
       <div className={cn(
-        "flex max-w-[80%]",
-        isCurrentUser ? "flex-row-reverse" : "flex-row"
+        "rounded-lg px-4 py-2 max-w-[80%]",
+        isCurrentUser 
+          ? "bg-primary text-primary-foreground" 
+          : "bg-muted"
       )}>
-        <Avatar className={cn(
-          "h-8 w-8 flex-shrink-0",
-          isCurrentUser ? "ml-2" : "mr-2"
-        )}>
-          <AvatarFallback>{initial}</AvatarFallback>
-        </Avatar>
-        
-        <div>
-          <div className={cn(
-            "rounded-lg px-4 py-2 text-sm",
-            isCurrentUser 
-              ? "bg-pi text-white" 
-              : "bg-muted"
-          )}>
-            {content}
-          </div>
-          <div className="text-xs text-muted-foreground mt-1">
-            {isFromProvider ? "Provider" : userName} • {format(new Date(createdAt), 'h:mm a')}
-          </div>
-        </div>
+        <p className="text-sm">{message.content}</p>
+        <p className="text-xs opacity-70 mt-1">{formattedTime}</p>
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ import { usePiAuth } from '@/contexts/PiAuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import MessageItem from '@/components/MessageItem';
-import MessageForm from '@/components/MessageForm'; // Added this import to fix the build error
+import MessageForm from '@/components/MessageForm';
 import { toast } from 'sonner';
 
 // Import our refactored components
@@ -62,6 +62,7 @@ const FoodProviderDetails = () => {
       name: item.name,
       price: item.price,
       image: item.image,
+      quantity: 1,
       restaurantId: provider.id,
       restaurantName: provider.name
     });
@@ -88,7 +89,6 @@ const FoodProviderDetails = () => {
       providerId: provider.id,
       userId: user.uid,
       userName: user.username || 'User',
-      providerName: provider.name,
       content,
       isFromProvider: false
     });

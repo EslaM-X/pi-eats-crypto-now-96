@@ -23,6 +23,9 @@ export interface FoodProvider {
   };
   menu: MenuItem[];
   isAvailable: boolean;
+  userId?: string;
+  createdAt?: Date;
+  isActive?: boolean;
 }
 
 // Menu item
@@ -39,20 +42,22 @@ export interface MenuItem {
 // Review
 export interface Review {
   id: string;
+  providerId: string;
   userId: string;
   userName: string;
   userImage?: string;
   rating: number;
   comment: string;
-  createdAt: string;
+  createdAt: Date;
 }
 
 // Message
 export interface Message {
   id: string;
+  providerId: string;
   userId: string;
   userName: string;
   content: string;
-  createdAt: string;
+  createdAt: Date;
   isFromProvider: boolean;
 }

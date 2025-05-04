@@ -52,7 +52,7 @@ const HomeFood = () => {
   const filteredProviders = providers.filter(provider => {
     // Filter by tab
     if (activeTab === 'homemade' && provider.type !== 'homemade') return false;
-    if (activeTab === 'restaurants' && provider.type !== 'small_restaurant') return false;
+    if (activeTab === 'restaurants' && provider.type !== 'restaurant') return false;
     
     // Filter by search query
     const matchesSearch = 

@@ -2,10 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, Heart, MessageSquare } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Star } from 'lucide-react';
-import { toast } from 'sonner';
 import { FoodProvider } from '@/types/food';
 
 interface ProviderHeaderProps {
@@ -18,7 +15,7 @@ interface ProviderHeaderProps {
 
 const ProviderHeader: React.FC<ProviderHeaderProps> = ({
   provider,
-  isUsersFavorite,
+  isUsersFavorite = false,
   toggleFavorite,
   openMessageDialog,
   isLoggedIn
@@ -28,8 +25,8 @@ const ProviderHeader: React.FC<ProviderHeaderProps> = ({
       className="relative h-64 bg-cover bg-center"
       style={{ backgroundImage: `url(${provider.coverImage || provider.image})` }}
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/10">
-        <div className="container mx-auto px-4 h-full flex flex-col justify-end pb-4">
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/20">
+        <div className="container mx-auto px-4 h-full flex flex-col justify-end pb-4 relative">
           <Link to="/homefood">
             <Button variant="ghost" className="absolute top-4 left-4 text-white bg-black/30 hover:bg-black/40">
               <ChevronLeft className="h-5 w-5" />
@@ -37,48 +34,43 @@ const ProviderHeader: React.FC<ProviderHeaderProps> = ({
             </Button>
           </Link>
           
-          <div className="flex justify-between items-end">
+          <div className="flex items-end justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-white">{provider.name}</h1>
-              <div className="flex items-center mt-2 space-x-4">
-                <Badge 
-                  variant="secondary" 
-                  className={`bg-white/20 text-white ${
-                    provider.type === 'homemade' ? 'border-orange' : 'border-pi'
-                  }`}
-                >
+              <div className="bg-white dark:bg-gray-900 rounded-lg p-1 inline-block mb-2">
+                <span className={`px-2 py-1 text-xs rounded-md ${provider.type === 'homemade' ? 'bg-orange text-white' : 'bg-blue-500 text-white'}`}>
                   {provider.type === 'homemade' ? 'Home Cooking' : 'Small Restaurant'}
-                </Badge>
-                <div className="flex items-center text-white">
-                  <Star className="h-4 w-4 text-yellow-400 fill-yellow-400 mr-1" />
-                  <span>{provider.rating.toFixed(1)} ({provider.reviewCount})</span>
-                </div>
+                </span>
+              </div>
+              <h1 className="text-3xl font-bold text-white">{provider.name}</h1>
+              <div className="flex items-center mt-1 text-white">
+                <span>{provider.cuisine.join(', ')}</span>
+                <span className="mx-2">•</span>
+                <span>{provider.location}</span>
               </div>
             </div>
             
-            <div className="flex gap-2">
-              <Button 
-                variant="ghost"
-                size="icon"
-                onClick={() => isLoggedIn 
-                  ? toggleFavorite(provider.id) 
-                  : toast.error('Please login to save favorites')
-                }
-                className="bg-black/30 hover:bg-black/40 text-white h-10 w-10"
-              >
-                <Heart 
-                  className={`h-5 w-5 ${isUsersFavorite ? 'fill-red-500 text-red-500' : ''}`}
-                />
-              </Button>
-              
-              <Button 
-                variant="ghost"
-                size="icon"
-                onClick={openMessageDialog}
-                className="bg-black/30 hover:bg-black/40 text-white h-10 w-10"
-              >
-                <MessageSquare className="h-5 w-5" />
-              </Button>
+            <div className="flex space-x-2">
+              {isLoggedIn && (
+                <>
+                  <Button
+                    variant={isUsersFavorite ? "default" : "outline"}
+                    size="icon"
+                    className={isUsersFavorite ? "bg-primary text-primary-foreground" : "bg-black/30 text-white border-white/20 hover:bg-black/50"}
+                    onClick={() => toggleFavorite(provider.id)}
+                  >
+                    <Heart className={`h-5 w-5 ${isUsersFavorite ? "fill-current" : ""}`} />
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="bg-black/30 text-white border-white/20 hover:bg-black/50"
+                    onClick={openMessageDialog}
+                  >
+                    <MessageSquare className="h-5 w-5" />
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>

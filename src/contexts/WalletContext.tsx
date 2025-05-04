@@ -2,165 +2,146 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { usePiAuth } from './PiAuthContext';
 
-// Transaction type
+export type TransactionType = 'send' | 'receive' | 'payment' | 'mining' | 'reward';
+export type TransactionStatus = 'pending' | 'completed' | 'failed';
+
 export interface Transaction {
   id: string;
-  type: 'send' | 'receive' | 'reward' | 'exchange';
+  type: TransactionType;
   amount: number;
   description: string;
   timestamp: Date;
-  status: 'pending' | 'completed' | 'failed';
+  status: TransactionStatus;
   recipient?: string;
   sender?: string;
+  metadata?: Record<string, any>;
 }
 
 interface WalletContextType {
-  piBalance: number;
-  ptmBalance: number;
+  balance: number;
   transactions: Transaction[];
   addTransaction: (transaction: Omit<Transaction, 'id' | 'timestamp'>) => void;
-  resetWallet: () => void;
+  updateTransactionStatus: (id: string, status: TransactionStatus) => void;
 }
 
-const WalletContext = createContext<WalletContextType | undefined>(undefined);
+const WalletContext = createContext<WalletContextType>({
+  balance: 0,
+  transactions: [],
+  addTransaction: () => {},
+  updateTransactionStatus: () => {},
+});
 
-// Mock initial data
-const initialTransactions: Transaction[] = [
-  {
-    id: 'tx1',
-    type: 'receive',
-    amount: 5.0,
-    description: 'Welcome bonus',
-    timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-    status: 'completed'
-  },
-  {
-    id: 'tx2',
-    type: 'reward',
-    amount: 0.5,
-    description: 'First order reward',
-    timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-    status: 'completed'
-  },
-  {
-    id: 'tx3',
-    type: 'send',
-    amount: 2.5,
-    description: 'Payment to Cairo Kebab',
-    timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-    status: 'completed',
-    recipient: 'Cairo Kebab'
-  }
-];
+export const useWallet = () => useContext(WalletContext);
 
 export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = usePiAuth();
-  const [piBalance, setPiBalance] = useState(5.0);
-  const [ptmBalance, setPtmBalance] = useState(10.0);
-  const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
-  
-  // Load wallet data when user changes
+  const [balance, setBalance] = useState<number>(0);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+  // Load wallet data from localStorage when user changes
   useEffect(() => {
     if (user) {
-      const loadWalletData = () => {
-        // Load saved wallet data from localStorage
-        const walletKey = `wallet_${user.uid}`;
-        const savedWallet = localStorage.getItem(walletKey);
-        
-        if (savedWallet) {
-          try {
-            const parsedWallet = JSON.parse(savedWallet);
-            
-            // Parse date strings back to Date objects
-            const processedTransactions = parsedWallet.transactions.map((tx: any) => ({
-              ...tx,
-              timestamp: new Date(tx.timestamp)
-            }));
-            
-            setPiBalance(parsedWallet.piBalance || 5.0);
-            setPtmBalance(parsedWallet.ptmBalance || 10.0);
-            setTransactions(processedTransactions);
-          } catch (error) {
-            console.error('Failed to parse wallet data:', error);
-            // Reset to defaults on error
-            setPiBalance(5.0);
-            setPtmBalance(10.0);
-            setTransactions(initialTransactions);
-            localStorage.removeItem(walletKey);
-          }
+      const savedBalance = localStorage.getItem(`pi_balance_${user.uid}`);
+      if (savedBalance) {
+        try {
+          setBalance(parseFloat(savedBalance));
+        } catch (error) {
+          console.error('Failed to parse saved balance', error);
         }
-      };
-      
-      loadWalletData();
+      } else {
+        // Initialize with default balance for demo purposes
+        setBalance(10.0);
+      }
+
+      const savedTransactions = localStorage.getItem(`pi_transactions_${user.uid}`);
+      if (savedTransactions) {
+        try {
+          const parsedTransactions = JSON.parse(savedTransactions);
+          // Convert timestamp strings back to Date objects
+          setTransactions(
+            parsedTransactions.map((tx: any) => ({
+              ...tx,
+              timestamp: new Date(tx.timestamp),
+            }))
+          );
+        } catch (error) {
+          console.error('Failed to parse saved transactions', error);
+        }
+      }
     } else {
-      // Reset when logged out
-      setPiBalance(5.0);
-      setPtmBalance(10.0);
-      setTransactions(initialTransactions);
+      // Clear wallet data when user logs out
+      setBalance(0);
+      setTransactions([]);
     }
   }, [user]);
-  
-  // Save wallet data when it changes
+
+  // Save wallet data to localStorage whenever it changes
   useEffect(() => {
     if (user) {
-      const walletKey = `wallet_${user.uid}`;
-      const walletData = {
-        piBalance,
-        ptmBalance,
-        transactions
-      };
-      
-      localStorage.setItem(walletKey, JSON.stringify(walletData));
+      localStorage.setItem(`pi_balance_${user.uid}`, balance.toString());
+
+      if (transactions.length > 0) {
+        localStorage.setItem(
+          `pi_transactions_${user.uid}`,
+          JSON.stringify(transactions)
+        );
+      }
     }
-  }, [user, piBalance, ptmBalance, transactions]);
-  
+  }, [balance, transactions, user]);
+
   // Add a new transaction
   const addTransaction = (transaction: Omit<Transaction, 'id' | 'timestamp'>) => {
     const newTransaction: Transaction = {
       ...transaction,
-      id: `tx_${Date.now()}`,
-      timestamp: new Date()
+      id: Date.now().toString(),
+      timestamp: new Date(),
     };
-    
-    setTransactions(prev => [newTransaction, ...prev]);
-    
+
+    setTransactions((current) => [newTransaction, ...current]);
+
     // Update balance based on transaction type
-    if (transaction.type === 'receive' || transaction.type === 'reward') {
-      setPiBalance(prev => prev + transaction.amount);
-    } else if (transaction.type === 'send') {
-      setPiBalance(prev => prev - transaction.amount);
+    if (transaction.status === 'completed') {
+      if (transaction.type === 'receive' || transaction.type === 'mining' || transaction.type === 'reward') {
+        setBalance((current) => current + transaction.amount);
+      } else if (transaction.type === 'send' || transaction.type === 'payment') {
+        setBalance((current) => current - transaction.amount);
+      }
     }
   };
-  
-  // Reset wallet to initial state
-  const resetWallet = () => {
-    setPiBalance(5.0);
-    setPtmBalance(10.0);
-    setTransactions(initialTransactions);
-    
-    if (user) {
-      const walletKey = `wallet_${user.uid}`;
-      localStorage.removeItem(walletKey);
-    }
+
+  // Update status of an existing transaction
+  const updateTransactionStatus = (id: string, status: TransactionStatus) => {
+    setTransactions((current) =>
+      current.map((tx) => {
+        if (tx.id === id) {
+          const updatedTx = { ...tx, status };
+          
+          // Update balance if status changed to completed
+          if (tx.status !== 'completed' && status === 'completed') {
+            if (tx.type === 'receive' || tx.type === 'mining' || tx.type === 'reward') {
+              setBalance((current) => current + tx.amount);
+            } else if (tx.type === 'send' || tx.type === 'payment') {
+              setBalance((current) => current - tx.amount);
+            }
+          }
+          
+          return updatedTx;
+        }
+        return tx;
+      })
+    );
   };
-  
+
   return (
-    <WalletContext.Provider value={{
-      piBalance,
-      ptmBalance,
-      transactions,
-      addTransaction,
-      resetWallet
-    }}>
+    <WalletContext.Provider
+      value={{
+        balance,
+        transactions,
+        addTransaction,
+        updateTransactionStatus,
+      }}
+    >
       {children}
     </WalletContext.Provider>
   );
-};
-
-export const useWallet = () => {
-  const context = useContext(WalletContext);
-  if (context === undefined) {
-    throw new Error('useWallet must be used within a WalletProvider');
-  }
-  return context;
 };

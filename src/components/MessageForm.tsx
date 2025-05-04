@@ -1,10 +1,10 @@
 
 import React, { useState } from 'react';
+import { Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Send } from 'lucide-react';
-import { toast } from 'sonner';
 import { usePiAuth } from '@/contexts/PiAuthContext';
+import { toast } from 'sonner';
 
 interface MessageFormProps {
   providerId: string;
@@ -12,15 +12,16 @@ interface MessageFormProps {
   onSendMessage: (content: string) => void;
 }
 
-const MessageForm: React.FC<MessageFormProps> = ({ 
-  providerId, 
-  providerName, 
-  onSendMessage 
+const MessageForm: React.FC<MessageFormProps> = ({
+  providerId,
+  providerName,
+  onSendMessage
 }) => {
-  const { user } = usePiAuth();
   const [message, setMessage] = useState('');
-  
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user } = usePiAuth();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!user) {
@@ -29,28 +30,38 @@ const MessageForm: React.FC<MessageFormProps> = ({
     }
     
     if (!message.trim()) {
+      toast.error('Please enter a message');
       return;
     }
     
-    onSendMessage(message.trim());
-    setMessage('');
+    setIsSubmitting(true);
+    
+    try {
+      onSendMessage(message.trim());
+      setMessage('');
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      toast.error('Failed to send message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   
   return (
     <form onSubmit={handleSubmit} className="mt-4">
-      <div className="flex items-start gap-2">
-        <Textarea
+      <div className="flex items-end gap-2">
+        <Textarea 
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder={`Message to ${providerName}...`}
-          className="flex-1"
-          disabled={!user}
+          className="min-h-[80px] resize-none"
+          disabled={isSubmitting}
         />
         <Button 
           type="submit"
           size="icon"
-          className="button-gradient h-10 w-10"
-          disabled={!message.trim() || !user}
+          className="h-10 w-10 rounded-full"
+          disabled={isSubmitting || !message.trim()}
         >
           <Send className="h-4 w-4" />
         </Button>

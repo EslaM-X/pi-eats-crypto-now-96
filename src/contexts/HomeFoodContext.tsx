@@ -2,7 +2,7 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { toast } from 'sonner';
 import { usePiAuth } from './PiAuthContext';
-import { FoodProvider, FoodItem, Review, Message } from '@/types/food';
+import { FoodProvider, MenuItem, Review, Message } from '@/types/food';
 
 // Sample data for homemade food and small restaurants
 const initialProviders: FoodProvider[] = [
@@ -53,13 +53,13 @@ const initialProviders: FoodProvider[] = [
         popular: true
       }
     ],
-    isActive: true,
-    createdAt: new Date('2023-11-15')
+    isAvailable: true,
+    isActive: true
   },
   {
     id: '2',
     name: "Cairo Corner Café",
-    type: 'small_restaurant',
+    type: 'restaurant',
     description: 'A cozy small restaurant serving authentic Egyptian breakfast and street food.',
     cuisine: ['Egyptian', 'Café', 'Breakfast'],
     location: 'Giza',
@@ -103,8 +103,8 @@ const initialProviders: FoodProvider[] = [
         category: 'Drinks'
       }
     ],
-    isActive: true,
-    createdAt: new Date('2024-01-05')
+    isAvailable: true,
+    isActive: true
   },
   {
     id: '3',
@@ -144,8 +144,8 @@ const initialProviders: FoodProvider[] = [
         popular: true
       }
     ],
-    isActive: true,
-    createdAt: new Date('2024-02-20')
+    isAvailable: true,
+    isActive: true
   }
 ];
 
@@ -274,8 +274,9 @@ export const HomeFoodProvider = ({ children }: { children: ReactNode }) => {
     const newProvider: FoodProvider = {
       ...providerData,
       id: Date.now().toString(),
-      createdAt: new Date(),
       userId: user.uid,
+      createdAt: new Date(),
+      isAvailable: true
     };
     
     setProviders(current => [...current, newProvider]);
@@ -297,7 +298,7 @@ export const HomeFoodProvider = ({ children }: { children: ReactNode }) => {
     const newReview: Review = {
       ...reviewData,
       id: Date.now().toString(),
-      createdAt: new Date(),
+      createdAt: new Date()
     };
     
     setReviews(current => [...current, newReview]);
@@ -334,7 +335,7 @@ export const HomeFoodProvider = ({ children }: { children: ReactNode }) => {
     const newMessage: Message = {
       ...messageData,
       id: Date.now().toString(),
-      createdAt: new Date(),
+      createdAt: new Date()
     };
     
     setMessages(current => [...current, newMessage]);
