@@ -8,9 +8,9 @@ const Logo = () => {
   const { language } = useLanguage();
   
   return (
-    <Link to="/" className="flex items-center space-x-2">
+    <Link to="/" className="flex items-center logo-container">
       <PiEatLogo />
-      <span className={`text-2xl font-bold bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent ${language === 'ar' ? 'app-name mr-2' : ''}`}>
+      <span className={`text-2xl font-bold bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent ${language === 'ar' ? 'app-name mr-2 logo-text' : ''}`}>
         PiEat-Me
       </span>
     </Link>

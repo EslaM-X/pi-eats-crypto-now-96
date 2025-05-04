@@ -13,6 +13,17 @@
     text-align: right;
   }
   
+  /* Fix logo alignment in RTL mode to prevent reversing */
+  html[dir="rtl"] .logo-container {
+    direction: ltr; /* Keep logo LTR to prevent flipping */
+    display: inline-block;
+  }
+  
+  html[dir="rtl"] .logo-text {
+    direction: rtl; /* But keep text RTL */
+    margin-right: 0.5rem;
+  }
+  
   /* Improve Arabic text rendering */
   html[dir="rtl"] h1,
   html[dir="rtl"] h2,
@@ -36,6 +47,11 @@
   /* Fix flex direction for RTL layout */
   html[dir="rtl"] .flex-row {
     flex-direction: row-reverse;
+  }
+  
+  /* Exception for components that should not be reversed */
+  html[dir="rtl"] .no-reverse {
+    flex-direction: row;
   }
   
   /* Fix margins and paddings for RTL */
@@ -90,6 +106,16 @@
     font-weight: 700; /* Bold for better visibility */
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1); /* Subtle text shadow for better contrast */
   }
+  
+  /* Prevent image flipping in RTL mode */
+  html[dir="rtl"] img {
+    transform: none !important;
+  }
+  
+  /* Prevent logo flipping in RTL mode */
+  html[dir="rtl"] .logo svg {
+    transform: none !important;
+  }
 }
 
 @layer components {
@@ -130,6 +156,25 @@
   html[dir="rtl"] .price-indicator .space-x-2 > * + * {
     margin-right: 0.5rem !important;
     margin-left: 0 !important;
+  }
+  
+  /* Ad spaces styling */
+  .ad-space {
+    @apply my-6 rounded-lg overflow-hidden border border-muted;
+    min-height: 120px;
+  }
+  
+  .ad-space.horizontal {
+    @apply w-full;
+  }
+  
+  .ad-space.vertical {
+    @apply h-full;
+    min-height: 400px;
+  }
+  
+  .ad-space.square {
+    @apply aspect-square;
   }
 }
 
