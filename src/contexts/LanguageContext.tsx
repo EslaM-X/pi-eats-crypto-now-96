@@ -1,107 +1,141 @@
 
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import translations from '../locales';
+import React, { createContext, useContext, useState } from 'react';
+
+// Add the new translations for Pi price
+const translations = {
+  en: {
+    loading: 'Loading...',
+    nav: {
+      home: 'Home',
+      restaurants: 'Restaurants',
+      homefood: 'Home Food',
+      wallet: 'Wallet',
+      rewards: 'Rewards',
+      orders: 'Orders',
+      mining: 'Mining',
+      addFood: 'Add Food Listing'
+    },
+    auth: {
+      login: 'Login',
+      logout: 'Logout',
+      connectWithPi: 'Connect with π',
+    },
+    home: {
+      welcome: 'Order Food with Pi Cryptocurrency',
+      subtitle: 'Discover local restaurants and home cooking, pay with Pi. No transaction fees.',
+      featured: 'Featured Restaurants',
+      viewAll: 'View All',
+      categories: 'Food Categories',
+      homefood: 'Home Cooking',
+    },
+    app: {
+      tagline: 'The first food delivery app accepting Pi cryptocurrency payments in Egypt',
+    },
+    tagline: {
+      subtitle: 'Support local businesses and home chefs directly',
+    },
+    food: {
+      addToCart: 'Add',
+    },
+    cart: {
+      title: 'Cart',
+    },
+    theme: {
+      light: 'Light Mode',
+      dark: 'Dark Mode',
+    },
+    pi: {
+      viewOnOKX: 'View on OKX Exchange',
+    },
+    wallet: {
+      lastUpdated: 'Last Updated',
+    },
+  },
+  ar: {
+    loading: 'جاري التحميل...',
+    nav: {
+      home: 'الرئيسية',
+      restaurants: 'المطاعم',
+      homefood: 'طعام منزلي',
+      wallet: 'المحفظة',
+      rewards: 'المكافآت',
+      orders: 'الطلبات',
+      mining: 'التعدين',
+      addFood: 'إضافة طعام'
+    },
+    auth: {
+      login: 'تسجيل الدخول',
+      logout: 'تسجيل الخروج',
+      connectWithPi: 'ربط بـ π',
+    },
+    home: {
+      welcome: 'اطلب الطعام بعملة Pi المشفرة',
+      subtitle: 'اكتشف المطاعم المحلية والطبخ المنزلي، وادفع باستخدام Pi. بدون رسوم معاملات.',
+      featured: 'مطاعم مميزة',
+      viewAll: 'عرض الكل',
+      categories: 'فئات الطعام',
+      homefood: 'طبخ منزلي',
+    },
+    app: {
+      tagline: 'أول تطبيق توصيل طعام يقبل مدفوعات عملة Pi المشفرة في مصر',
+    },
+    tagline: {
+      subtitle: 'ادعم الشركات المحلية وطهاة المنزل مباشرة',
+    },
+    food: {
+      addToCart: 'إضافة',
+    },
+    cart: {
+      title: 'السلة',
+    },
+    theme: {
+      light: 'الوضع الفاتح',
+      dark: 'الوضع الداكن',
+    },
+    pi: {
+      viewOnOKX: 'عرض في منصة OKX',
+    },
+    wallet: {
+      lastUpdated: 'آخر تحديث',
+    },
+  },
+};
 
 interface LanguageContextType {
   language: string;
-  setLanguage: (lang: string) => void;
-  t: (key: string, params?: Record<string, string>) => string;
-  rtl: boolean;
+  setLanguage: (language: string) => void;
+  t: (key: string) => string;
 }
 
-const DEFAULT_LANGUAGE = 'en';
-const LANGUAGE_STORAGE_KEY = 'preferred_language';
+const LanguageContext = createContext<LanguageContextType>({
+  language: 'en',
+  setLanguage: () => {},
+  t: () => '',
+});
 
-// Create the context
-const LanguageContext = createContext<LanguageContextType | null>(null);
-
-// Create the provider component
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState(DEFAULT_LANGUAGE);
-  const rtl = language === 'ar';
+  const [language, setLanguage] = useState<string>('en');
 
-  useEffect(() => {
-    // Try to get user's saved language preference
-    const savedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-    
-    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ar')) {
-      setLanguageState(savedLanguage);
-    } else {
-      // If no saved preference, try to detect browser language
-      const browserLang = navigator.language.split('-')[0];
-      if (browserLang === 'ar') {
-        setLanguageState('ar');
-      }
-    }
-  }, []);
-
-  // Update HTML dir attribute when language changes
-  useEffect(() => {
-    document.documentElement.dir = rtl ? 'rtl' : 'ltr';
-    document.documentElement.lang = language;
-  }, [language, rtl]);
-
-  const setLanguage = (lang: string) => {
-    if (lang === 'en' || lang === 'ar') {
-      setLanguageState(lang);
-      localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
-    }
-  };
-
-  // Translation function
-  const t = (key: string, params?: Record<string, string>): string => {
-    // Split the key by dots to access nested properties
+  const t = (key: string) => {
     const keys = key.split('.');
+    let translation: any = translations[language as keyof typeof translations];
     
-    // Get the current language translations
-    const currentTranslations = (translations as any)[language] || (translations as any).en;
-    
-    // Navigate through the keys
-    let translation = currentTranslations;
     for (const k of keys) {
-      translation = translation?.[k];
-      
-      // If translation is not found, fall back to English
-      if (translation === undefined) {
-        translation = (translations as any).en;
-        for (const fallbackKey of keys) {
-          translation = translation?.[fallbackKey];
-          if (translation === undefined) {
-            return key; // Return the key if translation is not found
-          }
-        }
+      if (translation && translation[k]) {
+        translation = translation[k];
+      } else {
+        return key; // Fallback to key if translation not found
       }
-    }
-    
-    // If the translation is not a string, return the key
-    if (typeof translation !== 'string') {
-      return key;
-    }
-    
-    // Replace parameters in the translation if provided
-    if (params) {
-      return Object.entries(params).reduce((acc, [paramKey, paramValue]) => {
-        return acc.replace(new RegExp(`{{${paramKey}}}`, 'g'), paramValue);
-      }, translation);
     }
     
     return translation;
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t, rtl }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );
 };
 
-// Create a custom hook for using the language context
-export const useLanguage = (): LanguageContextType => {
-  const context = useContext(LanguageContext);
-  if (!context) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
-  }
-  return context;
-};
-
-export default LanguageContext;
+export const useLanguage = () => useContext(LanguageContext);

@@ -1,28 +1,32 @@
 
 import React from 'react';
-import { ThemeProvider } from './ThemeContext';
 import { LanguageProvider } from './LanguageContext';
+import { ThemeProvider } from './ThemeContext';
 import { PiAuthProvider } from './PiAuthContext';
-import { PiPriceProvider } from './PiPriceContext';
+import { CartProvider } from './CartContext';
+import PiPriceProvider from './PiPriceContext';
 import { HomeFoodProvider } from './homefood/HomeFoodContext';
 import { WalletProvider } from './WalletContext';
-import { RewardsProvider } from './RewardsContext';
 
-const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+interface AppProviderProps {
+  children: React.ReactNode;
+}
+
+const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <PiAuthProvider>
-          <PiPriceProvider>
-            <WalletProvider>
-              <RewardsProvider>
-                <HomeFoodProvider>
+        <PiPriceProvider>
+          <PiAuthProvider>
+            <CartProvider>
+              <HomeFoodProvider>
+                <WalletProvider>
                   {children}
-                </HomeFoodProvider>
-              </RewardsProvider>
-            </WalletProvider>
-          </PiPriceProvider>
-        </PiAuthProvider>
+                </WalletProvider>
+              </HomeFoodProvider>
+            </CartProvider>
+          </PiAuthProvider>
+        </PiPriceProvider>
       </LanguageProvider>
     </ThemeProvider>
   );

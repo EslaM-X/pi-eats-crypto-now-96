@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { TrendingUp, TrendingDown, RefreshCcw, ExternalLink, Wallet, DollarSign, CircleDollarSign } from 'lucide-react';
 import { usePiPrice } from '@/contexts/PiPriceContext';
@@ -16,6 +17,15 @@ export const PiPriceIndicator = ({ showDetails = false }: { showDetails?: boolea
     return (
       <div className="flex items-center space-x-2 rounded-full py-1 px-3 text-sm bg-muted/40">
         <span>{t('loading')}</span>
+        <Button 
+          size="icon" 
+          variant="ghost" 
+          className="h-5 w-5" 
+          onClick={refreshPrice}
+          disabled={isLoading}
+        >
+          <RefreshCcw className={`h-3 w-3 ${isLoading ? 'animate-spin' : ''}`} />
+        </Button>
       </div>
     );
   }
