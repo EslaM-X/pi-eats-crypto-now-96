@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { usePiAuth } from './PiAuthContext';
 import { v4 as uuidv4 } from 'uuid';
@@ -24,6 +23,9 @@ interface WalletContextType {
   receivePi: (amount: number, sender: string, description: string) => Promise<boolean>;
   addMiningReward: (amount: number) => Promise<boolean>;
   addBonus: (amount: number, reason: string) => Promise<boolean>;
+  addTransaction: (transaction: Partial<Transaction>) => void;
+  balance: { pi: number; ptm: number };
+  fetchBalance: () => void;
 }
 
 // Create the context
@@ -236,6 +238,42 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return true;
   };
 
+  // Add a transaction directly
+  const addTransaction = (transaction: Partial<Transaction>) => {
+    if (!user) return;
+    
+    const newTransaction: Transaction = {
+      id: uuidv4(),
+      type: transaction.type || 'receive',
+      amount: transaction.amount || 0,
+      description: transaction.description || '',
+      date: new Date(),
+      status: transaction.status || 'completed',
+      recipient: transaction.recipient,
+      sender: transaction.sender
+    };
+    
+    setTransactions(prev => [newTransaction, ...prev]);
+    
+    // Update balance based on transaction type
+    if (transaction.type === 'reward') {
+      setPiBalance(prev => prev + (transaction.amount || 0));
+    }
+  };
+  
+  // Fetch balance (refresh)
+  const fetchBalance = () => {
+    if (!user) return;
+    // In a real app, this would make an API call
+    console.log('Refreshing balance data');
+  };
+  
+  // Calculate balance object for compatibility
+  const balance = {
+    pi: piBalance,
+    ptm: ptmBalance
+  };
+
   return (
     <WalletContext.Provider value={{
       piBalance,
@@ -244,7 +282,10 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       sendPi,
       receivePi,
       addMiningReward,
-      addBonus
+      addBonus,
+      addTransaction,
+      balance,
+      fetchBalance
     }}>
       {children}
     </WalletContext.Provider>

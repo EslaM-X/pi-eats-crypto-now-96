@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { FoodProvider, Review, Message } from '@/types/food';
 import { usePiAuth } from './PiAuthContext';
@@ -13,6 +12,10 @@ interface HomeFoodContextType {
   addReview: (providerId: string, rating: number, comment: string) => void;
   sendMessage: (providerId: string, content: string) => void;
   getProviderMessages: (providerId: string) => Message[];
+  addProvider: (provider: Omit<FoodProvider, 'id'>) => string;
+  getProvider: (id: string) => FoodProvider | undefined;
+  getReviews: (providerId: string) => Review[];
+  getMessages: (providerId: string, userId: string) => Message[];
 }
 
 // Create the context
@@ -240,6 +243,21 @@ export const HomeFoodProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     });
   };
 
+  // Get a specific provider by ID
+  const getProvider = (id: string): FoodProvider | undefined => {
+    return providers.find(provider => provider.id === id);
+  };
+
+  // Get reviews for a specific provider
+  const getReviews = (providerId: string): Review[] => {
+    return reviews[providerId] || [];
+  };
+
+  // Add a new food provider (alias for addFoodProvider for compatibility)
+  const addProvider = (provider: Omit<FoodProvider, 'id'>): string => {
+    return addFoodProvider(provider);
+  };
+
   // Add a new food provider
   const addFoodProvider = (provider: Omit<FoodProvider, 'id'>) => {
     const id = uuidv4();
@@ -326,6 +344,11 @@ export const HomeFoodProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return messages[providerId] || [];
   };
 
+  // Get messages between a provider and a specific user
+  const getMessages = (providerId: string, userId: string) => {
+    return messages[providerId] || [];
+  };
+
   return (
     <HomeFoodContext.Provider value={{
       providers,
@@ -334,7 +357,11 @@ export const HomeFoodProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       addFoodProvider,
       addReview,
       sendMessage,
-      getProviderMessages
+      getProviderMessages,
+      addProvider,
+      getProvider,
+      getReviews,
+      getMessages
     }}>
       {children}
     </HomeFoodContext.Provider>

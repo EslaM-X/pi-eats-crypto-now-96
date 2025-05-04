@@ -16,7 +16,7 @@ import {
   SelectValue 
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { useHomeFood } from '@/contexts/HomeFoodContext';
 import { usePiAuth } from '@/contexts/PiAuthContext';
 import { MenuItem } from '@/types/food';
@@ -53,7 +53,6 @@ const sampleImageUrls = [
 
 const AddFoodListing = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const { addProvider } = useHomeFood();
   const { user } = usePiAuth();
   

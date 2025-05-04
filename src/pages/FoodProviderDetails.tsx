@@ -26,8 +26,8 @@ const FoodProviderDetails = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { 
-    getProvider, getReviews, addReview, 
-    favorites, toggleFavorite,
+    providers, favorites, toggleFavorite, 
+    getProvider, getReviews, addReview,
     sendMessage, getMessages 
   } = useHomeFood();
   const { user } = usePiAuth();
@@ -72,26 +72,13 @@ const FoodProviderDetails = () => {
   const handleSubmitReview = (rating: number, comment: string) => {
     if (!user) return;
     
-    addReview({
-      providerId: provider.id,
-      userId: user.uid,
-      userName: user.username || 'User',
-      userImage: undefined,
-      rating,
-      comment
-    });
+    addReview(provider.id, rating, comment);
   };
   
   const handleSendMessage = (content: string) => {
     if (!user) return;
     
-    sendMessage({
-      providerId: provider.id,
-      userId: user.uid,
-      userName: user.username || 'User',
-      content,
-      isFromProvider: false
-    });
+    sendMessage(provider.id, content);
   };
   
   const openMessageDialog = () => {

@@ -6,6 +6,7 @@ import { PiAuthProvider } from './PiAuthContext';
 import { PiPriceProvider } from './PiPriceContext';
 import { HomeFoodProvider } from './HomeFoodContext';
 import { WalletProvider } from './WalletContext';
+import { RewardsProvider } from './RewardsContext';
 
 const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
@@ -14,9 +15,11 @@ const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <PiAuthProvider>
           <PiPriceProvider>
             <WalletProvider>
-              <HomeFoodProvider>
-                {children}
-              </HomeFoodProvider>
+              <RewardsProvider>
+                <HomeFoodProvider>
+                  {children}
+                </HomeFoodProvider>
+              </RewardsProvider>
             </WalletProvider>
           </PiPriceProvider>
         </PiAuthProvider>
