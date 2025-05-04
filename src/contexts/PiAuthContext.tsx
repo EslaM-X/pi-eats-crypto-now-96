@@ -1,5 +1,5 @@
 
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import { authenticateWithPi, loadPiNetworkSDK } from '@/config/piNetwork';
 import { toast } from 'sonner';
 
@@ -19,6 +19,7 @@ interface PiAuthContextType {
   login: () => Promise<PiUser | null>;
   logout: () => void;
   isPiNetworkAvailable: boolean;
+  checkPiAvailability: () => boolean;
 }
 
 // Create the context
@@ -30,22 +31,29 @@ export const PiAuthProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [isPiNetworkAvailable, setIsPiNetworkAvailable] = useState(false);
 
+  // Check if Pi Network is available
+  const checkPiAvailability = useCallback(() => {
+    const isPiAvailable = typeof window !== 'undefined' && typeof (window as any).Pi !== 'undefined';
+    setIsPiNetworkAvailable(isPiAvailable);
+    return isPiAvailable;
+  }, []);
+
   // Load Pi Network SDK
   useEffect(() => {
-    loadPiNetworkSDK();
-  }, []);
+    const initializePiSDK = async () => {
+      try {
+        await loadPiNetworkSDK();
+        checkPiAvailability();
+      } catch (error) {
+        console.error("Failed to initialize Pi SDK:", error);
+      }
+    };
+    
+    initializePiSDK();
+  }, [checkPiAvailability]);
 
   // Check if Pi Network is available
   useEffect(() => {
-    const checkPiAvailability = () => {
-      const isPiAvailable = typeof window !== 'undefined' && typeof (window as any).Pi !== 'undefined';
-      setIsPiNetworkAvailable(isPiAvailable);
-      return isPiAvailable;
-    };
-
-    // Check on initial load
-    checkPiAvailability();
-
     // Set up event listener to check when Pi becomes available
     const handlePiAvailability = () => {
       if (checkPiAvailability() && !user) {
@@ -56,10 +64,13 @@ export const PiAuthProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     window.addEventListener('pi-sdk-loaded', handlePiAvailability);
     
+    // Also try to restore session on mount
+    tryRestoreSession();
+    
     return () => {
       window.removeEventListener('pi-sdk-loaded', handlePiAvailability);
     };
-  }, []);
+  }, [checkPiAvailability]);
 
   // Try to restore an existing session
   const tryRestoreSession = async () => {
@@ -107,6 +118,7 @@ export const PiAuthProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       }
     } catch (error: any) {
       toast.error(`Authentication error: ${error.message}`);
+      console.error('Pi auth error:', error);
       return null;
     } finally {
       setIsAuthenticating(false);
@@ -126,7 +138,8 @@ export const PiAuthProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     isAuthenticating,
     login,
     logout,
-    isPiNetworkAvailable
+    isPiNetworkAvailable,
+    checkPiAvailability
   };
 
   return (

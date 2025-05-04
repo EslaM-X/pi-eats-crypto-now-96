@@ -3,76 +3,76 @@
 
 @layer base {
   /* Arabic font setting for RTL mode */
-  body[dir="rtl"] {
+  html[dir="rtl"] {
     font-family: var(--font-arabic);
     letter-spacing: 0; /* Remove letter spacing for Arabic text */
   }
   
   /* Better text alignment for RTL mode */
-  body[dir="rtl"] * {
+  html[dir="rtl"] * {
     text-align: right;
   }
   
   /* Improve Arabic text rendering */
-  body[dir="rtl"] h1,
-  body[dir="rtl"] h2,
-  body[dir="rtl"] h3,
-  body[dir="rtl"] h4,
-  body[dir="rtl"] h5,
-  body[dir="rtl"] h6 {
+  html[dir="rtl"] h1,
+  html[dir="rtl"] h2,
+  html[dir="rtl"] h3,
+  html[dir="rtl"] h4,
+  html[dir="rtl"] h5,
+  html[dir="rtl"] h6 {
     font-family: var(--font-arabic);
     line-height: 1.6;
   }
 
-  body[dir="rtl"] p,
-  body[dir="rtl"] span,
-  body[dir="rtl"] a,
-  body[dir="rtl"] button,
-  body[dir="rtl"] input,
-  body[dir="rtl"] label {
+  html[dir="rtl"] p,
+  html[dir="rtl"] span,
+  html[dir="rtl"] a,
+  html[dir="rtl"] button,
+  html[dir="rtl"] input,
+  html[dir="rtl"] label {
     font-family: var(--font-arabic);
   }
   
   /* Fix flex direction for RTL layout */
-  body[dir="rtl"] .flex-row {
+  html[dir="rtl"] .flex-row {
     flex-direction: row-reverse;
   }
   
   /* Fix margins and paddings for RTL */
-  body[dir="rtl"] .ml-1 { margin-right: 0.25rem !important; margin-left: 0 !important; }
-  body[dir="rtl"] .ml-2 { margin-right: 0.5rem !important; margin-left: 0 !important; }
-  body[dir="rtl"] .ml-3 { margin-right: 0.75rem !important; margin-left: 0 !important; }
-  body[dir="rtl"] .ml-4 { margin-right: 1rem !important; margin-left: 0 !important; }
+  html[dir="rtl"] .ml-1 { margin-right: 0.25rem !important; margin-left: 0 !important; }
+  html[dir="rtl"] .ml-2 { margin-right: 0.5rem !important; margin-left: 0 !important; }
+  html[dir="rtl"] .ml-3 { margin-right: 0.75rem !important; margin-left: 0 !important; }
+  html[dir="rtl"] .ml-4 { margin-right: 1rem !important; margin-left: 0 !important; }
   
-  body[dir="rtl"] .mr-1 { margin-left: 0.25rem !important; margin-right: 0 !important; }
-  body[dir="rtl"] .mr-2 { margin-left: 0.5rem !important; margin-right: 0 !important; }
-  body[dir="rtl"] .mr-3 { margin-left: 0.75rem !important; margin-right: 0 !important; }
-  body[dir="rtl"] .mr-4 { margin-left: 1rem !important; margin-right: 0 !important; }
+  html[dir="rtl"] .mr-1 { margin-left: 0.25rem !important; margin-right: 0 !important; }
+  html[dir="rtl"] .mr-2 { margin-left: 0.5rem !important; margin-right: 0 !important; }
+  html[dir="rtl"] .mr-3 { margin-left: 0.75rem !important; margin-right: 0 !important; }
+  html[dir="rtl"] .mr-4 { margin-left: 1rem !important; margin-right: 0 !important; }
   
-  body[dir="rtl"] .pl-1 { padding-right: 0.25rem !important; padding-left: 0 !important; }
-  body[dir="rtl"] .pl-2 { padding-right: 0.5rem !important; padding-left: 0 !important; }
-  body[dir="rtl"] .pl-3 { padding-right: 0.75rem !important; padding-left: 0 !important; }
-  body[dir="rtl"] .pl-4 { padding-right: 1rem !important; padding-left: 0 !important; }
+  html[dir="rtl"] .pl-1 { padding-right: 0.25rem !important; padding-left: 0 !important; }
+  html[dir="rtl"] .pl-2 { padding-right: 0.5rem !important; padding-left: 0 !important; }
+  html[dir="rtl"] .pl-3 { padding-right: 0.75rem !important; padding-left: 0 !important; }
+  html[dir="rtl"] .pl-4 { padding-right: 1rem !important; padding-left: 0 !important; }
   
-  body[dir="rtl"] .pr-1 { padding-left: 0.25rem !important; padding-right: 0 !important; }
-  body[dir="rtl"] .pr-2 { padding-left: 0.5rem !important; padding-right: 0 !important; }
-  body[dir="rtl"] .pr-3 { padding-left: 0.75rem !important; padding-right: 0 !important; }
-  body[dir="rtl"] .pr-4 { padding-left: 1rem !important; padding-right: 0 !important; }
+  html[dir="rtl"] .pr-1 { padding-left: 0.25rem !important; padding-right: 0 !important; }
+  html[dir="rtl"] .pr-2 { padding-left: 0.5rem !important; padding-right: 0 !important; }
+  html[dir="rtl"] .pr-3 { padding-left: 0.75rem !important; padding-right: 0 !important; }
+  html[dir="rtl"] .pr-4 { padding-left: 1rem !important; padding-right: 0 !important; }
 
   /* RTL specific line-height adjustments for mobile */
   @media (max-width: 640px) {
-    body[dir="rtl"] h1 {
+    html[dir="rtl"] h1 {
       line-height: 1.4 !important;
     }
   }
   
   /* Fix icon placement in RTL */
-  body[dir="rtl"] .inline-block.mr-1 {
+  html[dir="rtl"] .inline-block.mr-1 {
     margin-right: 0 !important;
     margin-left: 0.25rem !important;
   }
   
-  body[dir="rtl"] .inline-block.mr-2 {
+  html[dir="rtl"] .inline-block.mr-2 {
     margin-right: 0 !important;
     margin-left: 0.5rem !important;
   }
@@ -80,52 +80,69 @@
 
 @layer components {
   /* RTL specific components */
-  body[dir="rtl"] .card,
-  body[dir="rtl"] .button {
+  html[dir="rtl"] .card,
+  html[dir="rtl"] .button {
     direction: rtl;
   }
 
   /* Fix gradients for RTL */
-  body[dir="rtl"] .button-gradient {
+  html[dir="rtl"] .button-gradient {
     @apply bg-gradient-to-l from-pi to-pi-light hover:from-pi-dark hover:to-pi;
   }
   
-  body[dir="rtl"] .bg-gradient-to-r {
+  html[dir="rtl"] .bg-gradient-to-r {
     @apply bg-gradient-to-l;
   }
   
   /* Fix alignment for header elements in RTL */
-  body[dir="rtl"] .space-x-4 > * {
+  html[dir="rtl"] .space-x-4 > * {
     margin-left: 1rem !important;
     margin-right: 0 !important;
   }
   
-  body[dir="rtl"] .space-x-6 > * {
+  html[dir="rtl"] .space-x-6 > * {
     margin-left: 1.5rem !important;
     margin-right: 0 !important;
   }
   
   /* Fix icons in buttons for RTL */
-  body[dir="rtl"] button svg,
-  body[dir="rtl"] a svg {
+  html[dir="rtl"] button svg,
+  html[dir="rtl"] a svg {
     margin-left: 0.5rem;
     margin-right: 0;
+  }
+  
+  /* Fix Pi Price Indicator for RTL */
+  html[dir="rtl"] .price-indicator .space-x-2 > * + * {
+    margin-right: 0.5rem !important;
+    margin-left: 0 !important;
   }
 }
 
 /* RTL responsive adjustments */
 /* Improve RTL spacing for mobile */
 @media (max-width: 640px) {
-  body[dir="rtl"] .container {
+  html[dir="rtl"] .container {
     padding-right: 1rem;
     padding-left: 1rem;
+  }
+  
+  /* Fix mobile menu for RTL */
+  html[dir="rtl"] .mobile-nav-items {
+    right: 0;
+    left: auto;
   }
 }
 
 /* Improve RTL spacing for tablet */
 @media (min-width: 641px) and (max-width: 1023px) {
-  body[dir="rtl"] .container {
+  html[dir="rtl"] .container {
     padding-right: 1.5rem;
     padding-left: 1.5rem;
   }
+}
+
+/* Fix RTL in mobile navigation */
+html[dir="rtl"] .mobile-bottom-nav {
+  flex-direction: row-reverse;
 }

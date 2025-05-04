@@ -1,109 +1,12 @@
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import translations from '@/locales';
 
-// Add the new translations for Pi price
-const translations = {
-  en: {
-    loading: 'Loading...',
-    nav: {
-      home: 'Home',
-      restaurants: 'Restaurants',
-      homefood: 'Home Food',
-      wallet: 'Wallet',
-      rewards: 'Rewards',
-      orders: 'Orders',
-      mining: 'Mining',
-      addFood: 'Add Food Listing'
-    },
-    auth: {
-      login: 'Login',
-      logout: 'Logout',
-      connectWithPi: 'Connect with π',
-    },
-    home: {
-      welcome: 'Order Food with Pi Cryptocurrency',
-      subtitle: 'Discover local restaurants and home cooking, pay with Pi. No transaction fees.',
-      featured: 'Featured Restaurants',
-      viewAll: 'View All',
-      categories: 'Food Categories',
-      homefood: 'Home Cooking',
-    },
-    app: {
-      tagline: 'The first food delivery app accepting Pi cryptocurrency payments in Egypt',
-    },
-    tagline: {
-      subtitle: 'Support local businesses and home chefs directly',
-    },
-    food: {
-      addToCart: 'Add',
-    },
-    cart: {
-      title: 'Cart',
-    },
-    theme: {
-      light: 'Light Mode',
-      dark: 'Dark Mode',
-    },
-    pi: {
-      viewOnOKX: 'View on OKX Exchange',
-    },
-    wallet: {
-      lastUpdated: 'Last Updated',
-    },
-  },
-  ar: {
-    loading: 'جاري التحميل...',
-    nav: {
-      home: 'الرئيسية',
-      restaurants: 'المطاعم',
-      homefood: 'طعام منزلي',
-      wallet: 'المحفظة',
-      rewards: 'المكافآت',
-      orders: 'الطلبات',
-      mining: 'التعدين',
-      addFood: 'إضافة طعام'
-    },
-    auth: {
-      login: 'تسجيل الدخول',
-      logout: 'تسجيل الخروج',
-      connectWithPi: 'ربط بـ π',
-    },
-    home: {
-      welcome: 'اطلب الطعام بعملة Pi المشفرة',
-      subtitle: 'اكتشف المطاعم المحلية والطبخ المنزلي، وادفع باستخدام Pi. بدون رسوم معاملات.',
-      featured: 'مطاعم مميزة',
-      viewAll: 'عرض الكل',
-      categories: 'فئات الطعام',
-      homefood: 'طبخ منزلي',
-    },
-    app: {
-      tagline: 'أول تطبيق توصيل طعام يقبل مدفوعات عملة Pi المشفرة في مصر',
-    },
-    tagline: {
-      subtitle: 'ادعم الشركات المحلية وطهاة المنزل مباشرة',
-    },
-    food: {
-      addToCart: 'إضافة',
-    },
-    cart: {
-      title: 'السلة',
-    },
-    theme: {
-      light: 'الوضع الفاتح',
-      dark: 'الوضع الداكن',
-    },
-    pi: {
-      viewOnOKX: 'عرض في منصة OKX',
-    },
-    wallet: {
-      lastUpdated: 'آخر تحديث',
-    },
-  },
-};
+type Language = 'en' | 'ar';
 
 interface LanguageContextType {
-  language: string;
-  setLanguage: (language: string) => void;
+  language: Language;
+  setLanguage: (language: Language) => void;
   t: (key: string) => string;
 }
 
@@ -114,21 +17,34 @@ const LanguageContext = createContext<LanguageContextType>({
 });
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<string>('en');
+  // Initialize language from localStorage or default to English
+  const [language, setLanguage] = useState<Language>(() => {
+    const savedLanguage = localStorage.getItem('language');
+    return (savedLanguage === 'ar' || savedLanguage === 'en') ? savedLanguage as Language : 'en';
+  });
 
-  const t = (key: string) => {
+  // Update document direction when language changes
+  useEffect(() => {
+    document.documentElement.setAttribute('dir', language === 'ar' ? 'rtl' : 'ltr');
+    document.documentElement.setAttribute('lang', language);
+    localStorage.setItem('language', language);
+  }, [language]);
+
+  // Translation function
+  const t = (key: string): string => {
     const keys = key.split('.');
-    let translation: any = translations[language as keyof typeof translations];
+    let result: any = translations[language];
     
     for (const k of keys) {
-      if (translation && translation[k]) {
-        translation = translation[k];
+      if (result && result[k] !== undefined) {
+        result = result[k];
       } else {
-        return key; // Fallback to key if translation not found
+        console.warn(`Translation key not found: ${key} for language ${language}`);
+        return key;
       }
     }
     
-    return translation;
+    return typeof result === 'string' ? result : key;
   };
 
   return (

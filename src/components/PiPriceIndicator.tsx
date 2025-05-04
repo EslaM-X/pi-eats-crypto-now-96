@@ -6,23 +6,35 @@ import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useTheme } from '@/contexts/ThemeContext';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export const PiPriceIndicator = ({ showDetails = false }: { showDetails?: boolean }) => {
   const { priceData, isLoading, refreshPrice } = usePiPrice();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { theme } = useTheme();
   const [expanded, setExpanded] = useState(false);
   
+  // Loading state
+  if (isLoading && !priceData) {
+    return (
+      <div className={`flex items-center space-x-2 rounded-full py-1 px-3 text-sm ${theme === 'dark' ? 'bg-muted/20' : 'bg-muted/40'} border border-border/50`}>
+        <Skeleton className="h-4 w-16" />
+        <Skeleton className="h-4 w-8" />
+      </div>
+    );
+  }
+
   if (!priceData) {
     return (
-      <div className="flex items-center space-x-2 rounded-full py-1 px-3 text-sm bg-muted/40">
+      <div className={`flex items-center ${language === 'ar' ? 'space-x-reverse' : 'space-x-2'} rounded-full py-1 px-3 text-sm ${theme === 'dark' ? 'bg-muted/20' : 'bg-muted/40'} border border-border/50`}>
         <span>{t('loading')}</span>
         <Button 
           size="icon" 
           variant="ghost" 
           className="h-5 w-5" 
-          onClick={refreshPrice}
+          onClick={() => refreshPrice()}
           disabled={isLoading}
+          aria-label={t('wallet.refresh')}
         >
           <RefreshCcw className={`h-3 w-3 ${isLoading ? 'animate-spin' : ''}`} />
         </Button>
@@ -53,7 +65,7 @@ export const PiPriceIndicator = ({ showDetails = false }: { showDetails?: boolea
   
   // Basic indicator for normal display
   const basicIndicator = (
-    <div className={`flex items-center space-x-2 rounded-full py-1 px-3 text-sm ${theme === 'dark' ? 'bg-muted/20' : 'bg-muted/40'} border border-border/50`}>
+    <div className={`flex items-center ${language === 'ar' ? 'space-x-reverse' : 'space-x-2'} rounded-full py-1 px-3 text-sm ${theme === 'dark' ? 'bg-muted/20' : 'bg-muted/40'} border border-border/50`}>
       <span className="font-medium">π</span>
       <span className="font-medium">{formatCurrency(priceData.price)}</span>
       
@@ -63,9 +75,9 @@ export const PiPriceIndicator = ({ showDetails = false }: { showDetails?: boolea
         }`}
       >
         {isPositiveChange ? (
-          <TrendingUp className="h-3 w-3 mr-0.5" />
+          <TrendingUp className={`h-3 w-3 ${language === 'ar' ? 'ml-0.5' : 'mr-0.5'}`} />
         ) : (
-          <TrendingDown className="h-3 w-3 mr-0.5" />
+          <TrendingDown className={`h-3 w-3 ${language === 'ar' ? 'ml-0.5' : 'mr-0.5'}`} />
         )}
         {Math.abs(priceData.change24h).toFixed(2)}%
       </span>
@@ -77,11 +89,12 @@ export const PiPriceIndicator = ({ showDetails = false }: { showDetails?: boolea
             target="_blank" 
             rel="noopener noreferrer"
             className="text-pi hover:text-pi-dark transition-colors"
+            aria-label={t('pi.viewOnOKX')}
           >
             <ExternalLink className="h-3 w-3" />
           </a>
         </TooltipTrigger>
-        <TooltipContent>
+        <TooltipContent side={language === 'ar' ? 'left' : 'right'}>
           <p>{t('pi.viewOnOKX')}</p>
         </TooltipContent>
       </Tooltip>
@@ -95,12 +108,13 @@ export const PiPriceIndicator = ({ showDetails = false }: { showDetails?: boolea
           refreshPrice();
         }}
         disabled={isLoading}
+        aria-label={t('wallet.refresh')}
       >
         <RefreshCcw className={`h-3 w-3 ${isLoading ? 'animate-spin' : ''}`} />
       </Button>
       
       {!isPriceFromOKX && (
-        <span className="text-xs text-muted-foreground">(Fallback)</span>
+        <span className="text-xs text-muted-foreground">{language === 'ar' ? '(احتياطي)' : '(Fallback)'}</span>
       )}
       
       {showDetails && (
@@ -110,7 +124,7 @@ export const PiPriceIndicator = ({ showDetails = false }: { showDetails?: boolea
           className="h-5 ml-1 text-xs" 
           onClick={() => setExpanded(!expanded)}
         >
-          {expanded ? 'Less' : 'More'}
+          {expanded ? (language === 'ar' ? 'أقل' : 'Less') : (language === 'ar' ? 'المزيد' : 'More')}
         </Button>
       )}
     </div>
