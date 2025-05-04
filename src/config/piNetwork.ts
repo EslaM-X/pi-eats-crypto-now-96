@@ -31,11 +31,12 @@ const onIncompletePaymentFound = (payment: any) => {
 // Create a new payment
 export const createPayment = async (amount: number, memo: string) => {
   try {
+    // The Pi API expects a specific format for createPayment
     const paymentData = await Pi.createPayment({
       amount: amount.toString(),
       memo,
       metadata: { orderId: Date.now().toString() }
-    }, onReadyForServerApproval, onReadyForServerCompletion, onCancel, onError);
+    });
     
     console.log('Payment created:', paymentData);
     return paymentData;
@@ -77,7 +78,7 @@ export const completePayment = async (paymentId: string) => {
       paymentId,
       amount: '0', // These fields are required but will be ignored when completing
       memo: '',
-    }, onReadyForServerApproval, onReadyForServerCompletion, onCancel, onError);
+    });
     
     console.log('Payment completed:', completedPayment);
     return completedPayment;
