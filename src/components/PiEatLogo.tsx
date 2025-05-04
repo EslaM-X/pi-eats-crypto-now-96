@@ -40,18 +40,18 @@ const PiEatLogo: React.FC<PiEatLogoProps> = ({
     xl: 'text-lg',
   };
   
-  // تحسين وضوح رمز π وجعله أكثر بروزاً
+  // تحسين وضوح رمز π وجعله أكثر بروزاً - بدون ظل وبألوان واضحة
   return (
-    <div className={`font-bold ${sizeClasses[size]} bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent flex items-center ${className}`}>
+    <div className={`font-bold ${sizeClasses[size]} flex items-center ${className}`}>
       <span className="relative">
-        <span className="text-shadow-md font-extrabold drop-shadow-md">π</span>
+        <span className="font-extrabold text-[#8B5CF6] pi-color">π</span>
         {showEmoji && (
-          <span className={`absolute -top-1 -right-2 ${emojiSize[size]} bg-orange text-white rounded-full h-5 w-5 flex items-center justify-center transform rotate-12 shadow-md border-2 border-white`}>
+          <span className={`absolute -top-1 -right-2 ${emojiSize[size]} bg-orange text-white rounded-full h-5 w-5 flex items-center justify-center transform rotate-12 border-2 border-white`}>
             🍕
           </span>
         )}
       </span>
-      {showEat && <span className="ml-0.5">Eat</span>}
+      {showEat && <span className="ml-0.5 bg-gradient-to-r from-[#9b87f5] to-orange bg-clip-text text-transparent">Eat</span>}
     </div>
   );
 };

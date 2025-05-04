@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -83,13 +84,18 @@
     background-size: 20px 20px;
   }
   
-  /* تعزيز ظهور رمز π */
-  .text-shadow-md {
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  /* تعزيز ظهور رمز π - بدون ظل وبألوان واضحة */
+  .pi-color {
+    color: #8B5CF6;
   }
   
+  .pi-symbol-solid {
+    @apply font-extrabold text-4xl text-[#8B5CF6];
+  }
+  
+  /* حفظ الإصدار السابق للتوافق مع بقية التطبيق */
   .pi-symbol {
-    @apply font-extrabold text-4xl bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent drop-shadow-lg;
+    @apply font-extrabold text-4xl text-[#8B5CF6];
   }
 }
 

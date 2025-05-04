@@ -11,15 +11,15 @@ const PiNetworkLogo: React.FC<PiNetworkLogoProps> = ({
   size = 'md',
   className = ''
 }) => {
-  // تحسين وضوح رمز π في هذا المكون أيضًا
+  // تحسين وضوح رمز π - جعله واضح بدون ظل
   return (
-    <div className={`pi-symbol ${className}`}>
+    <div className={`pi-symbol-solid ${className}`}>
       <PiEatLogo 
         size={size} 
         className={className} 
         showEat={false} 
         piOnly={true} 
-        showEmoji={true}
+        showEmoji={true} 
       />
     </div>
   );

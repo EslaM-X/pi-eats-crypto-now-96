@@ -62,7 +62,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
             <div className="text-sm text-muted-foreground mb-1">Balance</div>
             <div className="text-3xl md:text-4xl font-bold flex items-center">
               {isPi && (
-                <span className="mr-1 font-extrabold text-4xl md:text-5xl bg-gradient-to-r from-pi to-orange bg-clip-text text-transparent drop-shadow-lg">
+                <span className="mr-1 font-extrabold text-4xl md:text-5xl">
                   <PiEatLogo piOnly={true} showEmoji={true} size="md" />
                 </span>
               )}
