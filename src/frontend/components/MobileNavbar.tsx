@@ -1,11 +1,11 @@
-
 import React from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { ShoppingCart, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft } from 'lucide-react';
 import PiEatLogo from '@/components/PiEatLogo';
 
 export const MobileNavbar = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   
   // No need to show navbar on home page

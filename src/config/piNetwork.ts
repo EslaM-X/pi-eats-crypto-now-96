@@ -1,116 +1,160 @@
 
-/**
- * Pi Network SDK Configuration and Helper Functions
- * This file provides integration with Pi Network's SDK
- */
+// Pi Network SDK service
+// استنادًا إلى الوثائق الرسمية: https://github.com/pi-apps/pi-platform-docs
 
-// Define the SDK interfaces and types
-interface PaymentData {
-  identifier?: string;
-  paymentId?: string;
-  _id?: string;
-  status?: string;
-  amount: number;
-  memo: string;
-  [key: string]: any;
+// تعريف أنواع البيانات
+export interface PiUser {
+  uid: string;
+  username: string;
+  accessToken: string;
 }
 
-// Check if Pi SDK is available in the browser environment
-const isPiAvailable = (): boolean => {
-  return typeof window !== 'undefined' && typeof (window as any).Pi !== 'undefined';
-};
+export interface PiPaymentData {
+  amount: number;
+  memo: string;
+  metadata?: Record<string, any>;
+  uid?: string;
+}
 
-// Create a payment transaction
-export const createPayment = async (amount: number, memo: string): Promise<PaymentData | null> => {
+declare global {
+  interface Window {
+    Pi?: {
+      init: (options: { version: string, sandbox: boolean }) => void;
+      authenticate: (scopes: string[], onSuccess: (authResult: any) => void, onError?: (error: Error) => void) => void;
+      createPayment: (paymentData: PiPaymentData, onSuccess: (payment: any) => void, onError?: (error: Error) => void) => any;
+      openPayment: (paymentId: string, onSuccess: (payment: any) => void, onError?: (error: Error) => void) => void;
+      user: { uid: string; username: string };
+    };
+  }
+}
+
+// تهيئة SDK
+export function initPiNetwork(options = { sandbox: false }) {
   try {
-    if (!isPiAvailable()) {
-      console.error('Pi SDK not available. Are you using the Pi Browser?');
-      throw new Error('Pi SDK not available');
+    if (typeof window.Pi === 'undefined') {
+      console.error('Pi SDK is not loaded. Make sure the Pi SDK script is included in your HTML.');
+      return false;
     }
 
-    // Call Pi.createPayment method
-    const payment = await (window as any).Pi.createPayment({
-      amount: amount,
-      memo: memo,
-      metadata: { orderId: `order-${Date.now()}` }
-    });
-
-    console.log('Payment created:', payment);
-    return payment;
-  } catch (error: any) {
-    console.error('Error creating payment:', error.message);
-    return null;
+    window.Pi.init({ version: "2.0", sandbox: options.sandbox });
+    console.log('Pi Network SDK initialized successfully');
+    return true;
+  } catch (error) {
+    console.error('Failed to initialize Pi Network SDK:', error);
+    return false;
   }
-};
+}
 
-// Complete a payment transaction
-export const completePayment = async (paymentId: string): Promise<PaymentData | null> => {
-  try {
-    if (!isPiAvailable()) {
-      console.error('Pi SDK not available. Are you using the Pi Browser?');
-      throw new Error('Pi SDK not available');
+// مصادقة المستخدم
+export async function authenticate(): Promise<PiUser | null> {
+  return new Promise((resolve) => {
+    try {
+      if (typeof window.Pi === 'undefined') {
+        console.error('Pi SDK is not loaded');
+        resolve(null);
+        return;
+      }
+
+      // الأذونات المطلوبة - يمكن تعديلها حسب احتياجات التطبيق
+      const scopes = ['username', 'payments', 'wallet_address'];
+
+      window.Pi.authenticate(scopes, 
+        (authResult) => {
+          console.log('Pi Authentication successful:', authResult);
+          
+          // إذا نجحت عملية المصادقة، نقوم بإرجاع بيانات المستخدم
+          if (authResult.user) {
+            const piUser: PiUser = {
+              uid: authResult.user.uid,
+              username: authResult.user.username,
+              accessToken: authResult.accessToken
+            };
+            resolve(piUser);
+          } else {
+            resolve(null);
+          }
+        },
+        (error) => {
+          console.error('Pi Authentication error:', error);
+          resolve(null);
+        }
+      );
+    } catch (error) {
+      console.error('Pi Authentication exception:', error);
+      resolve(null);
     }
+  });
+}
 
-    // Call Pi.completePayment method
-    const payment = await (window as any).Pi.completePayment(paymentId);
-    console.log('Payment completed:', payment);
-    return payment;
-  } catch (error: any) {
-    console.error('Error completing payment:', error.message);
-    return null;
-  }
-};
+// إنشاء معاملة دفع جديدة
+export async function createPayment(amount: number, memo: string, metadata?: Record<string, any>): Promise<any> {
+  return new Promise((resolve, reject) => {
+    try {
+      if (typeof window.Pi === 'undefined') {
+        reject(new Error('Pi SDK is not loaded'));
+        return;
+      }
 
-// Authenticate user with Pi Network
-export const authenticateWithPi = async (): Promise<any> => {
-  try {
-    if (!isPiAvailable()) {
-      console.error('Pi SDK not available. Are you using the Pi Browser?');
-      throw new Error('Pi SDK not available');
+      const paymentData: PiPaymentData = {
+        amount,
+        memo,
+        metadata
+      };
+
+      window.Pi.createPayment(
+        paymentData,
+        (payment) => {
+          console.log('Payment created:', payment);
+          resolve(payment);
+        },
+        (error) => {
+          console.error('Create payment error:', error);
+          reject(error);
+        }
+      );
+    } catch (error) {
+      console.error('Create payment exception:', error);
+      reject(error);
     }
+  });
+}
 
-    // Call Pi.authenticate method with required scopes
-    const auth = await (window as any).Pi.authenticate(
-      ['username', 'payments', 'wallet_address'], 
-      onIncompletePaymentFound
-    );
-    
-    console.log('Pi authentication result:', auth);
-    return auth;
-  } catch (error: any) {
-    console.error('Pi authentication error:', error.message);
-    return null;
-  }
-};
+// إكمال معاملة دفع
+export async function completePayment(paymentId: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    try {
+      if (typeof window.Pi === 'undefined') {
+        reject(new Error('Pi SDK is not loaded'));
+        return;
+      }
 
-// Handle incomplete payments
-const onIncompletePaymentFound = (payment: PaymentData) => {
-  console.log('Incomplete payment found:', payment);
-  // You can implement custom logic to handle incomplete payments here
-  return completePayment(payment.identifier || payment.paymentId || payment._id || '');
-};
+      window.Pi.openPayment(
+        paymentId,
+        (payment) => {
+          console.log('Payment completed:', payment);
+          resolve(payment);
+        },
+        (error) => {
+          console.error('Complete payment error:', error);
+          reject(error);
+        }
+      );
+    } catch (error) {
+      console.error('Complete payment exception:', error);
+      reject(error);
+    }
+  });
+}
 
-// Add Pi Network SDK script to the document
-export const loadPiNetworkSDK = () => {
-  if (document.getElementById('pi-sdk-script')) return;
-  
-  const script = document.createElement('script');
-  script.id = 'pi-sdk-script';
-  script.src = 'https://sdk.minepi.com/pi-sdk.js';
-  script.async = true;
-  script.onload = () => {
-    // Dispatch an event to notify components that Pi SDK is loaded
-    const event = new Event('pi-sdk-loaded');
-    window.dispatchEvent(event);
-    console.log('Pi Network SDK loaded');
-  };
-  document.body.appendChild(script);
-};
+// تحقق مما إذا كان التطبيق يعمل داخل متصفح Pi
+export function isRunningInPiBrowser(): boolean {
+  return typeof window.Pi !== 'undefined';
+}
 
-// Export functions
 export default {
+  initPiNetwork,
+  authenticate,
   createPayment,
   completePayment,
-  authenticateWithPi,
-  loadPiNetworkSDK
+  isRunningInPiBrowser
 };

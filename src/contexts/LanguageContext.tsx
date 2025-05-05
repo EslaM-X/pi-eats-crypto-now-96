@@ -1,119 +1,109 @@
 
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import enTranslations from '../locales/en.json';
-import arTranslations from '../locales/ar.json';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-type LanguageContextType = {
-  language: string;
+// تعريف نوع البيانات للغة
+type Language = 'en' | 'ar';
+
+// تعريف نوع البيانات للسياق
+interface LanguageContextType {
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  t: (key: string) => string;
   dir: 'ltr' | 'rtl';
-  setLanguage: (lang: string) => void;
-  t: (key: string, params?: Record<string, string | number>) => string;
-};
+}
 
-const translations: Record<string, any> = {
-  en: enTranslations,
-  ar: arTranslations,
-};
-
-// Create language context with default values
+// إنشاء السياق
 const LanguageContext = createContext<LanguageContextType>({
   language: 'en',
-  dir: 'ltr',
   setLanguage: () => {},
-  t: () => '',
+  t: (key) => key,
+  dir: 'ltr'
 });
 
-// Get nested object value using a path like 'home.welcome'
-const getNestedValue = (obj: any, path: string): string => {
-  const keys = path.split('.');
-  let current = obj;
-  
-  for (const key of keys) {
-    if (current === undefined || current === null) {
-      return path; // Return the path if we hit undefined
-    }
-    current = current[key];
+// ترجمات الكلمات والجمل
+const translations: Record<Language, Record<string, string>> = {
+  en: {
+    'nav.home': 'Home',
+    'nav.restaurants': 'Restaurants',
+    'nav.homefood': 'Home Food',
+    'nav.addFood': 'Add Food',
+    'nav.orders': 'Orders',
+    'nav.wallet': 'Wallet',
+    'nav.rewards': 'Rewards',
+    'nav.mining': 'Mining',
+    'home.featured': 'Featured Restaurants',
+    'home.viewAll': 'View All',
+    'home.categories': 'Food Categories',
+    'food.addToCart': 'Add to Cart',
+    'cart.title': 'Cart',
+    'loading': 'Loading...',
+    'theme.light': 'Light Mode',
+    'theme.dark': 'Dark Mode',
+    'pi.viewOnOKX': 'View on OKX Exchange',
+    'wallet.refresh': 'Refresh',
+    'wallet.lastUpdated': 'Last updated',
+    'auth.connectWithPi': 'Connect with π',
+    'auth.logout': 'Logout',
+  },
+  ar: {
+    'nav.home': 'الرئيسية',
+    'nav.restaurants': 'المطاعم',
+    'nav.homefood': 'طعام منزلي',
+    'nav.addFood': 'إضافة طعام',
+    'nav.orders': 'الطلبات',
+    'nav.wallet': 'المحفظة',
+    'nav.rewards': 'المكافآت',
+    'nav.mining': 'التعدين',
+    'home.featured': 'مطاعم مميزة',
+    'home.viewAll': 'عرض الكل',
+    'home.categories': 'فئات الطعام',
+    'food.addToCart': 'أضف إلى السلة',
+    'cart.title': 'السلة',
+    'loading': 'جاري التحميل...',
+    'theme.light': 'الوضع المضيء',
+    'theme.dark': 'الوضع الداكن',
+    'pi.viewOnOKX': 'عرض في منصة OKX',
+    'wallet.refresh': 'تحديث',
+    'wallet.lastUpdated': 'آخر تحديث',
+    'auth.connectWithPi': 'الاتصال بـ π',
+    'auth.logout': 'تسجيل الخروج',
   }
-  
-  return current !== undefined && current !== null ? current.toString() : path;
 };
 
-// Replace parameters in the translation string like {name} with actual values
-const replaceParams = (text: string, params?: Record<string, string | number>): string => {
-  if (!params) return text;
-  
-  let result = text;
-  Object.entries(params).forEach(([key, value]) => {
-    result = result.replace(new RegExp(`{${key}}`, 'g'), String(value));
-  });
-  
-  return result;
-};
-
-export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Get initial language from localStorage or use browser language or default to 'en'
-  const getInitialLanguage = (): string => {
+// مزود السياق
+export const LanguageProvider = ({ children }: { children: ReactNode }) => {
+  const [language, setLanguageState] = useState<Language>(() => {
+    // محاولة استرداد اللغة من التخزين المحلي
     const savedLanguage = localStorage.getItem('language');
-    if (savedLanguage) return savedLanguage;
-    
-    const browserLanguage = navigator.language.split('-')[0];
-    return browserLanguage === 'ar' ? 'ar' : 'en';
+    return (savedLanguage === 'ar' || savedLanguage === 'en') ? savedLanguage : 'en';
+  });
+
+  // تغيير اللغة
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    localStorage.setItem('language', lang);
+    // تعيين اتجاه الصفحة بناء على اللغة
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = lang;
   };
-  
-  const [language, setLanguage] = useState<string>(getInitialLanguage());
-  const dir = language === 'ar' ? 'rtl' : 'ltr';
-  
-  // Update document direction and language when language changes
+
+  // تطبيق اتجاه الصفحة عند التحميل
   useEffect(() => {
+    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = language;
-    document.documentElement.dir = dir;
-    document.body.setAttribute('dir', dir);
-    
-    // Add special class for Arabic text rendering
-    if (language === 'ar') {
-      document.documentElement.classList.add('arabic-text-rendering');
-    } else {
-      document.documentElement.classList.remove('arabic-text-rendering');
-    }
-    
-    localStorage.setItem('language', language);
-  }, [language, dir]);
-  
-  // Translation function
-  const t = (key: string, params?: Record<string, string | number>): string => {
-    const translation = getNestedValue(translations[language], key);
-    
-    // If translation not found, try English or return key
-    if (translation === key && language !== 'en') {
-      const enTranslation = getNestedValue(translations.en, key);
-      return enTranslation !== key 
-        ? replaceParams(enTranslation, params) 
-        : key;
-    }
-    
-    return replaceParams(translation, params);
+  }, [language]);
+
+  // دالة الترجمة
+  const t = (key: string): string => {
+    return translations[language][key] || key;
   };
-  
-  const changeLanguage = (lang: string) => {
-    if (translations[lang]) {
-      setLanguage(lang);
-    }
-  };
-  
+
   return (
-    <LanguageContext.Provider
-      value={{
-        language,
-        dir,
-        setLanguage: changeLanguage,
-        t,
-      }}
-    >
+    <LanguageContext.Provider value={{ language, setLanguage, t, dir: language === 'ar' ? 'rtl' : 'ltr' }}>
       {children}
     </LanguageContext.Provider>
   );
 };
 
+// hook للاستخدام في المكونات
 export const useLanguage = () => useContext(LanguageContext);
-
-export default LanguageProvider;

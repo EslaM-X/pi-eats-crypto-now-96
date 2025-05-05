@@ -1,28 +1,24 @@
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 
-// Define breakpoint for mobile devices
-const MOBILE_BREAKPOINT = 768; // corresponds to md in Tailwind
-
-export const useIsMobile = (): boolean => {
-  const [isMobile, setIsMobile] = useState<boolean>(
-    typeof window !== 'undefined' ? window.innerWidth < MOBILE_BREAKPOINT : false
-  );
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-    };
+    // التحقق عند التحميل
+    checkIfMobile();
+
+    // إضافة مستمع للتغييرات في حجم النافذة
+    window.addEventListener('resize', checkIfMobile);
     
-    // Set initial value
-    handleResize();
-    
-    // Add event listener
-    window.addEventListener('resize', handleResize);
-    
-    // Clean up
-    return () => window.removeEventListener('resize', handleResize);
+    // تنظيف المستمع عند إزالة المكون
+    return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
 
+  // التحقق مما إذا كان العرض يناسب الأجهزة المحمولة
+  function checkIfMobile() {
+    setIsMobile(window.innerWidth < 768);
+  }
+
   return isMobile;
-};
+}
